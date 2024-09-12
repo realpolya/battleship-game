@@ -1,3 +1,5 @@
+/* import calculateAdjacent from "./math.js" */
+
 /* battleship
 
 INSTRUCTIONS:
@@ -7,6 +9,9 @@ Start with 6 x 6 grid
 // aGrid - player A, bGrid - player B
 const aGrid = []; // single grid
 const bGrid = [];
+
+// grid dimensions
+const gridSize = 6;
 
 // ships and their length
 const ships = {
@@ -20,7 +25,7 @@ const ships = {
 const shipEl = "○";
 
 // array of adjacent cells
-const adjacentCells = [];
+let adjacentCells = [];
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -40,6 +45,7 @@ let startY = 0
 // colors
 let blockedColor = "lightgrey"
 let adjacentColor = "honeydew"
+let suggestiveColor = "hotpink"
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -105,9 +111,18 @@ const handleClick = (e) => {
 
         // change color
         e.target.style.backgroundColor = blockedColor;
+
+        // render board
+        updateBoard();
+
+        // calculate cells for hte next move
+        adjacentCells = calculateAdjacent(selectedCell, gridSize);
+        console.log("Adjacent cells are", adjacentCells);
+
+        // highlight suggested cells
+        highlightCells(adjacentCells);
     }
 
-    updateBoard();
 }
 
 // experimental fill cells with their number ids
@@ -119,33 +134,87 @@ const fillWithIds = (e) => {
     });
 }
 
+// function to track length of each ship, shiptype for which ship, ships for obj
+const trackLength = (shiptype, obj) => {
+    let length = obj[shiptype];
 
-
-
-const calculateAdjacent = (cell, shiptype) => {
-    // obtain the length of the ship
-    let length = ships[shiptype];
-
-    // only allow adjacent cells to be clicked
-    // fill adjacentCells array
-
-    //if center cell
-
-    //if border cell
-
-    // all numbers divisible by 6 are at the right border
-
-    // update adjacentCells array
-
-    // once the length of the ship is completed, free up the adjacentCells array
-
+    // once the length of the ship is completed, free up the arr array
 }
 
 
+// pass cell for cell number, gridSize for size
+const calculateAdjacent = (cell, size) => {
+    let arr = [];
 
+    // convert cell to number
+    cell = +cell;
 
+    let squared = size * size;
+    let a; let b; let c; let d;
 
+    console.log("remainder", cell % size)
+    // all numbers divisible by 6 are at the right border
+    if (cell % size === 0) {
+        // if 6
+        if (cell == size) {
+            b = cell - 1;
+            d = cell + size;
+            console.log(b, d)
+        } // if 36
+        else if (cell === squared) {
+            b = cell - 1;
+            c = cell - size;
+        } else {
+            b = cell - 1;
+            c = cell - size; d = cell + size;
+        }
+    } // if first row
+    else if (cell < size) {
+        if (cell === 1) {
+            a = cell + 1;
+            d = cell + size;
+        } else {
+            a = cell + 1; b = cell - 1; 
+            d = cell + size;
+        }
+    } //all numbers 1 and +6 are at the left border (remainder 1)
+    else if (cell % size === 1) {
+        // if the bottom right cell
+        if (cell === squared - (size - 1)) {
+            a = cell + 1;
+            c = cell - size;
+        } else {
+            a = cell + 1;
+            c = cell - size; d = cell + size;
+        }
+    } // between 36 through 31 are at the bottom
+    else if (cell < squared && cell > squared - (size - 1)) {
+        a = cell + 1; b = cell - 1; 
+        c = cell - size;
+    } // everything else – center
+    else {
+        a = cell + 1; b = cell - 1; // horizontal
+        c = cell - size; d = cell + size; // vertical
+    }
 
+    arr.push(a, b, c, d);
+    arr = arr.filter((el) => {
+        return el !== undefined;
+    })
+
+    // update arr array
+    return arr;
+}
+
+const highlightCells = (arr) => {
+    let i = 1;
+    cellsEl.forEach((cell) => {
+        if (arr.includes(i)) {
+            cell.style.backgroundColor = suggestiveColor;
+        }
+        i++;
+    });
+}
 
 
 /*----------------------------- Event Listeners -----------------------------*/
