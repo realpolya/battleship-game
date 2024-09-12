@@ -1,0 +1,119 @@
+/* storing variables */
+:root {
+    --brand-color: bisque;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* for all files */
+body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+button {
+    max-width: 30%;
+    min-width: 15%;
+    min-height: 5rem;
+    margin: auto;
+    border-radius: 10px;
+}
+
+a {
+    font-family: "Raleway", sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    min-width: 90%;
+}
+
+h1 {
+    margin: auto;
+    padding: 2rem;
+}
+
+h3 {
+    margin: auto;
+    padding: 2rem;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.site-menu {
+    min-width: 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+p {
+    padding: 1rem;
+}
+
+.instructions {
+    margin: auto;
+    padding: 2rem;
+}
+
+table {
+    border: 1px solid;
+    min-width: 300px;
+    margin: auto;
+}
+
+td {
+    border: 1px solid;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    background-color: rosybrown;
+    aspect-ratio: 1/1 ;
+}
+
+[id="2"] {
+    background-color: aqua;
+}
+
+/* game files */
+
+#player-setup {
+    min-width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#fleet {
+    background-color: aquamarine;
+    min-width: 20%;
+    max-width: 30%;
+    background-color: lightslategray;
+    padding: 1rem;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+img {
+    width: 3.5rem;
+}
