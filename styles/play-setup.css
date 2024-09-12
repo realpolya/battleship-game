@@ -1,0 +1,47 @@
+/* code specific to ONLY setup page */
+
+#player-setup {
+    min-width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#fleet {
+    background-color: aquamarine;
+    background-image: url("/assets/dark-surface.jpg");
+    min-width: 20%;
+    max-width: 30%;
+    background-color: lightslategray;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#battleship {
+    width: 3.5rem;
+}
+
+#cruiser {
+    width: 3rem;
+}
+
+/*
+#battleship {
+    position: fixed;
+} */
+
+.ship:hover {
+    background-color: black;
+    cursor: grab;
+}
+
+#immediate-instruction {
+    text-align: center;
+    margin: auto;
+}
