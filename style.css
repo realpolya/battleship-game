@@ -76,7 +76,7 @@ p {
 table {
     border: 1px solid;
     min-width: 300px;
-    margin: auto;
+    margin: 1rem;
 }
 
 td {
@@ -84,12 +84,16 @@ td {
     width: 4rem;
     height: 4rem;
     text-align: center;
-    background-color: rosybrown;
+    background-color: aliceblue;
     aspect-ratio: 1/1 ;
 }
 
 [id="2"] {
     background-color: aqua;
+}
+
+.top-banner {
+    font-weight: 600;
 }
 
 /* game files */
@@ -98,22 +102,38 @@ td {
     min-width: 80%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 #fleet {
     background-color: aquamarine;
+    background-image: url("/assets/dark-surface.jpg");
     min-width: 20%;
     max-width: 30%;
     background-color: lightslategray;
     padding: 1rem;
+    margin: 1rem;
     border-radius: 20px;
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
 }
 
-img {
+#battleship {
     width: 3.5rem;
+}
+
+#cruiser {
+    width: 3rem;
+}
+
+#battleship {
+    position: fixed;
+}
+
+.ship:hover {
+    background-color: black;
+    cursor: grab;
 }
