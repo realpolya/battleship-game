@@ -203,13 +203,41 @@ const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
             // if yes
             if (foundArray) {
 
+                // include largest and smallest
                 if (subArray.includes(smallest)) {
                     finalArr.push(smallest);
                 }
-
                 if (subArray.includes(largest)) {
                     finalArr.push(largest);
                 }
+
+                const newRowArray = location.concat(finalArr).sort((a, b) => {
+                    return a - b;
+                })
+
+                console.log("NewRowArray ", newRowArray)
+
+                let rowLength = newRowArray.length
+
+                // add all above
+                let newMember = newRowArray[0] - size;
+
+                if (newMember >= 1) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember++;
+                    }
+                }
+
+                // add all below
+                newMember = newRowArray[0] + size;
+                if (newMember <= (size * size)) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember++;
+                    }
+                }
+                
             }
         })
 
@@ -236,6 +264,10 @@ const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
             }
         })
     }
+
+    finalArr = finalArr.sort((a, b) => {
+        return a - b;
+    })
 
     console.log(finalArr);
     return finalArr;
