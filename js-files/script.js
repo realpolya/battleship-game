@@ -1,4 +1,5 @@
-import { calculateAdjacent } from "./math.js"
+import { calculateAdjacent, updateAdjacent, orientationCheck } from "./math.js"
+import { updateBoard, fillWithIds } from "./board-setup.js"
 
 /* battleship
 
@@ -35,6 +36,14 @@ const ships = [
     destroyer: 2,
 */
 
+// colors
+const blockedColor = "lightgrey"
+const adjacentColor = "honeydew"
+const suggestiveColor = "hotpink"
+const boardColor = "thistle" // coordinate with css
+const completedShipColor = "blue"
+const buttonColor = "purple"
+
 /*---------------------------- Variables (state) ----------------------------*/
 
 // array of adjacent cells
@@ -49,20 +58,13 @@ let shipsOnBoard = 0;
 
 // store selected cell
 let selectedCell;
+let previousCell;
 
 // drag and drop – used tutorial from Appwrite
 let newX = 0
 let newY = 0
 let startX = 0
 let startY = 0
-
-// colors
-let blockedColor = "lightgrey"
-let adjacentColor = "honeydew"
-let suggestiveColor = "hotpink"
-let boardColor = "thistle" // coordinate with css
-let completedShipColor = "blue"
-let buttonColor = "purple"
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -104,53 +106,55 @@ const mouseUp = e => {
     document.removeEventListener('mousemove', mouseMove)
 } */
 
-// update board function
-const updateBoard = () => {
-    let i = 0;
-    cellsEl.forEach((cell) => {
-        cell.textContent = aGrid[i];
-        i++;
-    });
-}
-
 // handle click on a cell
 const handleClick = (e) => {
 
+    // previous cell is assigned
+    previousCell = selectedCell;
+
+    // current cell is assigned
     selectedCell = +e.target.id;
 
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class
     if ((adjacentCells.length === 0 || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell")) {
 
-        // if third click – it can only go horizontally or vertically
-        if (clickNumber >= 3) {
-            
-            shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
-
-        } else {
-
-        }
-
         // uncolor the previous suggested color
         unhighlightCells();
 
-        // assign shipEl to the selectedCell
-        aGrid[selectedCell - 1] = ships[shipIndex].emoji;
+        function shipInCell() {
+            // assign shipEl to the selectedCell
+            aGrid[selectedCell - 1] = ships[shipIndex].emoji;
 
-        // change color
-        e.target.style.backgroundColor = blockedColor;
+            // change color of the blocked cell
+            e.target.style.backgroundColor = blockedColor;
 
-        // render board
-        updateBoard();
+            // update board
+            updateBoard(cellsEl, aGrid);
+        }
+        
+        shipInCell();
+
+        // move click number
+        clickNumber++;
+        console.log("click number ", clickNumber)
+
+        // determine orientation for click 3
+        if (clickNumber === 2) {
+            shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
+        } 
 
         // calculate cells for hte next move
         adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
         console.log("Adjacent cells are", adjacentCells);
 
+        if (clickNumber >= 2) {
+            // filter out the wrong direction from the suggested array
+            /*excludeAdjacent(adjacentCells, shipOrientation)*/
+
+        }
+
         // highlight suggested cells
         highlightCells(adjacentCells);
-
-        // move click number
-        clickNumber++;
 
         // check for length of ship
 
@@ -160,28 +164,6 @@ const handleClick = (e) => {
     // check if all ships are complete
     allShipsComplete();
 
-}
-
-// experimental fill cells with their number ids
-const fillWithIds = e => {
-    let i = 1;
-    cellsEl.forEach((cell) => {
-        cell.textContent = i;
-        i++;
-    });
-}
-
-// check for horizontal or vertical
-// check to see if two emojis follow each other
-const orientationCheck = (arr, shipEmoji) => {
-    let orientation = "vertical";
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === shipEmoji && arr[i+1] === shipEmoji) {
-            orientation = "horizontal";
-        } 
-    }
-    console.log(orientation);
-    return orientation;
 }
 
 // function to track length of each ship, shiptype for which ship, ships for obj
@@ -254,7 +236,9 @@ onload = () => {
 gameTableEl.addEventListener("click", handleClick)
 
 // experimental numbers
-cruiserEl.addEventListener("click", fillWithIds);
+cruiserEl.addEventListener("click", () => {
+    fillWithIds(cellsEl)
+});
 
 /* drag and drop – DISABLED
 battleshipEl.addEventListener("mousedown", (e) => {

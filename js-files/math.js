@@ -1,7 +1,7 @@
 /* ADDITIONAL MATH FUNCTIONS */
 
 // pass cell for cell number, gridSize for size, playerBoard for array
-export const calculateAdjacent = (cell, size, playerBoard) => {
+const calculateAdjacent = (cell, size, playerBoard) => {
     let arr = [];
 
     // convert cell to number
@@ -70,10 +70,41 @@ export const calculateAdjacent = (cell, size, playerBoard) => {
         } 
     }
 
+    // sort in ascending order
+    arr = arr.sort((a, b) => {
+        return a - b;
+    });
 
     // update arr array
     return arr;
 }
 
+// function to exclude suggested cells based on the orientation
+const updateAdjacent = (playerBoard, adjacentArr, orientation) => {
+    
+    let newArr = [];
 
-// export { name, draw, reportArea, reportPerimeter };
+    if (orientation === "horizontal") {
+        // keep only those members of the array that are x - 1 or x + 1
+        newArr = arr.filter((a, i, arr) => {
+            return (arr[i + 1] - a === 2)
+        })
+        console.log(newArr);
+    }
+
+    // add cells in the same row for back and forth
+}
+
+// check for horizontal or vertical
+const orientationCheck = (arr, shipEmoji) => {
+    let orientation = "vertical";
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === shipEmoji && arr[i+1] === shipEmoji) {
+            orientation = "horizontal";
+        } 
+    }
+    console.log("orientation is ", orientation);
+    return orientation;
+}
+
+export { calculateAdjacent, updateAdjacent, orientationCheck };
