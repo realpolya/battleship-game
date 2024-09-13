@@ -1,6 +1,6 @@
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
-    gridColumnsCalculate, gridRowsCalculate, trackLength } from "./math.js"
-import { updateBoard, fillWithIds, highlightCells, unhighlightCells } from "./board-setup.js"
+    gridColumnsCalculate, gridRowsCalculate, trackLength, colorBlockedAdj } from "./math.js"
+import { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells } from "./board-setup.js"
 
 /* battleship
 
@@ -59,6 +59,9 @@ let verArray2D = [];
 
 // array of adjacent cells
 let adjacentCells;
+
+// array of blocked adjacent cells
+let blockedAdjCells;
 
 // setup – time for a new ship
 let clickNumber = 0;
@@ -181,6 +184,12 @@ const handleClick = (e) => {
         
         // ship is complete
         if (nextShip) {
+            // color the blocked cells
+            blockedAdjCells = colorBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
+            console.log(blockedAdjCells)
+            blockCells(cellsEl, blockedAdjCells, adjacentColor)
+            
+            // reset trackers
             shipIsComplete();
             unhighlightCells(cellsEl, suggestiveColor, boardColor);
         }
@@ -197,6 +206,7 @@ const shipIsComplete = () => {
     
     console.log("Ship is complete")
     adjacentCells = undefined;
+    blockedAdjCells = undefined;
     clickNumber = 0;
     shipIndex++; // to change once the first ship has been setup
     nextShip = true;

@@ -182,10 +182,64 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
     return finalArr;
 }
 
-// color blocked adjacent cells after ship is complete
-const colorBlockedAdj = (location, hor2D, ver2D) => {
+// color blocked adjacent cells after ship is complete (obtain ids)
+const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
+ 
+    let finalArr = [];
+
     // location is ship's location array
-    
+    if (orientation === "horizontal") {
+
+        // new horizontal members -1 +1
+        let smallest = location[0] - 1;
+        let largest = location[location.length - 1] + 1;
+
+        hor2D.forEach((subArray) => {
+            // check if horizontal subArray matches the location array
+            const foundArray = subArray.some((el) => {
+                return location.includes(el);
+            })
+
+            // if yes
+            if (foundArray) {
+
+                if (subArray.includes(smallest)) {
+                    finalArr.push(smallest);
+                }
+
+                if (subArray.includes(largest)) {
+                    finalArr.push(largest);
+                }
+            }
+        })
+
+    } else if (orientation === "vertical") {
+        // new horizontal members -1 +1
+        let smallest = location[0] - size;
+        let largest = location[location.length - 1] + size;
+
+        ver2D.forEach((subArray) => {
+            // check if horizontal subArray matches the location array
+            const foundArray = subArray.some((el) => {
+                return location.includes(el);
+            })
+
+            // if yes
+            if (foundArray) {
+                if (subArray.includes(smallest)) {
+                    finalArr.push(smallest);
+                }
+
+                if (subArray.includes(largest)) {
+                    finalArr.push(largest);
+                }
+            }
+        })
+    }
+
+    console.log(finalArr);
+    return finalArr;
+
 }
 
 // check for horizontal or vertical
@@ -213,4 +267,4 @@ const trackLength = (obj, index) => {
     }
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength };
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, colorBlockedAdj };
