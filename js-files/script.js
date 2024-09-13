@@ -121,7 +121,7 @@ const handleClick = (e) => {
         updateBoard();
 
         // calculate cells for hte next move
-        adjacentCells = calculateAdjacent(selectedCell, gridSize);
+        adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
         console.log("Adjacent cells are", adjacentCells);
 
         // highlight suggested cells

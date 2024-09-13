@@ -1,7 +1,7 @@
 /* ADDITIONAL MATH FUNCTIONS */
 
-// pass cell for cell number, gridSize for size
-export const calculateAdjacent = (cell, size) => {
+// pass cell for cell number, gridSize for size, playerBoard for array
+export const calculateAdjacent = (cell, size, playerBoard) => {
     let arr = [];
 
     // convert cell to number
@@ -10,7 +10,6 @@ export const calculateAdjacent = (cell, size) => {
     let squared = size * size;
     let a; let b; let c; let d;
 
-    console.log("remainder", cell % size)
     // all numbers divisible by 6 are at the right border
     if (cell % size === 0) {
         // if 6
@@ -59,6 +58,18 @@ export const calculateAdjacent = (cell, size) => {
     arr = arr.filter((el) => {
         return el !== undefined;
     })
+
+    // exclude members of arr if they are in playerBoard array
+    for (let i = 0; i < playerBoard.length; i++) {
+        // if not undefined, note its index + 1, save it to a variable, see if it is in arr array, remove it
+        if (playerBoard[i] !== undefined) {
+            let j = i + 1;
+            arr = arr.filter((el) => {
+                return el !== j;
+            });
+        } 
+    }
+
 
     // update arr array
     return arr;
