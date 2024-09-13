@@ -18,5 +18,24 @@ const fillWithIds = (elArray) => {
     });
 }
 
+// highlight adjacent cells
+const highlightCells = (elArray, arr, blockedColor, suggestiveColor) => {
+    let i = 1;
+    elArray.forEach((el) => {
+        if (arr.includes(i) && el.style.backgroundColor !== blockedColor) {
+            el.style.backgroundColor = suggestiveColor;
+        }
+        i++;
+    });
+}
 
-export { updateBoard, fillWithIds };
+const unhighlightCells = (elArray, suggestiveColor, boardColor) => {
+    elArray.forEach((el) => {
+        if (el.style.backgroundColor === suggestiveColor){
+            el.style.backgroundColor = boardColor;
+        };
+    });
+}
+
+
+export { updateBoard, fillWithIds, highlightCells, unhighlightCells };

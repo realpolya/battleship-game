@@ -1,5 +1,5 @@
 import { calculateAdjacent, updateAdjacent, orientationCheck } from "./math.js"
-import { updateBoard, fillWithIds } from "./board-setup.js"
+import { updateBoard, fillWithIds, highlightCells, unhighlightCells } from "./board-setup.js"
 
 /* battleship
 
@@ -19,14 +19,19 @@ const ships = [
     {
         name: "battleship",
         length: 4,
-        emoji: "🛳️"
+        emoji: "🛳️",
+        location: []
     },
     {
         name: "cruiser",
         length: 3,
-        emoji: "⛴️"
+        emoji: "⛴️",
+        location: []
     }
 ]
+
+// event tracker
+const clickOrder = [];
 
 /*
     carrier: 5,
@@ -56,9 +61,13 @@ let nextShip = false;
 let shipOrientation;
 let shipsOnBoard = 0;
 
+// current ship is
+// ships[shipIndex].name
+// location of ship:
+// ships[shipIndex].location.push()
+
 // store selected cell
 let selectedCell;
-let previousCell;
 
 // drag and drop – used tutorial from Appwrite
 let newX = 0
@@ -109,21 +118,31 @@ const mouseUp = e => {
 // handle click on a cell
 const handleClick = (e) => {
 
-    // previous cell is assigned
-    previousCell = selectedCell;
-
     // current cell is assigned
     selectedCell = +e.target.id;
 
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class
     if ((adjacentCells.length === 0 || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell")) {
 
+        // track click
+        clickOrder.push(selectedCell)
+        console.log("Click order is ", clickOrder)
+
         // uncolor the previous suggested color
-        unhighlightCells();
+        unhighlightCells(cellsEl, suggestiveColor, boardColor);
 
         function shipInCell() {
             // assign shipEl to the selectedCell
             aGrid[selectedCell - 1] = ships[shipIndex].emoji;
+
+            // update the location of the ship in the ships object
+            ships[shipIndex].location.push(selectedCell)
+            console.log(ships)
+
+            // sort the order of the location (always ascending)
+            ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
+                return a - b;
+            });
 
             // change color of the blocked cell
             e.target.style.backgroundColor = blockedColor;
@@ -136,25 +155,24 @@ const handleClick = (e) => {
 
         // move click number
         clickNumber++;
-        console.log("click number ", clickNumber)
 
         // determine orientation for click 3
         if (clickNumber === 2) {
             shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
         } 
 
-        // calculate cells for hte next move
+        // calculate cells for the next move
         adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
-        console.log("Adjacent cells are", adjacentCells);
 
         if (clickNumber >= 2) {
             // filter out the wrong direction from the suggested array
             /*excludeAdjacent(adjacentCells, shipOrientation)*/
-
+            adjacentCells = updateAdjacent(gridSize, adjacentCells, shipOrientation, ships[shipIndex].location)
+            console.log("After updating adjacent cells are", adjacentCells);
         }
 
         // highlight suggested cells
-        highlightCells(adjacentCells);
+        highlightCells(cellsEl, adjacentCells, blockedColor, suggestiveColor);
 
         // check for length of ship
 
@@ -167,8 +185,8 @@ const handleClick = (e) => {
 }
 
 // function to track length of each ship, shiptype for which ship, ships for obj
-const trackLength = (shiptype, obj) => {
-    let length = obj[shiptype];
+const trackLength = (obj) => {
+    let length = obj[shipIndex].length;
 
     // once the length of the ship is completed, free up the arr array
 }
@@ -193,25 +211,6 @@ const allShipsComplete = () => {
         readyButton.style.backgroundColor = buttonColor;
         readyButton.removeAttribute('disabled');
     }
-}
-
-// highlight adjacent cells
-const highlightCells = (arr) => {
-    let i = 1;
-    cellsEl.forEach((cell) => {
-        if (arr.includes(i) && cell.style.backgroundColor !== blockedColor) {
-            cell.style.backgroundColor = suggestiveColor;
-        }
-        i++;
-    });
-}
-
-const unhighlightCells = () => {
-    cellsEl.forEach((cell) => {
-        if (cell.style.backgroundColor === suggestiveColor){
-            cell.style.backgroundColor = boardColor;
-        };
-    });
 }
 
 
