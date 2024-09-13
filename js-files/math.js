@@ -124,16 +124,12 @@ const gridColumnsCalculate = (size) => {
     return array2D;
 }
 
-
 // function to exclude suggested cells based on the orientation
-const updateAdjacent = (size, adjacentArr, orientation, location, hor2D, ver2D, length) => {
-    // can use ships location array for this
+const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
 
     const finalArr = location.map((locID, i, location) => {
         
         let newArrayMember;
-
-        console.log("locID is ", locID)
         let possible = [];
 
         if (orientation === "horizontal") {
@@ -145,13 +141,11 @@ const updateAdjacent = (size, adjacentArr, orientation, location, hor2D, ver2D, 
                 
                 // only 1 subArray will much so the loop will only run once
                 if (subArray.includes(locID)) {
-                    console.log("This is the subarray ", subArray)
                     // overlap
                     possible.forEach((num) => {
                         if (!location.includes(num) && subArray.includes(num)) {
                             // assigning newArrayMember
                             newArrayMember = num;
-                            console.log ("newArrayMember has been assigned to ", num)
                         }
                     })
                 }
@@ -160,8 +154,23 @@ const updateAdjacent = (size, adjacentArr, orientation, location, hor2D, ver2D, 
         } // if vertical
         else if (orientation === "vertical") {
             
-            console.log("updateAdjacent: orientation vertical")
             possible = [locID + size, locID - size] // vertical options
+
+            // understand which sub-array in horArray corresponds to this locID 
+            ver2D.forEach((subArray) => {
+                
+                // only 1 subArray will much so the loop will only run once
+                if (subArray.includes(locID)) {
+                    // overlap
+                    possible.forEach((num) => {
+                        if (!location.includes(num) && subArray.includes(num)) {
+                            // assigning newArrayMember
+                            newArrayMember = num;
+                        }
+                    })
+                }
+            })
+
         }
 
         return newArrayMember;
@@ -173,7 +182,11 @@ const updateAdjacent = (size, adjacentArr, orientation, location, hor2D, ver2D, 
     return finalArr;
 }
 
-
+// color blocked adjacent cells after ship is complete
+const colorBlockedAdj = (location, hor2D, ver2D) => {
+    // location is ship's location array
+    
+}
 
 // check for horizontal or vertical
 const orientationCheck = (arr, shipEmoji) => {
@@ -187,4 +200,17 @@ const orientationCheck = (arr, shipEmoji) => {
     return orientation;
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate };
+// function to track length of each ship, shiptype for which ship, ships for obj
+const trackLength = (obj, index) => {
+    let currentLength = obj[index].location.length; // array length
+    let requiredLength = obj[index].length; // ship's length
+
+    if (currentLength === requiredLength) {
+        console.log("Lengths achieved")
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength };

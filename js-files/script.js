@@ -1,4 +1,5 @@
-import { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate } from "./math.js"
+import { calculateAdjacent, updateAdjacent, orientationCheck, 
+    gridColumnsCalculate, gridRowsCalculate, trackLength } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, unhighlightCells } from "./board-setup.js"
 
 /* battleship
@@ -57,7 +58,7 @@ let verArray2D = [];
 
 
 // array of adjacent cells
-let adjacentCells = [];
+let adjacentCells;
 
 // setup – time for a new ship
 let clickNumber = 0;
@@ -99,7 +100,7 @@ const gameTableEl = document.querySelector('.game-table');
 const immediateEl = document.getElementById('immediate-instruction');
 
 // buttons
-const readyButton = document.getElementById('#ready-to-play');
+const readyButton = document.getElementById('ready-to-play');
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -126,8 +127,8 @@ const handleClick = (e) => {
     // current cell is assigned
     selectedCell = +e.target.id;
 
-    // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class
-    if ((adjacentCells.length === 0 || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell")) {
+    // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet
+    if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell") && e.target.style.backgroundColor !== blockedColor) {
 
         // track click
         clickOrder.push(selectedCell)
@@ -160,26 +161,30 @@ const handleClick = (e) => {
         // move click number
         clickNumber++;
 
-        // determine orientation for click 3
+        // determine orientation
         if (clickNumber === 2) {
             shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
         } 
 
-        // calculate cells for the next move
-        adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
-
+        // calculate adjacent cells
         if (clickNumber >= 2) {
-            // filter out the wrong direction from the suggested array
-            /*excludeAdjacent(adjacentCells, shipOrientation)*/
-            adjacentCells = updateAdjacent(gridSize, adjacentCells, shipOrientation, ships[shipIndex].location, horArray2D)
+            adjacentCells = updateAdjacent(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
+        } else {
+            adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
         }
 
         // highlight suggested cells
         highlightCells(cellsEl, adjacentCells, blockedColor, suggestiveColor);
 
         // check for length of ship
+        nextShip = trackLength(ships, shipIndex);
+        
+        // ship is complete
+        if (nextShip) {
+            shipIsComplete();
+            unhighlightCells(cellsEl, suggestiveColor, boardColor);
+        }
 
-            // if length has been reached, free up the adjacentCells array
     }
 
     // check if all ships are complete
@@ -187,16 +192,11 @@ const handleClick = (e) => {
 
 }
 
-// function to track length of each ship, shiptype for which ship, ships for obj
-const trackLength = (obj) => {
-    let length = obj[shipIndex].length;
-
-    // once the length of the ship is completed, free up the arr array
-}
-
 // reset click, change ship
 const shipIsComplete = () => {
     
+    console.log("Ship is complete")
+    adjacentCells = undefined;
     clickNumber = 0;
     shipIndex++; // to change once the first ship has been setup
     nextShip = true;
