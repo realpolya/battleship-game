@@ -1,4 +1,4 @@
-/* import calculateAdjacent from "./math.js" */
+import { calculateAdjacent } from "./math.js"
 
 /* battleship
 
@@ -14,15 +14,18 @@ const bGrid = [];
 const gridSize = 6;
 
 // ships and their length
-const ships = {
+const shipsLength = {
     carrier: 5,
     battleship: 4,
     cruiser: 3,
-    csubmarine: 3,
+    submarine: 3,
     destroyer: 2,
 }
 
-const shipEl = "○";
+const ships = ["battleship", "cruiser"]
+
+const battleshipEmoji = "🛳️";
+const cruiserEmoji = "⛴️";
 
 // array of adjacent cells
 let adjacentCells = [];
@@ -46,6 +49,7 @@ let startY = 0
 let blockedColor = "lightgrey"
 let adjacentColor = "honeydew"
 let suggestiveColor = "hotpink"
+let boardColor = "thistle" // coordinate with css
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -70,7 +74,7 @@ const readyButton = document.getElementById('#ready-to-play');
 
 /*-------------------------------- Functions --------------------------------*/
 
-// drag and drop functions – for battleShip element
+/* drag and drop functions – for battleShip element - DISABLED
 const mouseMove = (e) => {
     newX = startX - e.clientX
     newY = startY - e.clientY
@@ -85,7 +89,7 @@ const mouseMove = (e) => {
 
 const mouseUp = e => {
     document.removeEventListener('mousemove', mouseMove)
-}
+} */
 
 // update board function
 const updateBoard = () => {
@@ -98,16 +102,17 @@ const updateBoard = () => {
 
 // handle click on a cell
 const handleClick = (e) => {
-    console.log(e);
-    console.log(e.target.id)
-    selectedCell = e.target.id;
 
-    // if first click (aka adjacentCells empty) or if id belongs to the adjacentCells array
+    selectedCell = +e.target.id;
 
-    // only if the cell is clicked
-    if (e.target.classList.contains("cell")) {
+    // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class
+    if ((adjacentCells.length === 0 || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell")) {
+
+        // uncolor the previous suggested color
+        unhighlightCells();
+
         // assign shipEl to the selectedCell
-        aGrid[selectedCell - 1] = shipEl;
+        aGrid[selectedCell - 1] = battleshipEmoji;
 
         // change color
         e.target.style.backgroundColor = blockedColor;
@@ -121,8 +126,11 @@ const handleClick = (e) => {
 
         // highlight suggested cells
         highlightCells(adjacentCells);
-    }
 
+        // check for length of ship
+
+            // if length has been reached, free up the adjacentCells array
+    }
 }
 
 // experimental fill cells with their number ids
@@ -141,78 +149,22 @@ const trackLength = (shiptype, obj) => {
     // once the length of the ship is completed, free up the arr array
 }
 
-
-// pass cell for cell number, gridSize for size
-const calculateAdjacent = (cell, size) => {
-    let arr = [];
-
-    // convert cell to number
-    cell = +cell;
-
-    let squared = size * size;
-    let a; let b; let c; let d;
-
-    console.log("remainder", cell % size)
-    // all numbers divisible by 6 are at the right border
-    if (cell % size === 0) {
-        // if 6
-        if (cell == size) {
-            b = cell - 1;
-            d = cell + size;
-            console.log(b, d)
-        } // if 36
-        else if (cell === squared) {
-            b = cell - 1;
-            c = cell - size;
-        } else {
-            b = cell - 1;
-            c = cell - size; d = cell + size;
-        }
-    } // if first row
-    else if (cell < size) {
-        if (cell === 1) {
-            a = cell + 1;
-            d = cell + size;
-        } else {
-            a = cell + 1; b = cell - 1; 
-            d = cell + size;
-        }
-    } //all numbers 1 and +6 are at the left border (remainder 1)
-    else if (cell % size === 1) {
-        // if the bottom right cell
-        if (cell === squared - (size - 1)) {
-            a = cell + 1;
-            c = cell - size;
-        } else {
-            a = cell + 1;
-            c = cell - size; d = cell + size;
-        }
-    } // between 36 through 31 are at the bottom
-    else if (cell < squared && cell > squared - (size - 1)) {
-        a = cell + 1; b = cell - 1; 
-        c = cell - size;
-    } // everything else – center
-    else {
-        a = cell + 1; b = cell - 1; // horizontal
-        c = cell - size; d = cell + size; // vertical
-    }
-
-    arr.push(a, b, c, d);
-    arr = arr.filter((el) => {
-        return el !== undefined;
-    })
-
-    // update arr array
-    return arr;
-}
-
+// highlight adjacent cells
 const highlightCells = (arr) => {
     let i = 1;
     cellsEl.forEach((cell) => {
-        if (arr.includes(i)) {
+        if (arr.includes(i) && cell.style.backgroundColor !== blockedColor) {
             cell.style.backgroundColor = suggestiveColor;
         }
         i++;
+    });
+}
+
+const unhighlightCells = () => {
+    cellsEl.forEach((cell) => {
+        if (cell.style.backgroundColor === suggestiveColor){
+            cell.style.backgroundColor = boardColor;
+        };
     });
 }
 
@@ -234,17 +186,17 @@ onload = () => {
     immediateEl.textContent = "Build a 4-cell battleship";
 };
 
-// drag and drop
+// click on a cell
+gameTableEl.addEventListener("click", handleClick)
+
+// experimental numbers
+cruiserEl.addEventListener("click", fillWithIds);
+
+/* drag and drop – DISABLED
 battleshipEl.addEventListener("mousedown", (e) => {
     startX = e.clientX // provides coordinates
     startY = e.clientY
 
     document.addEventListener('mousemove', mouseMove);
     document.addEventListener('mouseup', mouseUp);
-})
-
-// click on a cell
-gameTableEl.addEventListener("click", handleClick)
-
-// experimental numbers
-cruiserEl.addEventListener("click", fillWithIds);
+}) */

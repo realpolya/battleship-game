@@ -1,7 +1,7 @@
 /* code for all pages */
 /* storing variables */
 :root {
-    --brand-color: bisque;
+    --board-color: thistle;
 }
 
 * {
@@ -89,7 +89,8 @@ td {
 }
 
 .cell {
-    background-color: blanchedalmond;
+    background-color: var(--board-color);
+    font-size: 2rem;
 }
 
 [id="2"] {
