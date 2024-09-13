@@ -99,82 +99,74 @@ const gridRowsCalculate = (size) => {
         increment += size;
     }
 
-    console.log(array2D);
+    return array2D;
 }
 
-// function to exclude suggested cells based on the orientation
-const updateAdjacent = (size, adjacentArr, orientation, location, length) => {
-    // can use ships location array for this
+// renders two-dimensional array split by columns
+const gridColumnsCalculate = (size) => {
+    let array = [];
+    let array2D = [];
 
-    let newArr = [];
+    let increment = 0;
+
+    for (let i = 1; i <= size; i++) {
+
+        // reassign i at increments of size
+        for (let j = 1 + increment; j <= (size * size); j += size) {
+            array.push(j);
+        }
+
+        array2D.push(Array.from(array));
+
+        array.length = 0;
+        increment++;
+    }
+    return array2D;
+}
+
+
+// function to exclude suggested cells based on the orientation
+const updateAdjacent = (size, adjacentArr, orientation, location, hor2D, ver2D, length) => {
+    // can use ships location array for this
 
     const finalArr = location.map((locID, i, location) => {
         
-        console.log("locID is ", locID)
+        let newArrayMember;
 
+        console.log("locID is ", locID)
         let possible = [];
 
         if (orientation === "horizontal") {
             
             possible = [locID + 1, locID - 1] // horizontal options
 
-            console.log("possible are ", possible)
-
-            console.log("adjacent are ", adjacentArr)
-
-            newArr = adjacentArr.filter((a) => {
-                return possible.includes(a);
-            })
-            console.log("array after filter is ", newArr)
-            
-
-            // add one more horizontal one but only if it doesn't cross the board
-            possible.forEach((num) => {
+            // understand which sub-array in horArray corresponds to this locID 
+            hor2D.forEach((subArray) => {
                 
-                if (num !== locID) {
-                    console.log("Check 1 pass", num)
-                    if (!location.includes(num)) {
-                        console.log("Check 2 pass", num)
-                        if (num % size !== 0) {
-                            console.log("Check 3 pass", num)
-                            if ((num % size !== 1)) {
-                                console.log("Check 4 pass", num)
-                                if (!newArr.includes(num)) {
-                                    console.log("Check 5 pass", num)
-                                    newArr.push(num);
-                                    console.log("newArr is ", newArr);
-                                    locID = num; // for finalArray
-                                }
-                            }
+                // only 1 subArray will much so the loop will only run once
+                if (subArray.includes(locID)) {
+                    console.log("This is the subarray ", subArray)
+                    // overlap
+                    possible.forEach((num) => {
+                        if (!location.includes(num) && subArray.includes(num)) {
+                            // assigning newArrayMember
+                            newArrayMember = num;
+                            console.log ("newArrayMember has been assigned to ", num)
                         }
-                    }
+                    })
                 }
             })
-
 
         } // if vertical
         else if (orientation === "vertical") {
             
             console.log("updateAdjacent: orientation vertical")
             possible = [locID + size, locID - size] // vertical options
-
-            console.log("possibles are: ", possible)
-            newArr = adjacentArr.filter((a) => {
-                return possible.includes(a);
-            })
-            console.log("updateAdjacent: filtered array ", newArr)
-
-            possible.forEach((num) => {
-                if (num !== locID){
-                    if (num <= (size * size) && num >= 1 && !newArr.includes(num)) {
-                        newArr.push(num);
-                        locID = num;
-                    }
-                }
-            })
         }
 
-        return locID;
+        return newArrayMember;
+    }).filter((a) => {
+        return a !== undefined;
     })
 
     console.log("final Array ", finalArr)
@@ -195,4 +187,4 @@ const orientationCheck = (arr, shipEmoji) => {
     return orientation;
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck };
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate };

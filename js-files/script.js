@@ -1,4 +1,4 @@
-import { calculateAdjacent, updateAdjacent, orientationCheck } from "./math.js"
+import { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, unhighlightCells } from "./board-setup.js"
 
 /* battleship
@@ -50,6 +50,11 @@ const completedShipColor = "blue"
 const buttonColor = "purple"
 
 /*---------------------------- Variables (state) ----------------------------*/
+
+// two-dimensional arrays
+let horArray2D = [];
+let verArray2D = [];
+
 
 // array of adjacent cells
 let adjacentCells = [];
@@ -126,7 +131,6 @@ const handleClick = (e) => {
 
         // track click
         clickOrder.push(selectedCell)
-        console.log("Click order is ", clickOrder)
 
         // uncolor the previous suggested color
         unhighlightCells(cellsEl, suggestiveColor, boardColor);
@@ -167,8 +171,7 @@ const handleClick = (e) => {
         if (clickNumber >= 2) {
             // filter out the wrong direction from the suggested array
             /*excludeAdjacent(adjacentCells, shipOrientation)*/
-            adjacentCells = updateAdjacent(gridSize, adjacentCells, shipOrientation, ships[shipIndex].location)
-            console.log("After updating adjacent cells are", adjacentCells);
+            adjacentCells = updateAdjacent(gridSize, adjacentCells, shipOrientation, ships[shipIndex].location, horArray2D)
         }
 
         // highlight suggested cells
@@ -229,6 +232,10 @@ cruiserEl.addEventListener("click", () => {
 // get instruction for the first ship to build
 onload = () => {
     immediateEl.textContent = "Build a 4-cell battleship";
+    
+    // 2D arrays are assigned
+    horArray2D = gridRowsCalculate(gridSize);
+    verArray2D = gridColumnsCalculate(gridSize);
 };
 
 // click on a cell
