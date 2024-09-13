@@ -14,27 +14,38 @@ const bGrid = [];
 const gridSize = 6;
 
 // ships and their length
-const shipsLength = {
+const ships = [
+    {
+        name: "battleship",
+        length: 4,
+        emoji: "🛳️"
+    },
+    {
+        name: "cruiser",
+        length: 3,
+        emoji: "⛴️"
+    }
+]
+
+/*
     carrier: 5,
     battleship: 4,
     cruiser: 3,
     submarine: 3,
     destroyer: 2,
-}
+*/
 
-const ships = ["battleship", "cruiser"]
-
-const battleshipEmoji = "🛳️";
-const cruiserEmoji = "⛴️";
+/*---------------------------- Variables (state) ----------------------------*/
 
 // array of adjacent cells
 let adjacentCells = [];
 
-/*---------------------------- Variables (state) ----------------------------*/
-
-// win/lose condition
-let gameOver = false;
-let winner;
+// setup – time for a new ship
+let clickNumber = 0;
+let shipIndex = 0; // to change once the first ship has been setup
+let nextShip = false;
+let shipOrientation;
+let shipsOnBoard = 0;
 
 // store selected cell
 let selectedCell;
@@ -50,6 +61,8 @@ let blockedColor = "lightgrey"
 let adjacentColor = "honeydew"
 let suggestiveColor = "hotpink"
 let boardColor = "thistle" // coordinate with css
+let completedShipColor = "blue"
+let buttonColor = "purple"
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -108,11 +121,20 @@ const handleClick = (e) => {
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class
     if ((adjacentCells.length === 0 || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell")) {
 
+        // if third click – it can only go horizontally or vertically
+        if (clickNumber >= 3) {
+            
+            shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
+
+        } else {
+
+        }
+
         // uncolor the previous suggested color
         unhighlightCells();
 
         // assign shipEl to the selectedCell
-        aGrid[selectedCell - 1] = battleshipEmoji;
+        aGrid[selectedCell - 1] = ships[shipIndex].emoji;
 
         // change color
         e.target.style.backgroundColor = blockedColor;
@@ -127,14 +149,21 @@ const handleClick = (e) => {
         // highlight suggested cells
         highlightCells(adjacentCells);
 
+        // move click number
+        clickNumber++;
+
         // check for length of ship
 
             // if length has been reached, free up the adjacentCells array
     }
+
+    // check if all ships are complete
+    allShipsComplete();
+
 }
 
 // experimental fill cells with their number ids
-const fillWithIds = (e) => {
+const fillWithIds = e => {
     let i = 1;
     cellsEl.forEach((cell) => {
         cell.textContent = i;
@@ -142,11 +171,46 @@ const fillWithIds = (e) => {
     });
 }
 
+// check for horizontal or vertical
+// check to see if two emojis follow each other
+const orientationCheck = (arr, shipEmoji) => {
+    let orientation = "vertical";
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === shipEmoji && arr[i+1] === shipEmoji) {
+            orientation = "horizontal";
+        } 
+    }
+    console.log(orientation);
+    return orientation;
+}
+
 // function to track length of each ship, shiptype for which ship, ships for obj
 const trackLength = (shiptype, obj) => {
     let length = obj[shiptype];
 
     // once the length of the ship is completed, free up the arr array
+}
+
+// reset click, change ship
+const shipIsComplete = () => {
+    
+    clickNumber = 0;
+    shipIndex++; // to change once the first ship has been setup
+    nextShip = true;
+    shipsOnBoard++;
+
+}
+
+// all ships complete
+const allShipsComplete = () => {
+    if (shipsOnBoard === ships.length) {
+        console.log("Player is ready to begin")
+
+        // activate ready button
+        readyButton.textContent = "Ready?";
+        readyButton.style.backgroundColor = buttonColor;
+        readyButton.removeAttribute('disabled');
+    }
 }
 
 // highlight adjacent cells
