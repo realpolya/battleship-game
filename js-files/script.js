@@ -1,5 +1,5 @@
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
-    gridColumnsCalculate, gridRowsCalculate, trackLength, colorBlockedAdj } from "./math.js"
+    gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells } from "./board-setup.js"
 
 /* battleship
@@ -40,6 +40,9 @@ const ships = [
 // event tracker
 const clickOrder = [];
 
+// tracker of unavailable cells
+let unavailCells = [];
+
 /*
     carrier: 5,
     battleship: 4,
@@ -49,12 +52,15 @@ const clickOrder = [];
 */
 
 // colors
-const blockedColor = "lightgrey"
-const adjacentColor = "honeydew"
-const suggestiveColor = "hotpink"
+// board colors
+const blockedColor = "lightgrey" // for occupied ship
+const adjacentColor = "honeydew" // for blocked cells around perimeter
+const suggestiveColor = "hotpink" // for suggestion where to go next
 const boardColor = "thistle" // coordinate with css
-const completedShipColor = "blue"
-const buttonColor = "purple"
+const shipColor = "blue" // once the ship is complete
+
+// element colors
+const buttonColor = "purple" // once the 
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -137,7 +143,9 @@ const handleClick = (e) => {
     selectedCell = +e.target.id;
 
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet
-    if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) && e.target.classList.contains("cell") && e.target.style.backgroundColor !== blockedColor) {
+    if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
+        && e.target.classList.contains("cell") 
+        && !unavailCells.includes(selectedCell)) {
 
         // track click
         clickOrder.push(selectedCell)
@@ -163,6 +171,9 @@ const handleClick = (e) => {
 
             // update board
             updateBoard(cellsEl, aGrid);
+
+            // update unavailable cells
+            unavailCells.push(selectedCell);
         }
         
         shipInCell();
@@ -183,18 +194,22 @@ const handleClick = (e) => {
         }
 
         // highlight suggested cells
-        highlightCells(cellsEl, adjacentCells, blockedColor, suggestiveColor);
+        highlightCells(cellsEl, adjacentCells, unavailCells, suggestiveColor);
 
         // check for length of ship
         nextShip = trackLength(ships, shipIndex);
         
         // ship is complete
         if (nextShip) {
-            
+
             // color the blocked cells
-            blockedAdjCells = colorBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
-            console.log(blockedAdjCells)
+            blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
+            unavailCells = unavailCells.concat(blockedAdjCells);
+
             blockCells(cellsEl, blockedAdjCells, adjacentColor)
+
+            // change the completed cells to the cell color
+            blockCells(cellsEl, ships[shipIndex].location, shipColor)
             
             // reset trackers
             shipIsComplete();

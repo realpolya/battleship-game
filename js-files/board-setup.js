@@ -19,12 +19,15 @@ const fillWithIds = (elArray) => {
 }
 
 // highlight adjacent cells
-const highlightCells = (elArray, arr, blockedColor, suggestiveColor) => {
+const highlightCells = (elArray, arr, unavailArr, suggestiveColor) => {
+    
+    // remove cells that are already blocked out
     let i = 1;
     elArray.forEach((el) => {
-        if (arr.includes(i) && el.style.backgroundColor !== blockedColor) {
-            console.log("Coloring now")
-            el.style.backgroundColor = suggestiveColor;
+        if (arr.includes(i) 
+            && !unavailArr.includes(i)) {
+                console.log("Coloring now")
+                el.style.backgroundColor = suggestiveColor;
         }
         i++;
     });

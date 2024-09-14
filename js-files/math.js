@@ -183,7 +183,7 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
 }
 
 // color blocked adjacent cells after ship is complete (obtain ids)
-const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
+const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
  
     let finalArr = [];
 
@@ -326,4 +326,4 @@ const trackLength = (obj, index) => {
     }
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, colorBlockedAdj };
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj };
