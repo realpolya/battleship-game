@@ -1,6 +1,6 @@
 /* ADDITIONAL MATH FUNCTIONS */
 
-// pass cell for cell number, gridSize for size, playerBoard for array
+// calculate cell options for the first click
 const calculateAdjacent = (cell, size, playerBoard) => {
     let arr = [];
 
@@ -124,7 +124,7 @@ const gridColumnsCalculate = (size) => {
     return array2D;
 }
 
-// function to exclude suggested cells based on the orientation
+// calculate cell options for 2nd and later clicks
 const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
 
     const finalArr = location.map((locID, i, location) => {
@@ -237,7 +237,7 @@ const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                         newMember++;
                     }
                 }
-                
+
             }
         })
 
@@ -260,6 +260,33 @@ const colorBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
 
                 if (subArray.includes(largest)) {
                     finalArr.push(largest);
+                }
+
+                const newColumnArray = location.concat(finalArr).sort((a, b) => {
+                    return a - b;
+                })
+
+                console.log("NewColumnArray ", newColumnArray)
+
+                let rowLength = newColumnArray.length
+
+                // add all to the left
+                let newMember = newColumnArray[0] - 1;
+
+                if (newMember !== 0 && newMember % size !== 0) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember += size;
+                    }
+                }
+
+                // add all to the right
+                newMember = newColumnArray[0] + 1;
+                if (newMember <= (size * size) && newMember % size !== 1) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember += size;
+                    }
                 }
             }
         })

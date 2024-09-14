@@ -28,6 +28,12 @@ const ships = [
         length: 3,
         emoji: "⛴️",
         location: []
+    },
+    {
+        name: "destroyer",
+        length: 2,
+        emoji: "🚢",
+        location: []
     }
 ]
 
@@ -184,6 +190,7 @@ const handleClick = (e) => {
         
         // ship is complete
         if (nextShip) {
+            
             // color the blocked cells
             blockedAdjCells = colorBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
             console.log(blockedAdjCells)
