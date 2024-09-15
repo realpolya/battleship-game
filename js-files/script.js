@@ -13,14 +13,26 @@ const aGrid = []; // single grid
 const bGrid = [];
 
 // grid dimensions
-const gridSize = 6;
+const gridSize = 10;
 
 // ships and their length
 const ships = [
     {
+        name: "carrier",
+        length: 5,
+        emoji: "🚢",
+        location: []
+    },
+    {
         name: "battleship",
         length: 4,
         emoji: "🛳️",
+        location: []
+    },
+    {
+        name: "submarine",
+        length: 3,
+        emoji: "🛥️",
         location: []
     },
     {
@@ -32,7 +44,7 @@ const ships = [
     {
         name: "destroyer",
         length: 2,
-        emoji: "🚢",
+        emoji: "⛵",
         location: []
     }
 ]
@@ -40,27 +52,16 @@ const ships = [
 // event tracker
 const clickOrder = [];
 
-// tracker of unavailable cells
-let unavailCells = [];
+// COLORS
+const colors = {
+    block: "lightgrey",
+    adjacent: "honeydew",
+    suggest: "hotpink",
+    board: "thistle",
+    ship: "blue",
+    button: "purple"
+}
 
-/*
-    carrier: 5,
-    battleship: 4,
-    cruiser: 3,
-    submarine: 3,
-    destroyer: 2,
-*/
-
-// colors
-// board colors
-const blockedColor = "lightgrey" // for occupied ship
-const adjacentColor = "honeydew" // for blocked cells around perimeter
-const suggestiveColor = "hotpink" // for suggestion where to go next
-const boardColor = "thistle" // coordinate with css
-const shipColor = "blue" // once the ship is complete
-
-// element colors
-const buttonColor = "purple" // once the 
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -68,6 +69,8 @@ const buttonColor = "purple" // once the
 let horArray2D = [];
 let verArray2D = [];
 
+// tracker of unavailable cells
+let unavailCells = [];
 
 // array of adjacent cells
 let adjacentCells;
@@ -151,7 +154,7 @@ const handleClick = (e) => {
         clickOrder.push(selectedCell)
 
         // uncolor the previous suggested color
-        unhighlightCells(cellsEl, suggestiveColor, boardColor);
+        unhighlightCells(cellsEl, colors.suggest, colors.board);
 
         function shipInCell() {
             // assign shipEl to the selectedCell
@@ -167,7 +170,7 @@ const handleClick = (e) => {
             });
 
             // change color of the blocked cell
-            e.target.style.backgroundColor = blockedColor;
+            e.target.style.backgroundColor = colors.block;
 
             // update board
             updateBoard(cellsEl, aGrid);
@@ -195,7 +198,7 @@ const handleClick = (e) => {
             }
 
             // highlight suggested cells
-            highlightCells(cellsEl, adjacentCells, unavailCells, suggestiveColor);
+            highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
         }
 
         orientationAdjacent();
@@ -210,14 +213,14 @@ const handleClick = (e) => {
             blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
             unavailCells = unavailCells.concat(blockedAdjCells);
 
-            blockCells(cellsEl, blockedAdjCells, adjacentColor)
+            blockCells(cellsEl, blockedAdjCells, colors.adjacent)
 
             // change the completed cells to the cell color
-            blockCells(cellsEl, ships[shipIndex].location, shipColor)
+            blockCells(cellsEl, ships[shipIndex].location, colors.ship)
             
             // reset trackers
             shipIsComplete();
-            unhighlightCells(cellsEl, suggestiveColor, boardColor);
+            unhighlightCells(cellsEl, colors.suggest, colors.board);
         }
 
     }
@@ -225,6 +228,13 @@ const handleClick = (e) => {
     // check if all ships are complete
     allShipsComplete();
 
+    // update the instructions message if the ships aren't complete
+    if (!allShipsComplete()) {
+
+        immediateEl.textContent = `Now build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
+
+    }
+   
 }
 
 // reset click, change ship
@@ -247,9 +257,19 @@ const allShipsComplete = () => {
 
         // activate ready button
         readyButton.textContent = "Ready?";
-        readyButton.style.backgroundColor = buttonColor;
+        readyButton.style.backgroundColor = colors.button;
         readyButton.removeAttribute('disabled');
+
+        // remove event listener from board
+        gameTableEl.removeEventListener("click", handleClick)
+
+        // update instructions message
+        immediateEl.textContent = `All set. If you don't like positions of your ships, restart the process.`;
+
+        return true;
     }
+
+    return false;
 }
 
 
