@@ -1,6 +1,28 @@
 /* code specific to ONLY setup page */
+.board {
+    display: flex;
+    align-items: center;
+}
 
+/* instructions - child of board */
+.instructions {
+    margin: auto;
+    padding: 2rem;
+    border: white 1px solid;
+    border-radius: 20px;
+    width: 90%;
+}
 
+.game-table {
+    margin: 1rem 0 1rem 1rem;
+}
+
+.cell {
+    background-color: var(--board-color);
+    font-size: 2rem;
+}
+
+/* player-setup - child of board */
 #player-setup {
     width: 90%;
     display: flex;
@@ -8,6 +30,13 @@
     justify-content: center;
 }
 
+/* immediate-instruction - child of instructions */
+#immediate-instruction {
+    text-align: center;
+    margin: auto;
+}
+
+/* fleet - child of board */
 #fleet {
     background-color: aquamarine;
     background-image: url("/assets/dark-surface.jpg");
@@ -24,6 +53,23 @@
     align-items: center;
 }
 
+/* game-buttons - child of player-setup */
+#game-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem 0 1rem 1rem;
+    width: 4rem;
+}
+
+/* board-button – child of game-buttons */
+.board-button {
+    min-width: 100%;
+    padding: 0;
+    background-color: pink;
+}
+
 #battleship {
     width: 3.5rem;
 }
@@ -32,19 +78,9 @@
     width: 3rem;
 }
 
-/*
-#battleship {
-    position: fixed;
-} */
-
 .ship:hover {
     background-color: black;
     cursor: grab;
-}
-
-#immediate-instruction {
-    text-align: center;
-    margin: auto;
 }
 
 #ready-to-play {
@@ -52,16 +88,4 @@
     font-size: 1.5rem;
     color: white;
     border: black solid 2px;
-}
-
-.instructions {
-    margin: auto;
-    padding: 2rem;
-    border: white 1px solid;
-    border-radius: 20px;
-    width: 90%;
-}
-
-.game-table {
-    margin: 1rem 0 1rem 1rem;
 }

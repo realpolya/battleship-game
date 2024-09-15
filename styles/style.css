@@ -54,14 +54,14 @@ h3 {
     padding: 2rem;
 }
 
-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+h5 {
+    font-size: 1.1rem;
+    margin: auto;
+    padding: 1rem;
+    text-align: center;
 }
 
-.site-menu {
-    min-width: 25%;
+header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -86,28 +86,15 @@ td {
     aspect-ratio: 1/1 ;
 }
 
-.cell {
-    background-color: var(--board-color);
-    font-size: 2rem;
-}
-
-/*
-[id="2"] {
-    background-color: aqua;
-} */
+/* classes */
 
 .top-banner {
     font-weight: 600;
 }
 
-h5 {
-    font-size: 1.1rem;
-    margin: auto;
-    padding: 1rem;
-    text-align: center;
-}
-
-.board {
+.site-menu {
+    min-width: 25%;
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
 }
