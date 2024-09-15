@@ -67,6 +67,7 @@ header {
 
 p {
     padding: 1rem;
+    margin: 0;
 }
 
 .instructions {
@@ -82,8 +83,8 @@ table {
 
 td {
     border: 1px solid;
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     text-align: center;
     aspect-ratio: 1/1 ;
 }
@@ -100,4 +101,11 @@ td {
 
 .top-banner {
     font-weight: 600;
+}
+
+h5 {
+    font-size: 1.1rem;
+    margin: auto;
+    padding: 1rem;
+    text-align: center;
 }

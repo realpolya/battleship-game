@@ -181,20 +181,24 @@ const handleClick = (e) => {
         // move click number
         clickNumber++;
 
-        // determine orientation
-        if (clickNumber === 2) {
-            shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
-        } 
+        function orientationAdjacent() {
+            // determine orientation
+            if (clickNumber === 2) {
+                shipOrientation = orientationCheck(aGrid, ships[shipIndex].emoji)
+            } 
 
-        // calculate adjacent cells
-        if (clickNumber >= 2) {
-            adjacentCells = updateAdjacent(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
-        } else {
-            adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
+            // calculate adjacent cells
+            if (clickNumber >= 2) {
+                adjacentCells = updateAdjacent(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
+            } else {
+                adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
+            }
+
+            // highlight suggested cells
+            highlightCells(cellsEl, adjacentCells, unavailCells, suggestiveColor);
         }
 
-        // highlight suggested cells
-        highlightCells(cellsEl, adjacentCells, unavailCells, suggestiveColor);
+        orientationAdjacent();
 
         // check for length of ship
         nextShip = trackLength(ships, shipIndex);
@@ -263,7 +267,7 @@ cruiserEl.addEventListener("click", () => {
 
 // get instruction for the first ship to build
 onload = () => {
-    immediateEl.textContent = "Build a 4-cell battleship";
+    immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
     
     // 2D arrays are assigned
     horArray2D = gridRowsCalculate(gridSize);
