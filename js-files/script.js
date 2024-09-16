@@ -22,6 +22,7 @@ let bGrid = []; // only computer values
 
 // grid dimensions
 const gridSize = 10;
+const gridSquared = gridSize * gridSize;
 
 // ships – player setup
 const ships = [
@@ -98,6 +99,7 @@ let shipIndex = 0; // to change once the first ship has been setup
 let nextShip = false;
 let shipOrientation;
 let shipsOnBoard = 0;
+let computerReady = false;
 
 // store selected cell
 let selectedCell;
@@ -186,7 +188,6 @@ const handleClickSetup = (e) => {
             blockCells(cellsEl, ships[shipIndex].location, colors.ship)
 
             // set to session storage
-            console.log(`ships-${ships[shipIndex].name}`);
             sessionStorage.setItem(`ships-${ships[shipIndex].name}`, JSON.stringify(ships[shipIndex].location));
             
             // reset trackers
@@ -224,7 +225,6 @@ const shipIsComplete = () => {
 const allShipsComplete = () => {
     if (shipsOnBoard === ships.length) {
         console.log("Player is ready to begin")
-        console.log(aGrid);
 
         // store the grid and ships in the JSON
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
@@ -264,16 +264,23 @@ const computerSetup = () => {
     // render ships for computer
     function computerBoard() {
 
-        // computer index – add gridSize squared for comp indices
-        let i = randomIndex(compArray) + (gridSize * gridSize);
+        // computer index
+        let i;
 
-        // current cell is assigned
+        // after the first move, selected cell is one of the available ones from adjacent cells
+        if (nextShip || clickNumber === 0) {
+            i = compArray[randomIndex(compArray)];
+        } else {
+            i = adjacentCells[randomIndex(adjacentCells)];
+        }
+
         selectedCell = i;
 
         if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
             && !unavailCells.includes(selectedCell)) {
 
                 // if first ship
+                console.log("Current ship is ", shipsComputer[shipIndex].name)
                 shipInCell(aGrid, selectedCell, shipsComputer, shipIndex, cellsEl, unavailCells, bGrid);
 
                 // move click number
@@ -292,22 +299,62 @@ const computerSetup = () => {
                     } else {
                         adjacentCells = calculateAdjacent(selectedCell, gridSize, bGrid);
                     }
+
+                    //filter adjacent cells so they can't be below 100
+                    adjacentCells = adjacentCells.filter((cell) => {
+                        return cell >= gridSquared && cell <= (gridSquared + gridSquared);
+                    })
         
                     // highlight suggested cells
                     highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
                 }
 
                 orientationAdjacent();
+
+                // check for length of ship
+                nextShip = trackLength(shipsComputer, shipIndex);
+
+                // ship is complete
+                if (nextShip) {
+
+                    // color the blocked cells
+                    blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
+                    unavailCells = unavailCells.concat(blockedAdjCells);
+
+                    blockCells(cellsEl, blockedAdjCells, colors.adjacent)
+
+                    // change the completed cells to the cell color
+                    blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
+
+                    // set to session storage
+                    console.log(`shipsComputer-${shipsComputer[shipIndex].name}`);
+                    sessionStorage.setItem(`shipsComputer-${shipsComputer[shipIndex].name}`, JSON.stringify(shipsComputer[shipIndex].location));
+                    
+                    // reset trackers
+                    shipIsComplete();
+                    unhighlightCells(cellsEl, colors.suggest, colors.board);
+                }
+
             }
         
-        // change color of the blocked cell
-        // cellsEl[i - 1].style.backgroundColor = colors.block;
+        console.log("Ships on computer's board ", shipsOnBoard);    
+        console.log("ShipsComputer length is ", shipsComputer.length)
         
-        // if other ships
+        if (shipsOnBoard === shipsComputer.length) {
+            computerReady = true;
+            return true;
+        } else {
+            console.log("Running again")
+            computerBoard();
+        }
+
     }
     
     computerBoard();
-    //updateBoard(cellsEl, aGrid);
+    
+    if (computerReady) {
+        console.log("computer is ready")
+    } 
 
 }
 

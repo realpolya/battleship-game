@@ -16,7 +16,6 @@ const calculateAdjacent = (cell, size, playerBoard) => {
         if (cell == size) {
             b = cell - 1;
             d = cell + size;
-            console.log(b, d)
         } // if 36
         else if (cell === squared) {
             b = cell - 1;
@@ -186,7 +185,6 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
         return a !== undefined;
     })
 
-    console.log("final Array ", finalArr)
     return finalArr;
 }
 
@@ -222,8 +220,6 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                 const newRowArray = location.concat(finalArr).sort((a, b) => {
                     return a - b;
                 })
-
-                console.log("NewRowArray ", newRowArray)
 
                 let rowLength = newRowArray.length
 
@@ -274,8 +270,6 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                     return a - b;
                 })
 
-                console.log("NewColumnArray ", newColumnArray)
-
                 let rowLength = newColumnArray.length
 
                 // add all to the left
@@ -304,7 +298,6 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
         return a - b;
     })
 
-    console.log(finalArr);
     return finalArr;
 
 }
@@ -327,7 +320,6 @@ const trackLength = (obj, index) => {
     let requiredLength = obj[index].length; // ship's length
 
     if (currentLength === requiredLength) {
-        console.log("Lengths achieved")
         return true;
     } else {
         return false;
@@ -349,7 +341,7 @@ const computerArray = (size) => {
     return arr;
 }
 
-// produce random cell number from available array
+// produce random cell number from available array based on length
 const randomIndex = (arr) => {
 
     let randomIndex = Math.floor(Math.random() * arr.length);
