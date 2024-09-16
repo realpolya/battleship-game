@@ -80,7 +80,7 @@ const calculateAdjacent = (cell, size, playerBoard) => {
 }
 
 // renders two-dimensional array split by rows
-const gridRowsCalculate = (size) => {
+const gridRowsCalculate = (size, computer) => {
     let array = [];
     let array2D = [];
 
@@ -90,7 +90,11 @@ const gridRowsCalculate = (size) => {
 
         // reassign i at increments of size
         for (let j = 1 + increment; j <= (size + increment); j++) {
-            array.push(j);
+            if (computer === undefined) {
+                array.push(j);
+            } else {
+                array.push(j + (size * size));
+            }
         }
 
         array2D.push(Array.from(array));
@@ -103,7 +107,7 @@ const gridRowsCalculate = (size) => {
 }
 
 // renders two-dimensional array split by columns
-const gridColumnsCalculate = (size) => {
+const gridColumnsCalculate = (size, computer) => {
     let array = [];
     let array2D = [];
 
@@ -113,7 +117,11 @@ const gridColumnsCalculate = (size) => {
 
         // reassign i at increments of size
         for (let j = 1 + increment; j <= (size * size); j += size) {
-            array.push(j);
+            if (computer === undefined) {
+                array.push(j);
+            } else {
+                array.push(j + (size * size));
+            }
         }
 
         array2D.push(Array.from(array));
@@ -326,12 +334,27 @@ const trackLength = (obj, index) => {
     }
 }
 
-// produce random cell number from available array
-const randomIndex = (array) => {
+const computerArray = (size) => {
+    
+    const arr = [];
 
-    let randomIndex = Math.floor(Math.random() * array.length);
+    // size squared will be size of human array, 
+    // then the following size squared is computer array
+    let sizeSquared = size * size;
+
+    for (let i = 1; i <= sizeSquared; i++) {
+        arr.push(i + sizeSquared)
+    }
+
+    return arr;
+}
+
+// produce random cell number from available array
+const randomIndex = (arr) => {
+
+    let randomIndex = Math.floor(Math.random() * arr.length);
     return randomIndex;
 
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj, randomIndex };
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj, computerArray, randomIndex };

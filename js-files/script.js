@@ -1,9 +1,9 @@
 /* IMPORTS */
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
     gridColumnsCalculate, gridRowsCalculate, trackLength, 
-    calcBlockedAdj, randomIndex } from "./math.js"
+    calcBlockedAdj, computerArray, randomIndex } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
-    unhighlightCells, blockCells } from "./board-setup.js"
+    unhighlightCells, blockCells, shipInCell } from "./board-setup.js"
 
 /* battleship
 
@@ -16,15 +16,31 @@ Start with 6 x 6 grid
 // ships[shipIndex].location.push()
 
 /*-------------------------------- Constants --------------------------------*/
-// aGrid - player A, bGrid - player B
-const aGrid = []; // single grid
-const bGrid = []; // computer grid
+// aGrid – concatenated grid for all players
+let aGrid = []; // single grid with ALL values
+let bGrid = []; // only computer values
 
 // grid dimensions
 const gridSize = 10;
 
-// ships and their length
+// ships – player setup
 const ships = [
+    {
+        name: "battleship",
+        length: 4,
+        emoji: "🛳️",
+        location: []
+    },
+    {
+        name: "submarine",
+        length: 3,
+        emoji: "🛥️",
+        location: []
+    }
+]
+
+// ships – computer setup
+const shipsComputer = [
     {
         name: "battleship",
         length: 4,
@@ -56,12 +72,16 @@ const colors = {
 
 /*---------------------------- Variables (state) ----------------------------*/
 
-// storing in JSON session storage
-let aGrid_session;
+// computer IDs array
+let compArray = [];
 
-// two-dimensional arrays
+// two-dimensional arrays for human 1 through grid size squared
 let horArray2D = [];
 let verArray2D = [];
+
+// two-dimensional arrays for computer grid-size squared - grid-size squared * 2
+let comHorArray2D = [];
+let comVerArray2D = []; 
 
 // tracker of unavailable cells
 let unavailCells = [];
@@ -89,7 +109,7 @@ let selectedCell;
 const battleshipEl = document.getElementById("battleship");
 const cruiserEl = document.getElementById("cruiser");
 
-// cells
+// cells – player cells 1-100, computer 101-200 for 10x10
 const cellsEl = document.querySelectorAll('.cell');
 
 // board
@@ -122,30 +142,11 @@ const handleClickSetup = (e) => {
         // uncolor the previous suggested color
         unhighlightCells(cellsEl, colors.suggest, colors.board);
 
-        function shipInCell() {
-            // assign shipEl to the selectedCell
-            aGrid[selectedCell - 1] = ships[shipIndex].emoji;
+        // place ship in cell
+        shipInCell(aGrid, selectedCell, ships, shipIndex, cellsEl, unavailCells)
 
-            // update the location of the ship in the ships object
-            ships[shipIndex].location.push(selectedCell)
-            console.log(ships)
-
-            // sort the order of the location (always ascending)
-            ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
-                return a - b;
-            });
-
-            // change color of the blocked cell
-            e.target.style.backgroundColor = colors.block;
-
-            // update board
-            updateBoard(cellsEl, aGrid);
-
-            // update unavailable cells
-            unavailCells.push(selectedCell);
-        }
-        
-        shipInCell();
+        // change color of the blocked cell
+        e.target.style.backgroundColor = colors.block;
 
         // move click number
         clickNumber++;
@@ -239,27 +240,83 @@ const allShipsComplete = () => {
         // update instructions message
         immediateEl.textContent = `All set. If you don't like positions of your ships, restart the process.`;
 
+        // reset trackers for computer
+        clickNumber = 0;
+        shipIndex = 0;
+        nextShip = false;
+        shipsOnBoard = 0;
+        adjacentCells = undefined;
+
         return true;
     }
 
     return false;
 }
 
-const computerSetup = () => {
-    // get all of the IDs
-    
-    // produce random number to start on the board
+/* functions below – play page ONLY */
 
+// computer setup
+const computerSetup = () => {
+
+    // get all of the IDs 101-200
+    compArray = computerArray(gridSize);
+
+    // render ships for computer
+    function computerBoard() {
+
+        // computer index – add gridSize squared for comp indices
+        let i = randomIndex(compArray) + (gridSize * gridSize);
+
+        // current cell is assigned
+        selectedCell = i;
+
+        if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
+            && !unavailCells.includes(selectedCell)) {
+
+                // if first ship
+                shipInCell(aGrid, selectedCell, shipsComputer, shipIndex, cellsEl, unavailCells, bGrid);
+
+                // move click number
+                clickNumber++;
+
+                // orientation check
+                function orientationAdjacent() {
+                    // determine orientation
+                    if (clickNumber === 2) {
+                        shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
+                    } 
+        
+                    // calculate adjacent cells
+                    if (clickNumber >= 2) {
+                        adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
+                    } else {
+                        adjacentCells = calculateAdjacent(selectedCell, gridSize, bGrid);
+                    }
+        
+                    // highlight suggested cells
+                    highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
+                }
+
+                orientationAdjacent();
+            }
+        
+        // change color of the blocked cell
+        // cellsEl[i - 1].style.backgroundColor = colors.block;
+        
+        // if other ships
+    }
+    
+    computerBoard();
+    //updateBoard(cellsEl, aGrid);
 
 }
 
 // render existing player's board onto the new page
 const renderPlayerSetup = () => {
     // retrieving information from previous page
-    aGrid_session = JSON.parse(sessionStorage.getItem("aGrid"));
+    aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
 
-    // update board
-    updateBoard(cellsEl, aGrid_session);
+    updateBoard(cellsEl, aGrid);
 
     // update location of each ship from session storage
     ships.forEach((ship) => {
@@ -267,6 +324,24 @@ const renderPlayerSetup = () => {
         blockCells(cellsEl, ship.location, colors.ship)
     })
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*----------------------------- Event Listeners -----------------------------*/
@@ -283,23 +358,30 @@ cruiserEl.addEventListener("click", () => {
 
 // get instruction for the first ship to build
 onload = () => {
+
+    // 2D arrays are assigned
+    horArray2D = gridRowsCalculate(gridSize);
+    verArray2D = gridColumnsCalculate(gridSize);
+
+    // 2D arrays for computer set
+    let computer = true;
+    comHorArray2D = gridRowsCalculate(gridSize, computer)
+    comVerArray2D = gridColumnsCalculate(gridSize, computer)
     
     // if setup page
     if (setupCommandEl.textContent === "Setup Instructions:") {
 
         console.log("this is setup page");
         immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
-        
-    } // if play page
+
+    } // if play page – render player setup and calculate computer setup
     else {
 
         renderPlayerSetup();
+        computerSetup();
 
     }
-    
-    // 2D arrays are assigned
-    horArray2D = gridRowsCalculate(gridSize);
-    verArray2D = gridColumnsCalculate(gridSize);
+
 };
 
 // click on a cell

@@ -51,5 +51,29 @@ const unhighlightCells = (elArray, suggestiveColor, boardColor) => {
     });
 }
 
+function shipInCell(grid, cell, ships, shipIndex, cellsEl, unavailCells, computerArray) {
+    // assign shipEl to the selectedCell
+    grid[cell - 1] = ships[shipIndex].emoji;
 
-export { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells };
+    // update the location of the ship in the ships object
+    ships[shipIndex].location.push(cell)
+
+    // sort the order of the location (always ascending)
+    ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
+        return a - b;
+    });
+
+    // update board
+    updateBoard(cellsEl, grid);
+
+    // update unavailable cells
+    unavailCells.push(cell);
+
+    // update computer array - optional
+    if (computerArray !== undefined) {
+        computerArray[cell - 1] = ships[shipIndex].emoji;
+    }
+}
+
+
+export { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells, shipInCell };
