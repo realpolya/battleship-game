@@ -44,3 +44,12 @@ function shipInCell(grid, cell, ships, shipIndex, cellsEl, unavailCells) {
     // update unavailable cells
     unavailCells.push(cell);
 }
+
+/* drag and drop – DISABLED
+battleshipEl.addEventListener("mousedown", (e) => {
+    startX = e.clientX // provides coordinates
+    startY = e.clientY
+
+    document.addEventListener('mousemove', mouseMove);
+    document.addEventListener('mouseup', mouseUp);
+}) */

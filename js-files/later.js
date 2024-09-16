@@ -1,11 +1,8 @@
 // ships and their length
+
+
+// ships – player setup
 const ships = [
-    {
-        name: "carrier",
-        length: 5,
-        emoji: "🚢",
-        location: []
-    },
     {
         name: "battleship",
         length: 4,
@@ -17,17 +14,21 @@ const ships = [
         length: 3,
         emoji: "🛥️",
         location: []
-    },
+    }
+]
+
+// ships – computer setup
+const shipsComputer = [
     {
-        name: "cruiser",
-        length: 3,
-        emoji: "⛴️",
+        name: "battleship",
+        length: 4,
+        emoji: "🛳️",
         location: []
     },
     {
-        name: "destroyer",
-        length: 2,
-        emoji: "⛵",
+        name: "submarine",
+        length: 3,
+        emoji: "🛥️",
         location: []
     }
 ]

@@ -27,6 +27,12 @@ const gridSquared = gridSize * gridSize;
 // ships – player setup
 const ships = [
     {
+        name: "carrier",
+        length: 5,
+        emoji: "🚢",
+        location: []
+    },
+    {
         name: "battleship",
         length: 4,
         emoji: "🛳️",
@@ -36,6 +42,18 @@ const ships = [
         name: "submarine",
         length: 3,
         emoji: "🛥️",
+        location: []
+    },
+    {
+        name: "cruiser",
+        length: 3,
+        emoji: "⛴️",
+        location: []
+    },
+    {
+        name: "destroyer",
+        length: 2,
+        emoji: "⛵",
         location: []
     }
 ]
@@ -43,6 +61,12 @@ const ships = [
 // ships – computer setup
 const shipsComputer = [
     {
+        name: "carrier",
+        length: 5,
+        emoji: "🚢",
+        location: []
+    },
+    {
         name: "battleship",
         length: 4,
         emoji: "🛳️",
@@ -52,6 +76,18 @@ const shipsComputer = [
         name: "submarine",
         length: 3,
         emoji: "🛥️",
+        location: []
+    },
+    {
+        name: "cruiser",
+        length: 3,
+        emoji: "⛴️",
+        location: []
+    },
+    {
+        name: "destroyer",
+        length: 2,
+        emoji: "⛵",
         location: []
     }
 ]
@@ -72,6 +108,9 @@ const colors = {
 
 
 /*---------------------------- Variables (state) ----------------------------*/
+
+// use computer as additional value in some functions
+let computer = true;
 
 // computer IDs array
 let compArray = [];
@@ -280,7 +319,6 @@ const computerSetup = () => {
             && !unavailCells.includes(selectedCell)) {
 
                 // if first ship
-                console.log("Current ship is ", shipsComputer[shipIndex].name)
                 shipInCell(aGrid, selectedCell, shipsComputer, shipIndex, cellsEl, unavailCells, bGrid);
 
                 // move click number
@@ -302,7 +340,7 @@ const computerSetup = () => {
 
                     //filter adjacent cells so they can't be below 100
                     adjacentCells = adjacentCells.filter((cell) => {
-                        return cell >= gridSquared && cell <= (gridSquared + gridSquared);
+                        return cell > gridSquared && cell <= (gridSquared + gridSquared);
                     })
         
                     // highlight suggested cells
@@ -318,7 +356,13 @@ const computerSetup = () => {
                 if (nextShip) {
 
                     // color the blocked cells
-                    blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
+                    blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D, computer)
+                    
+                    //filter blocked cells so they can't be below 100
+                    blockedAdjCells = blockedAdjCells.filter((cell) => {
+                        return cell > gridSquared && cell <= (gridSquared + gridSquared);
+                    })
+
                     unavailCells = unavailCells.concat(blockedAdjCells);
 
                     blockCells(cellsEl, blockedAdjCells, colors.adjacent)
@@ -327,7 +371,6 @@ const computerSetup = () => {
                     blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
 
                     // set to session storage
-                    console.log(`shipsComputer-${shipsComputer[shipIndex].name}`);
                     sessionStorage.setItem(`shipsComputer-${shipsComputer[shipIndex].name}`, JSON.stringify(shipsComputer[shipIndex].location));
                     
                     // reset trackers
@@ -337,14 +380,10 @@ const computerSetup = () => {
 
             }
         
-        console.log("Ships on computer's board ", shipsOnBoard);    
-        console.log("ShipsComputer length is ", shipsComputer.length)
-        
         if (shipsOnBoard === shipsComputer.length) {
             computerReady = true;
             return true;
         } else {
-            console.log("Running again")
             computerBoard();
         }
 
@@ -411,7 +450,6 @@ onload = () => {
     verArray2D = gridColumnsCalculate(gridSize);
 
     // 2D arrays for computer set
-    let computer = true;
     comHorArray2D = gridRowsCalculate(gridSize, computer)
     comVerArray2D = gridColumnsCalculate(gridSize, computer)
     
@@ -439,12 +477,3 @@ cruiserEl.addEventListener("click", () => {
     fillWithIds(cellsEl)
     console.log(cellsEl)
 });
-
-/* drag and drop – DISABLED
-battleshipEl.addEventListener("mousedown", (e) => {
-    startX = e.clientX // provides coordinates
-    startY = e.clientY
-
-    document.addEventListener('mousemove', mouseMove);
-    document.addEventListener('mouseup', mouseUp);
-}) */

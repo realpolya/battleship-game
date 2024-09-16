@@ -189,7 +189,7 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
 }
 
 // color blocked adjacent cells after ship is complete (obtain ids)
-const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
+const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => {
  
     let finalArr = [];
 
@@ -217,6 +217,7 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                     finalArr.push(largest);
                 }
 
+                // sort array
                 const newRowArray = location.concat(finalArr).sort((a, b) => {
                     return a - b;
                 })
@@ -236,6 +237,11 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                 // add all below
                 newMember = newRowArray[0] + size;
                 if (newMember <= (size * size)) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember++;
+                    }
+                } else if (computer && newMember <= ((size * size) * 2)) {
                     for (let i = 0; i < rowLength; i++) {
                         finalArr.push(newMember);
                         newMember++;
@@ -289,6 +295,11 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D) => {
                         finalArr.push(newMember);
                         newMember += size;
                     }
+                } else if (computer && newMember <= ((size * size) * 2) && newMember % size !== 1) {
+                    for (let i = 0; i < rowLength; i++) {
+                        finalArr.push(newMember);
+                        newMember += size;
+                    }
                 }
             }
         })
@@ -310,7 +321,6 @@ const orientationCheck = (arr, shipEmoji) => {
             orientation = "horizontal";
         } 
     }
-    console.log("orientation is ", orientation);
     return orientation;
 }
 

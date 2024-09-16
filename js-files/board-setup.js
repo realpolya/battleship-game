@@ -26,7 +26,6 @@ const highlightCells = (elArray, arr, unavailArr, suggestiveColor) => {
     elArray.forEach((el) => {
         if (arr.includes(i) 
             && !unavailArr.includes(i)) {
-                console.log("Coloring now")
                 el.style.backgroundColor = suggestiveColor;
         }
         i++;
@@ -38,7 +37,6 @@ const blockCells = (elArray, arr, color) => {
     elArray.forEach((el) => {
         if (arr.includes(+el.id)) {
             el.style.backgroundColor = color;
-            console.log("Blocked color is applied")
         }
     })
 }
