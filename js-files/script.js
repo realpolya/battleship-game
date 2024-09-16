@@ -1,28 +1,30 @@
+/* IMPORTS */
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
-    gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj } from "./math.js"
-import { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells } from "./board-setup.js"
+    gridColumnsCalculate, gridRowsCalculate, trackLength, 
+    calcBlockedAdj, randomIndex } from "./math.js"
+import { updateBoard, fillWithIds, highlightCells, 
+    unhighlightCells, blockCells } from "./board-setup.js"
 
 /* battleship
 
 INSTRUCTIONS:
 Start with 6 x 6 grid
 
+// current ship is
+// ships[shipIndex].name
+// location of ship:
+// ships[shipIndex].location.push()
+
 /*-------------------------------- Constants --------------------------------*/
 // aGrid - player A, bGrid - player B
 const aGrid = []; // single grid
-const bGrid = [];
+const bGrid = []; // computer grid
 
 // grid dimensions
 const gridSize = 10;
 
 // ships and their length
 const ships = [
-    {
-        name: "carrier",
-        length: 5,
-        emoji: "🚢",
-        location: []
-    },
     {
         name: "battleship",
         length: 4,
@@ -33,18 +35,6 @@ const ships = [
         name: "submarine",
         length: 3,
         emoji: "🛥️",
-        location: []
-    },
-    {
-        name: "cruiser",
-        length: 3,
-        emoji: "⛴️",
-        location: []
-    },
-    {
-        name: "destroyer",
-        length: 2,
-        emoji: "⛵",
         location: []
     }
 ]
@@ -64,6 +54,9 @@ const colors = {
 
 
 /*---------------------------- Variables (state) ----------------------------*/
+
+// storing in JSON session storage
+let aGrid_session;
 
 // two-dimensional arrays
 let horArray2D = [];
@@ -85,11 +78,6 @@ let nextShip = false;
 let shipOrientation;
 let shipsOnBoard = 0;
 
-// current ship is
-// ships[shipIndex].name
-// location of ship:
-// ships[shipIndex].location.push()
-
 // store selected cell
 let selectedCell;
 
@@ -106,8 +94,6 @@ let startY = 0
 const battleshipEl = document.getElementById("battleship");
 const cruiserEl = document.getElementById("cruiser");
 
-const playerSetupEl = document.getElementById("player-setup");
-
 // cells
 const cellsEl = document.querySelectorAll('.cell');
 
@@ -119,6 +105,8 @@ const immediateEl = document.getElementById('immediate-instruction');
 
 // buttons
 const readyButton = document.getElementById('ready-to-play');
+
+const setupCommandEl = document.getElementById('setup-play');
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -229,7 +217,7 @@ const handleClick = (e) => {
     allShipsComplete();
 
     // update the instructions message if the ships aren't complete
-    if (!allShipsComplete()) {
+    if (!allShipsComplete() && nextShip) {
 
         immediateEl.textContent = `Now build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
 
@@ -245,7 +233,6 @@ const shipIsComplete = () => {
     blockedAdjCells = undefined;
     clickNumber = 0;
     shipIndex++; // to change once the first ship has been setup
-    nextShip = true;
     shipsOnBoard++;
 
 }
@@ -254,6 +241,10 @@ const shipIsComplete = () => {
 const allShipsComplete = () => {
     if (shipsOnBoard === ships.length) {
         console.log("Player is ready to begin")
+        console.log(aGrid);
+
+        // store the grid in the JSON
+        sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
 
         // activate ready button
         readyButton.textContent = "Ready?";
@@ -272,6 +263,24 @@ const allShipsComplete = () => {
     return false;
 }
 
+const computerSetup = () => {
+    // get all of the IDs
+    
+    // produce random number to start on the board
+
+
+}
+
+// render existing player's board onto the new page
+const renderPlayerSetup = () => {
+    // retrieving information from previous page
+    aGrid_session = JSON.parse(sessionStorage.getItem("aGrid"));
+
+    // update board
+    updateBoard(cellsEl, aGrid_session);
+    console.log(aGrid_session);
+}
+
 
 /*----------------------------- Event Listeners -----------------------------*/
 
@@ -287,7 +296,15 @@ cruiserEl.addEventListener("click", () => {
 
 // get instruction for the first ship to build
 onload = () => {
-    immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
+    
+    // if setup page
+    if (setupCommandEl.textContent === "Setup Instructions:") {
+        console.log("this is setup page");
+        immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
+    } // if play page
+    else {
+        renderPlayerSetup();
+    }
     
     // 2D arrays are assigned
     horArray2D = gridRowsCalculate(gridSize);
@@ -300,6 +317,7 @@ gameTableEl.addEventListener("click", handleClick)
 // experimental numbers
 cruiserEl.addEventListener("click", () => {
     fillWithIds(cellsEl)
+    console.log(cellsEl)
 });
 
 /* drag and drop – DISABLED

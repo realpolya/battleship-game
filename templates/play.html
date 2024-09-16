@@ -30,94 +30,338 @@
     </header>
     <h1>Battleship</h1>
     <section class="board">
-        <h3>
-            Your field
-        </h3>
-        <p class="instructions">
-            Instructions: click and select a ship. Place a ship on the board.
-        </p>
+        <div class="instructions">
+            <h5 id="setup-play">Board Instructions:</h5>
+            <p>
+                Place all ships from the fleet onto the board.
+            </p>
+            <p id="immediate-instruction">Here</p>
+        </div>
         <div id="player-setup">
-            <div id="fleet">
-                <img 
-                    class="ship" id="battleship"
-                    alt="battle ship plan view" 
-                    src="../assets/ship1.png" 
-                />
-                <img 
-                    class="ship" id="cruiser"
-                    alt="battle ship plan view" 
-                    src="../assets/ship2.png" 
-                />
+            <div class="player-board">
+                <h5>
+                    Your Board
+                </h5>
+                <table class="game-table" id="player-table"> <!--10x10 grid -->
+                    <tr>
+                        <td></td>
+                        <td>A</td>
+                        <td>B</td>
+                        <td>C</td>
+                        <td>D</td>
+                        <td>E</td>
+                        <td>F</td>
+                        <td>G</td>
+                        <td>H</td>
+                        <td>I</td>
+                        <td>J</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td id="1" class="a 1 cell"></td>
+                        <td id="2" class="b 2 cell"></td>
+                        <td id="3" class="a 3 cell"></td>
+                        <td id="4" class="a 4 cell"></td>
+                        <td id="5" class="a 5 cell"></td>
+                        <td id="6" class="a 6 cell"></td>
+                        <td id="7" class="a 7 cell"></td>
+                        <td id="8" class="a 8 cell"></td>
+                        <td id="9" class="a 9 cell"></td>
+                        <td id="10" class="a 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td id="11" class="b 1 cell"></td>
+                        <td id="12" class="b 2 cell"></td>
+                        <td id="13" class="b 3 cell"></td>
+                        <td id="14" class="b 4 cell"></td>
+                        <td id="15" class="b 5 cell"></td>
+                        <td id="16" class="b 6 cell"></td>
+                        <td id="17" class="b 7 cell"></td>
+                        <td id="18" class="b 8 cell"></td>
+                        <td id="19" class="b 9 cell"></td>
+                        <td id="20" class="b 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td id="21" class="c 1 cell"></td>
+                        <td id="22" class="c 2 cell"></td>
+                        <td id="23" class="c 3 cell"></td>
+                        <td id="24" class="c 4 cell"></td>
+                        <td id="25" class="c 5 cell"></td>
+                        <td id="26" class="c 6 cell"></td>
+                        <td id="27" class="c 7 cell"></td>
+                        <td id="28" class="c 8 cell"></td>
+                        <td id="29" class="c 9 cell"></td>
+                        <td id="30" class="c 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td id="31" class="d 1 cell"></td>
+                        <td id="32" class="d 2 cell"></td>
+                        <td id="33" class="d 3 cell"></td>
+                        <td id="34" class="d 4 cell"></td>
+                        <td id="35" class="d 5 cell"></td>
+                        <td id="36" class="d 6 cell"></td>
+                        <td id="37" class="d 7 cell"></td>
+                        <td id="38" class="d 8 cell"></td>
+                        <td id="39" class="d 9 cell"></td>
+                        <td id="40" class="d 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td id="41" class="e 1 cell"></td>
+                        <td id="42" class="e 2 cell"></td>
+                        <td id="43" class="e 3 cell"></td>
+                        <td id="44" class="e 4 cell"></td>
+                        <td id="45" class="e 5 cell"></td>
+                        <td id="46" class="e 6 cell"></td>
+                        <td id="47" class="e 7 cell"></td>
+                        <td id="48" class="e 8 cell"></td>
+                        <td id="49" class="e 9 cell"></td>
+                        <td id="50" class="e 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td id="51" class="f 1 cell"></td>
+                        <td id="52" class="f 2 cell"></td>
+                        <td id="53" class="f 3 cell"></td>
+                        <td id="54" class="f 4 cell"></td>
+                        <td id="55" class="f 5 cell"></td>
+                        <td id="56" class="f 6 cell"></td>
+                        <td id="57" class="f 7 cell"></td>
+                        <td id="58" class="f 8 cell"></td>
+                        <td id="59" class="f 9 cell"></td>
+                        <td id="60" class="f 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td id="61" class="g 1 cell"></td>
+                        <td id="62" class="g 2 cell"></td>
+                        <td id="63" class="g 3 cell"></td>
+                        <td id="64" class="g 4 cell"></td>
+                        <td id="65" class="g 5 cell"></td>
+                        <td id="66" class="g 6 cell"></td>
+                        <td id="67" class="g 7 cell"></td>
+                        <td id="68" class="g 8 cell"></td>
+                        <td id="69" class="g 9 cell"></td>
+                        <td id="70" class="g 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td id="71" class="h 1 cell"></td>
+                        <td id="72" class="h 2 cell"></td>
+                        <td id="73" class="h 3 cell"></td>
+                        <td id="74" class="h 4 cell"></td>
+                        <td id="75" class="h 5 cell"></td>
+                        <td id="76" class="h 6 cell"></td>
+                        <td id="77" class="h 7 cell"></td>
+                        <td id="78" class="h 8 cell"></td>
+                        <td id="79" class="h 9 cell"></td>
+                        <td id="80" class="h 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td id="81" class="i 1 cell"></td>
+                        <td id="82" class="i 2 cell"></td>
+                        <td id="83" class="i 3 cell"></td>
+                        <td id="84" class="i 4 cell"></td>
+                        <td id="85" class="i 5 cell"></td>
+                        <td id="86" class="i 6 cell"></td>
+                        <td id="87" class="i 7 cell"></td>
+                        <td id="88" class="i 8 cell"></td>
+                        <td id="89" class="i 9 cell"></td>
+                        <td id="90" class="i 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td id="91" class="j 1 cell"></td>
+                        <td id="92" class="j 2 cell"></td>
+                        <td id="93" class="j 3 cell"></td>
+                        <td id="94" class="j 4 cell"></td>
+                        <td id="95" class="j 5 cell"></td>
+                        <td id="96" class="j 6 cell"></td>
+                        <td id="97" class="j 7 cell"></td>
+                        <td id="98" class="j 8 cell"></td>
+                        <td id="99" class="j 9 cell"></td>
+                        <td id="100" class="j 10 cell"></td>
+                    </tr>
+                </table>
             </div>
-            <table class="game-table"> <!--table field 10x10 -->
-                <tr>
-                    <td></td>
-                    <td>A</td>
-                    <td>B</td>
-                    <td>C</td>
-                    <td>D</td>
-                    <td>E</td>
-                    <td>F</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td id="1" class="a 1 cell"></td>
-                    <td id="2" class="b 1 cell"></td>
-                    <td id="3" class="c 1 cell"></td>
-                    <td id="4" class="d 1 cell"></td>
-                    <td id="5" class="e 1 cell"></td>
-                    <td id="6" class="f 1 cell"></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td id="7" class="a 2 cell"></td>
-                    <td id="8" class="b 2 cell"></td>
-                    <td id="9" class="c 2 cell"></td>
-                    <td id="10" class="d 2 cell"></td>
-                    <td id="11" class="e 2 cell"></td>
-                    <td id="12" class="f 2 cell"></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td id="13" class="a 3 cell"></td>
-                    <td id="14" class="b 3 cell"></td>
-                    <td id="15" class="c 3 cell"></td>
-                    <td id="16" class="d 3 cell"></td>
-                    <td id="17" class="e 3 cell"></td>
-                    <td id="18" class="f 3 cell"></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td id="19" class="a 4 cell"></td>
-                    <td id="20" class="b 4 cell"></td>
-                    <td id="21" class="c 4 cell"></td>
-                    <td id="22" class="d 4 cell"></td>
-                    <td id="23" class="e 4 cell"></td>
-                    <td id="24" class="f 4 cell"></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td id="25" class="a 5 cell"></td>
-                    <td id="26" class="b 5 cell"></td>
-                    <td id="27" class="c 5 cell"></td>
-                    <td id="28" class="d 5 cell"></td>
-                    <td id="29" class="e 5 cell"></td>
-                    <td id="30" class="f 5 cell"></td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td id="31" class="a 6 cell"></td>
-                    <td id="32" class="b 6 cell"></td>
-                    <td id="33" class="c 6 cell"></td>
-                    <td id="34" class="d 6 cell"></td>
-                    <td id="35" class="e 6 cell"></td>
-                    <td id="36" class="f 6 cell"></td>
-                </tr>
-            </table>
+            <div class="computer-table">
+                <h5>
+                    Computer's Board
+                </h5>
+                <table class="game-table" id="computer-table"> <!--10x10 grid -->
+                    <tr>
+                        <td></td>
+                        <td>A</td>
+                        <td>B</td>
+                        <td>C</td>
+                        <td>D</td>
+                        <td>E</td>
+                        <td>F</td>
+                        <td>G</td>
+                        <td>H</td>
+                        <td>I</td>
+                        <td>J</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td id="101" class="a 1 cell"></td>
+                        <td id="102" class="b 2 cell"></td>
+                        <td id="103" class="a 3 cell"></td>
+                        <td id="104" class="a 4 cell"></td>
+                        <td id="105" class="a 5 cell"></td>
+                        <td id="106" class="a 6 cell"></td>
+                        <td id="107" class="a 7 cell"></td>
+                        <td id="108" class="a 8 cell"></td>
+                        <td id="109" class="a 9 cell"></td>
+                        <td id="110" class="a 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td id="111" class="b 1 cell"></td>
+                        <td id="112" class="b 2 cell"></td>
+                        <td id="113" class="b 3 cell"></td>
+                        <td id="114" class="b 4 cell"></td>
+                        <td id="115" class="b 5 cell"></td>
+                        <td id="116" class="b 6 cell"></td>
+                        <td id="117" class="b 7 cell"></td>
+                        <td id="118" class="b 8 cell"></td>
+                        <td id="119" class="b 9 cell"></td>
+                        <td id="120" class="b 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td id="121" class="c 1 cell"></td>
+                        <td id="122" class="c 2 cell"></td>
+                        <td id="123" class="c 3 cell"></td>
+                        <td id="124" class="c 4 cell"></td>
+                        <td id="125" class="c 5 cell"></td>
+                        <td id="126" class="c 6 cell"></td>
+                        <td id="127" class="c 7 cell"></td>
+                        <td id="128" class="c 8 cell"></td>
+                        <td id="129" class="c 9 cell"></td>
+                        <td id="130" class="c 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td id="131" class="d 1 cell"></td>
+                        <td id="132" class="d 2 cell"></td>
+                        <td id="133" class="d 3 cell"></td>
+                        <td id="134" class="d 4 cell"></td>
+                        <td id="135" class="d 5 cell"></td>
+                        <td id="136" class="d 6 cell"></td>
+                        <td id="137" class="d 7 cell"></td>
+                        <td id="138" class="d 8 cell"></td>
+                        <td id="139" class="d 9 cell"></td>
+                        <td id="140" class="d 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td id="141" class="e 1 cell"></td>
+                        <td id="142" class="e 2 cell"></td>
+                        <td id="143" class="e 3 cell"></td>
+                        <td id="144" class="e 4 cell"></td>
+                        <td id="145" class="e 5 cell"></td>
+                        <td id="146" class="e 6 cell"></td>
+                        <td id="147" class="e 7 cell"></td>
+                        <td id="148" class="e 8 cell"></td>
+                        <td id="149" class="e 9 cell"></td>
+                        <td id="150" class="e 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td id="151" class="f 1 cell"></td>
+                        <td id="152" class="f 2 cell"></td>
+                        <td id="153" class="f 3 cell"></td>
+                        <td id="154" class="f 4 cell"></td>
+                        <td id="155" class="f 5 cell"></td>
+                        <td id="156" class="f 6 cell"></td>
+                        <td id="157" class="f 7 cell"></td>
+                        <td id="158" class="f 8 cell"></td>
+                        <td id="159" class="f 9 cell"></td>
+                        <td id="160" class="f 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td id="161" class="g 1 cell"></td>
+                        <td id="162" class="g 2 cell"></td>
+                        <td id="163" class="g 3 cell"></td>
+                        <td id="164" class="g 4 cell"></td>
+                        <td id="165" class="g 5 cell"></td>
+                        <td id="166" class="g 6 cell"></td>
+                        <td id="167" class="g 7 cell"></td>
+                        <td id="168" class="g 8 cell"></td>
+                        <td id="169" class="g 9 cell"></td>
+                        <td id="170" class="g 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td id="171" class="h 1 cell"></td>
+                        <td id="172" class="h 2 cell"></td>
+                        <td id="173" class="h 3 cell"></td>
+                        <td id="174" class="h 4 cell"></td>
+                        <td id="175" class="h 5 cell"></td>
+                        <td id="176" class="h 6 cell"></td>
+                        <td id="177" class="h 7 cell"></td>
+                        <td id="178" class="h 8 cell"></td>
+                        <td id="179" class="h 9 cell"></td>
+                        <td id="180" class="h 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td id="181" class="i 1 cell"></td>
+                        <td id="182" class="i 2 cell"></td>
+                        <td id="183" class="i 3 cell"></td>
+                        <td id="184" class="i 4 cell"></td>
+                        <td id="185" class="i 5 cell"></td>
+                        <td id="186" class="i 6 cell"></td>
+                        <td id="187" class="i 7 cell"></td>
+                        <td id="188" class="i 8 cell"></td>
+                        <td id="189" class="i 9 cell"></td>
+                        <td id="190" class="i 10 cell"></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td id="191" class="j 1 cell"></td>
+                        <td id="192" class="j 2 cell"></td>
+                        <td id="193" class="j 3 cell"></td>
+                        <td id="194" class="j 4 cell"></td>
+                        <td id="195" class="j 5 cell"></td>
+                        <td id="196" class="j 6 cell"></td>
+                        <td id="197" class="j 7 cell"></td>
+                        <td id="198" class="j 8 cell"></td>
+                        <td id="199" class="j 9 cell"></td>
+                        <td id="200" class="j 10 cell"></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="game-buttons">
+                <button class="board-button">
+                    Reset board
+                </button>
+                <button class="board-button">
+                    Go back
+                </button>
+            </div>
+        </div>
+        <div id="fleet">
+            <img 
+                class="ship" id="battleship"
+                alt="battle ship plan view" 
+                src="../assets/ship1.png" 
+            />
+            <img 
+                class="ship" id="cruiser"
+                alt="battle ship plan view" 
+                src="../assets/ship2.png" 
+            />
         </div>
     </section>
-    <button class="restart">
-        <a href="index.html">Restart</a>
+    <button onclick="window.location.href='play-setup.html'" class="restart">
+        Restart
     </button>
 </body>
 </html>

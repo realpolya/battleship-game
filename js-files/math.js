@@ -326,4 +326,12 @@ const trackLength = (obj, index) => {
     }
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj };
+// produce random cell number from available array
+const randomIndex = (array) => {
+
+    let randomIndex = Math.floor(Math.random() * array.length);
+    return randomIndex;
+
+}
+
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj, randomIndex };
