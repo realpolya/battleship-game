@@ -111,6 +111,8 @@ const colors = {
 
 // use computer as additional value in some functions
 let computer = true;
+let session_computer; // once value is stored to Session storage, reloads won't affect it
+
 
 // computer IDs array
 let compArray = [];
@@ -160,8 +162,7 @@ const gameTableEl = document.querySelector('.game-table');
 const immediateEl = document.getElementById('immediate-instruction');
 
 // buttons
-const readyButton = document.getElementById('ready-to-play');
-
+const reButton = document.getElementById('ready-restart');
 const setupCommandEl = document.getElementById('setup-play');
 
 /*-------------------------------- Functions --------------------------------*/
@@ -183,6 +184,7 @@ const handleClickSetup = (e) => {
         // uncolor the previous suggested color
         unhighlightCells(cellsEl, colors.suggest, colors.board);
 
+        console.log(selectedCell)
         // place ship in cell
         shipInCell(aGrid, selectedCell, ships, shipIndex, cellsEl, unavailCells)
 
@@ -269,9 +271,9 @@ const allShipsComplete = () => {
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
 
         // activate ready button
-        readyButton.textContent = "Ready?";
-        readyButton.style.backgroundColor = colors.button;
-        readyButton.removeAttribute('disabled');
+        reButton.textContent = "Ready?";
+        reButton.style.backgroundColor = colors.button;
+        reButton.removeAttribute('disabled');
 
         // remove event listener from board
         gameTableEl.removeEventListener("click", handleClickSetup)
@@ -292,7 +294,7 @@ const allShipsComplete = () => {
     return false;
 }
 
-/* functions below – play page ONLY */
+/* functions below – setup for play page ONLY */
 
 // computer setup
 const computerSetup = () => {
@@ -314,11 +316,12 @@ const computerSetup = () => {
         }
 
         selectedCell = i;
+        console.log("Selected cell is ", selectedCell)
 
         if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
             && !unavailCells.includes(selectedCell)) {
 
-                // if first ship
+                // ship in cell
                 shipInCell(aGrid, selectedCell, shipsComputer, shipIndex, cellsEl, unavailCells, bGrid);
 
                 // move click number
@@ -393,6 +396,19 @@ const computerSetup = () => {
     
     if (computerReady) {
         console.log("computer is ready")
+        console.log(shipsComputer)
+
+        console.log(aGrid)
+
+        // add computer Ready to JSON
+        sessionStorage.setItem("computer", computerReady)
+        session_computer = JSON.parse(sessionStorage.getItem("computer"));
+        console.log(session_computer);
+
+        // reassign aGrid to the JSON variable so it is saved
+        sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
+        aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
+
     } 
 
 }
@@ -411,8 +427,15 @@ const renderPlayerSetup = () => {
     })
 }
 
+const renderComputer = () => {
+    
+    // update location of each ship from session storage
+    shipsComputer.forEach((ship) => {
+        ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
+        blockCells(cellsEl, ship.location, colors.ship)
+    })
 
-
+}
 
 
 
@@ -445,13 +468,17 @@ cruiserEl.addEventListener("click", () => {
 // get instruction for the first ship to build
 onload = () => {
 
-    // 2D arrays are assigned
-    horArray2D = gridRowsCalculate(gridSize);
-    verArray2D = gridColumnsCalculate(gridSize);
+    function arrays2D () {
+        // 2D arrays are assigned
+        horArray2D = gridRowsCalculate(gridSize);
+        verArray2D = gridColumnsCalculate(gridSize);
 
-    // 2D arrays for computer set
-    comHorArray2D = gridRowsCalculate(gridSize, computer)
-    comVerArray2D = gridColumnsCalculate(gridSize, computer)
+        // 2D arrays for computer set
+        comHorArray2D = gridRowsCalculate(gridSize, computer)
+        comVerArray2D = gridColumnsCalculate(gridSize, computer)
+    }
+
+    arrays2D();
     
     // if setup page
     if (setupCommandEl.textContent === "Setup Instructions:") {
@@ -461,11 +488,28 @@ onload = () => {
 
     } // if play page – render player setup and calculate computer setup
     else {
+        
+        // add event listener to restart button (a way to erase the computer ship setup)
+        reButton.addEventListener('click', () => {
+            session_computer = false;
+            sessionStorage.setItem("computer", session_computer)
+        })
 
+        // render player setup
         renderPlayerSetup();
-        computerSetup();
+
+        // update whether the computer setup has been done
+        session_computer = JSON.parse(sessionStorage.getItem("computer"));
+        
+        // if the computer setup is not done, do it
+        if (!session_computer) {
+            computerSetup();
+        }
 
     }
+
+    // render computer's setup
+    renderComputer();
 
 };
 

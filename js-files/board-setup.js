@@ -54,7 +54,9 @@ function shipInCell(grid, cell, ships, shipIndex, cellsEl, unavailCells, compute
     grid[cell - 1] = ships[shipIndex].emoji;
 
     // update the location of the ship in the ships object
+    console.log(cell);
     ships[shipIndex].location.push(cell)
+    console.log(`Pushing ${cell} into ${ships[shipIndex]}`)
 
     // sort the order of the location (always ascending)
     ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
