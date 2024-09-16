@@ -1,5 +1,29 @@
 /* JUST TESTS, NOT NEEDED */
 
+/* DRAG AND DROP
+// drag and drop – used tutorial from Appwrite
+let newX = 0
+let newY = 0
+let startX = 0
+let startY = 0
+
+/* drag and drop functions – for battleShip element - DISABLED
+const mouseMove = (e) => {
+    newX = startX - e.clientX
+    newY = startY - e.clientY
+
+    // dynamically updating current position
+    startX = e.clientX
+    startY = e.clientY
+
+    battleshipEl.style.left = (battleshipEl.offsetLeft - newX) + 'px';
+    battleshipEl.style.top = (battleshipEl.offsetTop - newY) + 'px';
+}
+
+const mouseUp = e => {
+    document.removeEventListener('mousemove', mouseMove)
+} */
+
 // renders two-dimensional array split by rows
 const gridRowsCalculate = (size) => {
     let array = [];

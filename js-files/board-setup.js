@@ -33,7 +33,7 @@ const highlightCells = (elArray, arr, unavailArr, suggestiveColor) => {
     });
 }
 
-// highlight blocked adjacent cells
+// highlight blocked adjacent cells, arr for array of needed ids
 const blockCells = (elArray, arr, color) => {
     elArray.forEach((el) => {
         if (arr.includes(+el.id)) {

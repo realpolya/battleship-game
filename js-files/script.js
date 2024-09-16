@@ -39,6 +39,7 @@ const ships = [
     }
 ]
 
+
 // event tracker
 const clickOrder = [];
 
@@ -48,7 +49,7 @@ const colors = {
     adjacent: "honeydew",
     suggest: "hotpink",
     board: "thistle",
-    ship: "blue",
+    ship: "darkblue",
     button: "purple"
 }
 
@@ -81,12 +82,6 @@ let shipsOnBoard = 0;
 // store selected cell
 let selectedCell;
 
-// drag and drop – used tutorial from Appwrite
-let newX = 0
-let newY = 0
-let startX = 0
-let startY = 0
-
 
 /*------------------------ Cached Element References ------------------------*/
 
@@ -110,25 +105,8 @@ const setupCommandEl = document.getElementById('setup-play');
 
 /*-------------------------------- Functions --------------------------------*/
 
-/* drag and drop functions – for battleShip element - DISABLED
-const mouseMove = (e) => {
-    newX = startX - e.clientX
-    newY = startY - e.clientY
-
-    // dynamically updating current position
-    startX = e.clientX
-    startY = e.clientY
-
-    battleshipEl.style.left = (battleshipEl.offsetLeft - newX) + 'px';
-    battleshipEl.style.top = (battleshipEl.offsetTop - newY) + 'px';
-}
-
-const mouseUp = e => {
-    document.removeEventListener('mousemove', mouseMove)
-} */
-
 // handle click on a cell
-const handleClick = (e) => {
+const handleClickSetup = (e) => {
 
     // current cell is assigned
     selectedCell = +e.target.id;
@@ -205,6 +183,10 @@ const handleClick = (e) => {
 
             // change the completed cells to the cell color
             blockCells(cellsEl, ships[shipIndex].location, colors.ship)
+
+            // set to session storage
+            console.log(`ships-${ships[shipIndex].name}`);
+            sessionStorage.setItem(`ships-${ships[shipIndex].name}`, JSON.stringify(ships[shipIndex].location));
             
             // reset trackers
             shipIsComplete();
@@ -243,7 +225,7 @@ const allShipsComplete = () => {
         console.log("Player is ready to begin")
         console.log(aGrid);
 
-        // store the grid in the JSON
+        // store the grid and ships in the JSON
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
 
         // activate ready button
@@ -252,7 +234,7 @@ const allShipsComplete = () => {
         readyButton.removeAttribute('disabled');
 
         // remove event listener from board
-        gameTableEl.removeEventListener("click", handleClick)
+        gameTableEl.removeEventListener("click", handleClickSetup)
 
         // update instructions message
         immediateEl.textContent = `All set. If you don't like positions of your ships, restart the process.`;
@@ -278,7 +260,12 @@ const renderPlayerSetup = () => {
 
     // update board
     updateBoard(cellsEl, aGrid_session);
-    console.log(aGrid_session);
+
+    // update location of each ship from session storage
+    ships.forEach((ship) => {
+        ship.location = JSON.parse(sessionStorage.getItem(`ships-${ship.name}`));
+        blockCells(cellsEl, ship.location, colors.ship)
+    })
 }
 
 
@@ -299,11 +286,15 @@ onload = () => {
     
     // if setup page
     if (setupCommandEl.textContent === "Setup Instructions:") {
+
         console.log("this is setup page");
         immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
+        
     } // if play page
     else {
+
         renderPlayerSetup();
+
     }
     
     // 2D arrays are assigned
@@ -312,7 +303,7 @@ onload = () => {
 };
 
 // click on a cell
-gameTableEl.addEventListener("click", handleClick)
+gameTableEl.addEventListener("click", handleClickSetup)
 
 // experimental numbers
 cruiserEl.addEventListener("click", () => {
