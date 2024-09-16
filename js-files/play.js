@@ -1,43 +1,68 @@
 /* this file has functions for the game logic of battleship */
 
-const analyzeAttack = (cell, aGrid, ships, hitCount) => {
+export const analyzeAttack = (cell, aGrid, 
+    ships, hitCount, missArr, hitArr, deadArr, score) => {
+    
+    console.log("Analyze attack is working");
+
     // see if the cell is empty or not
+    if (aGrid[cell - 1]) {
 
-        // if the cell is empty
+        // update hitCount
+        hitCount++;
 
-            // render "Miss" message
-
-            // color the cell with the missed color
-
-        // if the cell is occupied
-
-            // update hitCount
-
-            // update the color with the hit color
+        // push to the hit array
+        hitArr.push(cell)
 
             // see which ship was hit (but don't disclose)
+            ships.forEach((ship) => {
+                // do they overlap
+                if (ship.location.includes(cell)) {
+                    
+                    console.log(`${ship.name} was hit`)
 
-                // if the first hit
+                    // update hit count of that specific ship
+                    ship.hits++;
 
-                // update hit count of that specific ship
-            
-            // if hit count equals to length
+                    // if hit count equals to length
+                    if (ship.hits === ship.length) {
+                        
+                        console.log(`${ship.name} has sunk`)
 
-                // ship is out
+                        // change alive boolean
+                        ship.alive = false;
 
-                // render message that ship is out
+                        // update score
+                        score++;
 
-                // reveal the ship
+                        // push to dead cells array
+                        deadArr.push(ship.location);
 
-                // change alive boolean
+                    }
 
-            // render the message
+                }
+            })
 
-        // check if there are any alive ships
 
-            // if not, render winner
+    } // if the cell is empty
+    else {
+        
+        console.log("This was a miss")
+
+        // push into missedArr
+        missArr.push(cell)
+
+    }
+
 }
 
 const computerFires = () => {
 
+}
+
+export const winner = (ships) => {
+    let answer = ships.some((ship) => {
+        return !ship.alive;
+    })
+    return answer;
 }

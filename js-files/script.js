@@ -4,18 +4,18 @@ import { calculateAdjacent, updateAdjacent, orientationCheck,
     calcBlockedAdj, computerArray, randomIndex } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
     unhighlightCells, blockCells, shipInCell } from "./board-setup.js"
+import { analyzeAttack, winner } from "./play.js";
 
-/* battleship
-
-INSTRUCTIONS:
-Start with 6 x 6 grid
+/* BATTLESHIP
 
 // current ship is
 // ships[shipIndex].name
 // location of ship:
 // ships[shipIndex].location.push()
 
+
 /*-------------------------------- Constants --------------------------------*/
+
 // aGrid – concatenated grid for all players
 let aGrid = []; // single grid with ALL values
 let bGrid = []; // only computer values
@@ -31,6 +31,7 @@ const ships = [
         length: 5,
         emoji: "🚢",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -38,6 +39,7 @@ const ships = [
         length: 4,
         emoji: "🛳️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -45,6 +47,7 @@ const ships = [
         length: 3,
         emoji: "🛥️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -52,6 +55,7 @@ const ships = [
         length: 3,
         emoji: "⛴️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -59,6 +63,7 @@ const ships = [
         length: 2,
         emoji: "⛵",
         location: [],
+        hits: 0,
         alive: true
     }
 ]
@@ -70,6 +75,7 @@ const shipsComputer = [
         length: 5,
         emoji: "🚢",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -77,6 +83,7 @@ const shipsComputer = [
         length: 4,
         emoji: "🛳️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -84,6 +91,7 @@ const shipsComputer = [
         length: 3,
         emoji: "🛥️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -91,6 +99,7 @@ const shipsComputer = [
         length: 3,
         emoji: "⛴️",
         location: [],
+        hits: 0,
         alive: true
     },
     {
@@ -98,6 +107,7 @@ const shipsComputer = [
         length: 2,
         emoji: "⛵",
         location: [],
+        hits: 0,
         alive: true
     }
 ]
@@ -125,7 +135,6 @@ const colors = {
 // use computer as additional value in some functions
 let computer = true;
 let session_computer; // once value is stored to Session storage, reloads won't affect it
-
 
 // computer IDs array
 let compArray = [];
@@ -160,6 +169,13 @@ let selectedCell;
 
 // game specific variables
 let hitCount = 0;
+let missArr = []; // IDs of missed cells
+let hitArr = []; // IDs of hit cells
+let deadArr = []; // IDs of dead cells with revealed ships
+
+let playerScore = 0;
+let compScore = 0;
+
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -175,7 +191,7 @@ const cellsEl = document.querySelectorAll('.cell');
 const gameTableEl = document.querySelector('.game-table');
 const compTableEl = document.getElementById('computer-table');
 
-// instructions for the current ship
+// instructions for the current ship, score-keeper for game
 const immediateEl = document.getElementById('immediate-instruction');
 
 // buttons
@@ -445,25 +461,6 @@ const renderPlayerSetup = () => {
 
 }
 
-
-// click on cell
-const gameClick = (e) => {
-
-    selectedCell = +e.target.id
-    e.target.style.backgroundColor = colors.fire
-
-    // can only click on the cell with ids more than 100
-    if (selectedCell > 100 && e.target.classList.contains("cell")) {
-
-        fireButton.addEventListener('click', () => {
-            // function that analyzes what happens after a fire click
-            
-        })
-
-    }
-}
-
-
 const renderComputer = () => {
      
     // update location of each computer's ship from session storage
@@ -471,6 +468,48 @@ const renderComputer = () => {
         ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
         blockCells(cellsEl, ship.location, colors.ship)
     })
+
+}
+
+/*-------------------------------- ACTIVE ATTACK Functions --------------------------------*/
+
+// click on cell
+const gameClick = (e) => {
+
+    // free up any previously selected cell
+    unhighlightCells(cellsEl, colors.fire, colors.board)
+
+    selectedCell = +e.target.id
+    console.log(selectedCell);
+    console.log(e);
+
+    // can only click on the cell with ids more than 100
+    if (selectedCell > 100 && e.target.classList.contains("cell")) {
+
+        e.target.style.backgroundColor = colors.fire
+
+    }
+
+}
+
+const fireClick = (cell) => {
+    
+    if (cell > 100) {
+
+        console.log("Fire button has been fired");
+
+        // function that analyzes what happens after a fire click
+        analyzeAttack(selectedCell, aGrid, shipsComputer, hitCount, missArr, hitArr, deadArr, playerScore)
+
+        console.log("Missed array is ", missArr)
+        console.log("Hit array is ", hitArr)
+        console.log("Dead array is ", deadArr)
+
+    } else {
+        immediateEl.textContent = "Click on an opponent's grid cell"
+    }
+
+    // color the board
 
 }
 
@@ -486,15 +525,6 @@ const renderComputer = () => {
 
 /*----------------------------- Event Listeners -----------------------------*/
 
-// console log
-battleshipEl.addEventListener("click", () => {
-    console.log("Battleship clicked");
-})
-
-cruiserEl.addEventListener("click", () => {
-    console.log("Cruiser clicked");
-    handleClick;
-})
 
 // get instruction for the first ship to build
 onload = () => {
@@ -522,6 +552,7 @@ onload = () => {
 
     } // if play page – render player setup and calculate computer setup
     else {
+        
         // render player setup
         renderPlayerSetup();
 
@@ -539,14 +570,22 @@ onload = () => {
             computerSetup();
         }
 
+        // render computer's setup
         renderComputer();
 
-        // click on a cell for setup
-        compTableEl.addEventListener("click", gameClick)
+        console.log(aGrid);
 
     }
 
 };
+
+// click on a cell for setup
+compTableEl.addEventListener("click", gameClick)
+
+// fire button functionality
+fireButton.addEventListener('click', () => {
+    fireClick(selectedCell);
+})
 
 // experimental numbers
 cruiserEl.addEventListener("click", () => {
