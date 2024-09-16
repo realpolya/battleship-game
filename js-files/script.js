@@ -30,31 +30,36 @@ const ships = [
         name: "carrier",
         length: 5,
         emoji: "🚢",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "battleship",
         length: 4,
         emoji: "🛳️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "submarine",
         length: 3,
         emoji: "🛥️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "cruiser",
         length: 3,
         emoji: "⛴️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "destroyer",
         length: 2,
         emoji: "⛵",
-        location: []
+        location: [],
+        alive: true
     }
 ]
 
@@ -64,31 +69,36 @@ const shipsComputer = [
         name: "carrier",
         length: 5,
         emoji: "🚢",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "battleship",
         length: 4,
         emoji: "🛳️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "submarine",
         length: 3,
         emoji: "🛥️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "cruiser",
         length: 3,
         emoji: "⛴️",
-        location: []
+        location: [],
+        alive: true
     },
     {
         name: "destroyer",
         length: 2,
         emoji: "⛵",
-        location: []
+        location: [],
+        alive: true
     }
 ]
 
@@ -103,7 +113,10 @@ const colors = {
     suggest: "hotpink",
     board: "thistle",
     ship: "darkblue",
-    button: "purple"
+    button: "purple",
+    fire: "pink",
+    hit: "red",
+    miss: "black"
 }
 
 
@@ -145,6 +158,9 @@ let computerReady = false;
 // store selected cell
 let selectedCell;
 
+// game specific variables
+let hitCount = 0;
+
 
 /*------------------------ Cached Element References ------------------------*/
 
@@ -157,15 +173,17 @@ const cellsEl = document.querySelectorAll('.cell');
 
 // board
 const gameTableEl = document.querySelector('.game-table');
+const compTableEl = document.getElementById('computer-table');
 
 // instructions for the current ship
 const immediateEl = document.getElementById('immediate-instruction');
 
 // buttons
 const reButton = document.getElementById('ready-restart');
+const fireButton = document.getElementById('fire');
 const setupCommandEl = document.getElementById('setup-play');
 
-/*-------------------------------- Functions --------------------------------*/
+/*-------------------------------- SETUP Page Functions --------------------------------*/
 
 // handle click on a cell
 const handleClickSetup = (e) => {
@@ -185,6 +203,7 @@ const handleClickSetup = (e) => {
         unhighlightCells(cellsEl, colors.suggest, colors.board);
 
         console.log(selectedCell)
+
         // place ship in cell
         shipInCell(aGrid, selectedCell, ships, shipIndex, cellsEl, unavailCells)
 
@@ -265,10 +284,13 @@ const shipIsComplete = () => {
 // all ships complete
 const allShipsComplete = () => {
     if (shipsOnBoard === ships.length) {
+        
         console.log("Player is ready to begin")
 
         // store the grid and ships in the JSON
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
+        aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
+        console.log(aGrid);
 
         // activate ready button
         reButton.textContent = "Ready?";
@@ -294,7 +316,7 @@ const allShipsComplete = () => {
     return false;
 }
 
-/* functions below – setup for play page ONLY */
+/*-------------------------------- PLAY Page Functions --------------------------------*/
 
 // computer setup
 const computerSetup = () => {
@@ -316,7 +338,6 @@ const computerSetup = () => {
         }
 
         selectedCell = i;
-        console.log("Selected cell is ", selectedCell)
 
         if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
             && !unavailCells.includes(selectedCell)) {
@@ -396,25 +417,21 @@ const computerSetup = () => {
     
     if (computerReady) {
         console.log("computer is ready")
-        console.log(shipsComputer)
-
-        console.log(aGrid)
 
         // add computer Ready to JSON
         sessionStorage.setItem("computer", computerReady)
         session_computer = JSON.parse(sessionStorage.getItem("computer"));
-        console.log(session_computer);
 
         // reassign aGrid to the JSON variable so it is saved
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
-        aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
 
     } 
 
 }
 
-// render existing player's board onto the new page
+// render existing player's and computer's boards onto the new page
 const renderPlayerSetup = () => {
+    
     // retrieving information from previous page
     aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
 
@@ -425,23 +442,37 @@ const renderPlayerSetup = () => {
         ship.location = JSON.parse(sessionStorage.getItem(`ships-${ship.name}`));
         blockCells(cellsEl, ship.location, colors.ship)
     })
+
 }
 
+
+// click on cell
+const gameClick = (e) => {
+
+    selectedCell = +e.target.id
+    e.target.style.backgroundColor = colors.fire
+
+    // can only click on the cell with ids more than 100
+    if (selectedCell > 100 && e.target.classList.contains("cell")) {
+
+        fireButton.addEventListener('click', () => {
+            // function that analyzes what happens after a fire click
+            
+        })
+
+    }
+}
+
+
 const renderComputer = () => {
-    
-    // update location of each ship from session storage
-    shipsComputer.forEach((ship) => {
+     
+    // update location of each computer's ship from session storage
+     shipsComputer.forEach((ship) => {
         ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
         blockCells(cellsEl, ship.location, colors.ship)
     })
 
 }
-
-
-
-
-
-
 
 
 
@@ -483,20 +514,22 @@ onload = () => {
     // if setup page
     if (setupCommandEl.textContent === "Setup Instructions:") {
 
+        // click on a cell for setup
+        gameTableEl.addEventListener("click", handleClickSetup)
+
         console.log("this is setup page");
         immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
 
     } // if play page – render player setup and calculate computer setup
     else {
-        
+        // render player setup
+        renderPlayerSetup();
+
         // add event listener to restart button (a way to erase the computer ship setup)
         reButton.addEventListener('click', () => {
             session_computer = false;
             sessionStorage.setItem("computer", session_computer)
         })
-
-        // render player setup
-        renderPlayerSetup();
 
         // update whether the computer setup has been done
         session_computer = JSON.parse(sessionStorage.getItem("computer"));
@@ -506,15 +539,14 @@ onload = () => {
             computerSetup();
         }
 
+        renderComputer();
+
+        // click on a cell for setup
+        compTableEl.addEventListener("click", gameClick)
+
     }
 
-    // render computer's setup
-    renderComputer();
-
 };
-
-// click on a cell
-gameTableEl.addEventListener("click", handleClickSetup)
 
 // experimental numbers
 cruiserEl.addEventListener("click", () => {
