@@ -124,9 +124,10 @@ const colors = {
     board: "thistle",
     ship: "darkblue",
     button: "purple",
-    fire: "pink",
+    fire: "hotpink",
     hit: "red",
-    miss: "black"
+    miss: "blue",
+    dead: "black"
 }
 
 
@@ -221,7 +222,7 @@ const handleClickSetup = (e) => {
         console.log(selectedCell)
 
         // place ship in cell
-        shipInCell(aGrid, selectedCell, ships, shipIndex, cellsEl, unavailCells)
+        shipInCell(aGrid, selectedCell, ships, gridSquared, shipIndex, cellsEl, unavailCells)
 
         // change color of the blocked cell
         e.target.style.backgroundColor = colors.block;
@@ -359,7 +360,7 @@ const computerSetup = () => {
             && !unavailCells.includes(selectedCell)) {
 
                 // ship in cell
-                shipInCell(aGrid, selectedCell, shipsComputer, shipIndex, cellsEl, unavailCells, bGrid);
+                shipInCell(aGrid, selectedCell, shipsComputer, gridSquared, shipIndex, cellsEl, unavailCells, bGrid, true);
 
                 // move click number
                 clickNumber++;
@@ -451,7 +452,7 @@ const renderPlayerSetup = () => {
     // retrieving information from previous page
     aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
 
-    updateBoard(cellsEl, aGrid);
+    updateBoard(cellsEl, aGrid, gridSquared);
 
     // update location of each ship from session storage
     ships.forEach((ship) => {
@@ -461,13 +462,28 @@ const renderPlayerSetup = () => {
 
 }
 
-const renderComputer = () => {
+// for visibility
+const renderComputer = (bool) => {
      
-    // update location of each computer's ship from session storage
-     shipsComputer.forEach((ship) => {
-        ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
-        blockCells(cellsEl, ship.location, colors.ship)
+    // rendering all ships
+    if (bool) {
+        
+        // update location of each computer's ship from session storage
+        shipsComputer.forEach((ship) => {
+            ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
+            blockCells(cellsEl, ship.location, colors.ship)
+        })
+    } 
+    // only render dead ships
+    else if (!bool) {
+
+        shipsComputer.forEach((ship) => {
+            if (!ship.alive) {
+                ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
+                blockCells(cellsEl, ship.location, colors.dead)
+            }
     })
+    }
 
 }
 
@@ -492,14 +508,16 @@ const gameClick = (e) => {
 
 }
 
-const fireClick = (cell) => {
+const fireClick = (selectedCell) => {
     
-    if (cell > 100) {
+    console.log(selectedCell)
+    
+    if (selectedCell > 100) {
 
         console.log("Fire button has been fired");
 
         // function that analyzes what happens after a fire click
-        analyzeAttack(selectedCell, aGrid, shipsComputer, hitCount, missArr, hitArr, deadArr, playerScore)
+        immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, hitCount, missArr, hitArr, deadArr, playerScore)
 
         console.log("Missed array is ", missArr)
         console.log("Hit array is ", hitArr)
@@ -510,6 +528,16 @@ const fireClick = (cell) => {
     }
 
     // color the board
+    blockCells(cellsEl, missArr, colors.miss);
+    blockCells(cellsEl, hitArr, colors.hit);
+    /*deadArr.forEach((arr) => {
+        blockCells(cellsEl, arr, colors.dead)
+    }) */
+
+    renderComputer(false);
+
+    console.log(shipsComputer)
+
 
 }
 
@@ -570,8 +598,8 @@ onload = () => {
             computerSetup();
         }
 
-        // render computer's setup
-        renderComputer();
+        // render computer's setup – if want visibility
+        // renderComputer(true);
 
         console.log(aGrid);
 
@@ -585,6 +613,7 @@ compTableEl.addEventListener("click", gameClick)
 // fire button functionality
 fireButton.addEventListener('click', () => {
     fireClick(selectedCell);
+    selectedCell = undefined;
 })
 
 // experimental numbers

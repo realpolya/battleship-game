@@ -3,6 +3,9 @@
 export const analyzeAttack = (cell, aGrid, 
     ships, hitCount, missArr, hitArr, deadArr, score) => {
     
+    let shipHasSunk = false;
+    let sunkShip;
+
     console.log("Analyze attack is working");
 
     // see if the cell is empty or not
@@ -38,10 +41,20 @@ export const analyzeAttack = (cell, aGrid,
                         // push to dead cells array
                         deadArr.push(ship.location);
 
+                        // assign to local variables
+                        sunkShip = ship.name
+                        shipHasSunk = true;
+
                     }
 
                 }
             })
+        
+        if (shipHasSunk) {
+            return `${sunkShip} was sunk!`
+        }
+        
+        return "Hit!";
 
 
     } // if the cell is empty
@@ -51,6 +64,8 @@ export const analyzeAttack = (cell, aGrid,
 
         // push into missedArr
         missArr.push(cell)
+
+        return "Miss!"
 
     }
 

@@ -1,12 +1,12 @@
 /* BOARD SETUP RENDER FUNCTIONS */
 
 // update board function
-const updateBoard = (elArray, playerBoard) => {
-    let i = 0;
-    elArray.forEach((el) => {
-        el.textContent = playerBoard[i];
-        i++;
-    });
+const updateBoard = (elArray, playerBoard, sizeSquared) => {
+
+    for (let x = 0; x < sizeSquared; x++) {
+        elArray[x].textContent = playerBoard[x];
+    }
+
 }
 
 // experimental fill cells with their number ids
@@ -49,22 +49,20 @@ const unhighlightCells = (elArray, suggestiveColor, boardColor) => {
     });
 }
 
-function shipInCell(grid, cell, ships, shipIndex, cellsEl, unavailCells, computerArray) {
+function shipInCell(grid, cell, ships, sizeSquared, shipIndex, cellsEl, unavailCells, computerArray) {
     // assign shipEl to the selectedCell
     grid[cell - 1] = ships[shipIndex].emoji;
 
     // update the location of the ship in the ships object
-    console.log(cell);
     ships[shipIndex].location.push(cell)
-    console.log(`Pushing ${cell} into ${ships[shipIndex]}`)
 
     // sort the order of the location (always ascending)
     ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
         return a - b;
     });
 
-    // update board
-    updateBoard(cellsEl, grid);
+    // update board if not computer
+    updateBoard(cellsEl, grid, sizeSquared);
 
     // update unavailable cells
     unavailCells.push(cell);
