@@ -8,8 +8,8 @@ export const analyzeAttack = (cell, aGrid,
 
     console.log("Analyze attack is working");
 
-    // check that the cell has not been hit yet
-    if (missArr.includes(cell) || hitArr.includes(cell)) {
+    // check that the cell has not been hit yet (for human only)
+    if (!computer && (missArr.includes(cell) || hitArr.includes(cell))) {
         return "This cell has already been hit";
     }
 

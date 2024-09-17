@@ -32,8 +32,28 @@
 
 /* immediate-instruction - child of instructions */
 #immediate-instruction {
+    display: flex;
+    justify-content: center;
     text-align: center;
     margin: auto;
+    background-color: black;
+    height: 2rem;
+    align-items: center;
+}
+
+#score-keeper {
+    display: flex;
+    justify-content: space-between;
+}
+
+#computer-move {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
+    height: 2rem;
+    background-color: rgb(68, 13, 13);
+    align-items: center;
 }
 
 /* fleet - child of board */

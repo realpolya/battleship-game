@@ -127,7 +127,8 @@ const colors = {
     fire: "hotpink",
     hit: "red",
     miss: "blue",
-    dead: "black"
+    dead: "black",
+    firebutton: "grey"
 }
 
 
@@ -179,6 +180,8 @@ let playerScore = 0;
 let compScore = 0;
 let whoWon;
 
+let timeDelay = 2000; // 1000 equals to 1 second
+
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -196,6 +199,7 @@ const compTableEl = document.getElementById('computer-table');
 
 // instructions for the current ship, score-keeper for game
 const immediateEl = document.getElementById('immediate-instruction');
+const computerEl = document.getElementById('computer-move');
 
 // buttons
 const reButton = document.getElementById('ready-restart');
@@ -529,6 +533,7 @@ const gameClick = (e) => {
     if (selectedCell > 100 && e.target.classList.contains("cell")) {
 
         e.target.style.backgroundColor = colors.fire
+        fireButton.style.backgroundColor = colors.hit
 
     }
 
@@ -536,19 +541,26 @@ const gameClick = (e) => {
 
 const fireClick = (selectedCell) => {
     
+    // avoid clicking the same button twice
+    let clickResult;
+
     if (selectedCell > 100) {
 
         console.log("Fire button has been fired");
 
         // function that analyzes what happens after a fire click
         immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, hitCount, missArr, hitArr, deadArr, playerScore)
+        clickResult = immediateEl.textContent
+
 
         console.log("Missed array is ", missArr)
         console.log("Hit array is ", hitArr)
         console.log("Dead array is ", deadArr)
 
     } else {
+        
         immediateEl.textContent = "Click on an opponent's grid cell"
+        
     }
 
     // color the board
@@ -576,35 +588,76 @@ const fireClick = (selectedCell) => {
 
     }
 
+    fireButton.style.backgroundColor = colors.firebutton
+
     // computer fires
-    computerFires();
+    // only proceed if the player indeed made a move
+    if (clickResult === "Hit!" || clickResult === "Miss!" ||
+        clickResult.includes("was sunk!")) {
+        
+        computerFires();
+
+    }
+
+    // reset clickResult
+    clickResult = undefined;
 
 }
 
 const computerFires = () => {
+    // set message
+    computerEl.textContent = "Computer is thinking..."
     // if known number in hitArr between 1 and grid size squared
     // but it is not in deadArr
 
         // produce number from adjacent array
 
-    // generate random number between 1 and grid size squared
+    // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
+    // can't choose the same cell twice – recursive function
+    
+    let i;
+    function randomCell() {
+        i = playerArray[randomIndex(playerArray)];
+        if (missArr.includes(i) || hitArr.includes(i)) {
+            console.log("regenerating ID");
+            randomCell();
+        }
+    }
 
-    let i = playerArray[randomIndex(playerArray)];
+    randomCell();
+
     console.log("ID chosen by computer is ", i)
 
     // assign that number to the cell
     selectedCell = i;
 
-    // time delay
+    // analyze attack
+    let attackMessage = analyzeAttack(selectedCell, aGrid, ships, hitCount, missArr, hitArr, deadArr, compScore, "computer");
+    console.log("Missed array is ", missArr)
+    console.log("Hit array is ", hitArr) 
+    console.log("Dead array is ", deadArr)
+    console.log("User's ships ", ships)
 
-    // analyzeAttack button
-    immediateEl.textContent = analyzeAttack(selectedCell, aGrid, ships, hitCount, missArr, hitArr, deadArr, compScore, "computer")
+    // time delay to reveal the result
+    setTimeout(() => {
+        
+        // reset computerEl
+        computerEl.textContent = "";
+        
+        // analyzeAttack button
+        immediateEl.textContent = attackMessage;
 
-    // color
-    blockCells(cellsEl, missArr, colors.miss);
-    blockCells(cellsEl, hitArr, colors.hit);
+        // color
+        blockCells(cellsEl, missArr, colors.miss);
+        blockCells(cellsEl, hitArr, colors.hit);
+        deadArr.forEach((arr) => {
+            blockCells(cellsEl, arr, colors.dead);
+        })
+
+    }, timeDelay);
 
     // if message equals to first hit, generate an adjacent array
+
 
     // if the following message is missed, go back to the hit cell
 
