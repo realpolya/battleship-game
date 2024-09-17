@@ -629,10 +629,12 @@ const computerFires = () => {
     })
 
     // if ID compHits but NOT in dead, target it!
-    // toTarget is an array
+    // toTarget is an array initialized every time from nothing
     let toTarget = compHits.filter((a) => {
         return !concDeadArr.includes(a);
     })
+    
+    console.log("Current toTarget array is...", toTarget)
 
     // initialize ID
     let i;
@@ -650,7 +652,7 @@ const computerFires = () => {
 
             //filter adjacent cells so they can't be above 100 and were not chosen before
             adjacentCells = adjacentCells.filter((cell) => {
-                return (cell <= gridSquared && missArr.includes(cell) && hitArr.includes(cell));
+                return (cell <= gridSquared && !missArr.includes(cell) && !hitArr.includes(cell));
             })
             
             console.log("Hit 1: Adjacent cells to target after filter ", adjacentCells)
@@ -669,22 +671,26 @@ const computerFires = () => {
 
     } // if two or more cells of the ship were discovered (not dead yet)
     else if (toTarget.length > 1) {
+        
         // determine orientation
-            /*if (hitCountComp === 2) {
-                shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
-            } */
+        if (toTarget.length === 2) {
+            shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
+            console.log("Attacked ship's orientation is ", shipOrientation)
+        }
+        
         // calculate adjacent cells
             /*if (hitCountComp >= 2) {
                 adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
             }  else {} */
     }
-    // produce random i if no hits before or if pervious are dead
+    // produce random i if no hits before or if previous are dead
     else {
 
         // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
         // can't choose the same cell twice – recursive function
         function randomCell() {
             i = playerArray[randomIndex(playerArray)];
+            
             if (missArr.includes(i) || hitArr.includes(i)) {
                 console.log("regenerating ID");
                 randomCell();
@@ -702,7 +708,6 @@ const computerFires = () => {
 
     // analyze attack
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
-    console.log("Computer hit count is ", hitCountComp)
     console.log("Missed array is ", missArr)
     console.log("Hit array is ", hitArr) 
     console.log("Dead array is ", deadArr)
@@ -726,7 +731,7 @@ const computerFires = () => {
 
     }, timeDelay);
 
-    // if dead – reset hitCount
+    // if hit – count up, if dead – reset hitCount
     if (attackMessage === "Computer hit!") {
         hitCountComp++;
         console.log("Hit! hit count is ", hitCountComp)
@@ -748,8 +753,6 @@ const computerFires = () => {
 
     // check for winner
 
-    // clear toTarget
-    toTarget = undefined;
 }
 
 const renderWinLossMsg = () => {

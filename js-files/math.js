@@ -315,14 +315,34 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
 
 }
 
-// check for horizontal or vertical
-const orientationCheck = (arr, shipEmoji) => {
+// check for horizontal or vertical, computerAttacks = bool value
+const orientationCheck = (arr, shipEmoji, computerAttacks) => {
     let orientation = "vertical";
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === shipEmoji && arr[i+1] === shipEmoji) {
-            orientation = "horizontal";
-        } 
+    
+    if (!computerAttacks) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === shipEmoji && arr[i+1] === shipEmoji) {
+                orientation = "horizontal";
+            } 
+        }
     }
+
+    else if (computerAttacks) {
+
+        // sort in ascending order
+        arr = arr.sort((a, b) => {
+            return a - b;
+        });
+
+        // if member at index 0 is 1 less than at index 1, horizontal
+        if (arr[0] + 1 === arr[1]) {
+            
+            orientation = "horizontal";
+
+        }
+
+    }
+
     return orientation;
 }
 
