@@ -8,6 +8,13 @@ export const analyzeAttack = (cell, aGrid,
 
     console.log("Analyze attack is working");
 
+    // check that the cell has not been hit yet
+    if (missArr.includes(cell) || hitArr.includes(cell)) {
+        return "This cell has already been hit";
+    }
+
+    console.log("aGrid is ", aGrid)
+
     // see if the cell is empty or not
     if (aGrid[cell - 1]) {
 
@@ -51,9 +58,12 @@ export const analyzeAttack = (cell, aGrid,
             })
         
         if (shipHasSunk) {
+            
+            console.log(`${sunkShip} was sunk!`, ships)
             return `${sunkShip} was sunk!`
+
         }
-        
+        console.log("Hit", ships)
         return "Hit!";
 
 
@@ -76,8 +86,11 @@ const computerFires = () => {
 }
 
 export const winner = (ships) => {
-    let answer = ships.some((ship) => {
+    
+    let answer = ships.every((ship) => {
         return !ship.alive;
     })
+
     return answer;
+
 }

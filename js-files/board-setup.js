@@ -1,6 +1,6 @@
 /* BOARD SETUP RENDER FUNCTIONS */
 
-// update board function
+// update board function – sizeSquared to hide computer
 const updateBoard = (elArray, playerBoard, sizeSquared) => {
 
     for (let x = 0; x < sizeSquared; x++) {

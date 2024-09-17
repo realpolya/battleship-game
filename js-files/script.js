@@ -383,9 +383,9 @@ const computerSetup = () => {
                     adjacentCells = adjacentCells.filter((cell) => {
                         return cell > gridSquared && cell <= (gridSquared + gridSquared);
                     })
-        
-                    // highlight suggested cells
-                    highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
+                    
+                    // highlight suggested cells – COMPUTER  NOT NEEDED
+                    //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
                 }
 
                 orientationAdjacent();
@@ -406,10 +406,9 @@ const computerSetup = () => {
 
                     unavailCells = unavailCells.concat(blockedAdjCells);
 
-                    blockCells(cellsEl, blockedAdjCells, colors.adjacent)
-
-                    // change the completed cells to the cell color
-                    blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
+                    // change the completed cells to the cell color – COMPUTER  NOT NEEDED
+                    //blockCells(cellsEl, blockedAdjCells, colors.adjacent)
+                    //blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
 
                     // set to session storage
                     sessionStorage.setItem(`shipsComputer-${shipsComputer[shipIndex].name}`, JSON.stringify(shipsComputer[shipIndex].location));
@@ -422,17 +421,24 @@ const computerSetup = () => {
             }
         
         if (shipsOnBoard === shipsComputer.length) {
+            
+            console.log("all ships are on board")
             computerReady = true;
             return true;
+
         } else {
+            
             computerBoard();
+
         }
 
     }
     
     computerBoard();
+    console.log("ComputerReady is ", computerReady)
     
     if (computerReady) {
+        
         console.log("computer is ready")
 
         // add computer Ready to JSON
@@ -462,27 +468,40 @@ const renderPlayerSetup = () => {
 
 }
 
-// for visibility
-const renderComputer = (bool) => {
-     
-    // rendering all ships
-    if (bool) {
+// for visibility. Pass false to see dead ships.
+const renderComputer = (render, dead) => {
+    
+    // retrieve aGrid with computer info
+    aGrid = JSON.parse(sessionStorage.getItem("aGrid")); 
+
+    // update location of each computer's ship from session storage
+    shipsComputer.forEach((ship) => {
+        ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
         
-        // update location of each computer's ship from session storage
-        shipsComputer.forEach((ship) => {
-            ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
+        // if render
+        if (render) {
             blockCells(cellsEl, ship.location, colors.ship)
-        })
-    } 
+        };
+
+    })
+
     // only render dead ships
-    else if (!bool) {
+    if (dead) {
 
         shipsComputer.forEach((ship) => {
             if (!ship.alive) {
                 ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
                 blockCells(cellsEl, ship.location, colors.dead)
+
+                // place emoji into cellsEl for computer
+                for (let x = gridSquared; x < aGrid.length; x++) {
+                    if (ship.emoji === aGrid[x]) {
+                        cellsEl[x].textContent = ship.emoji;
+                    }
+                }
             }
-    })
+        })
+
     }
 
 }
@@ -530,14 +549,20 @@ const fireClick = (selectedCell) => {
     // color the board
     blockCells(cellsEl, missArr, colors.miss);
     blockCells(cellsEl, hitArr, colors.hit);
-    /*deadArr.forEach((arr) => {
-        blockCells(cellsEl, arr, colors.dead)
-    }) */
+    renderComputer(false, true);
 
-    renderComputer(false);
+    let win = winner(shipsComputer)
+    
+    if (win) {
+        
+        console.log("We have a winner")
+        
+        // render win page
+        window.location.href = "../templates/winloss.html";
 
-    console.log(shipsComputer)
+        immediateEl.textContent = "You won! Congrats!"
 
+    }
 
 }
 
@@ -598,14 +623,16 @@ onload = () => {
             computerSetup();
         }
 
-        // render computer's setup – if want visibility
-        // renderComputer(true);
+        // render computer's setup – CHANGE TO FALSE FOR GAME
+        renderComputer(true, false);
 
         console.log(aGrid);
 
     }
 
 };
+
+
 
 // click on a cell for setup
 compTableEl.addEventListener("click", gameClick)
@@ -616,6 +643,25 @@ fireButton.addEventListener('click', () => {
     selectedCell = undefined;
 })
 
+// add the same funcitonality with the space bar click
+
+// prevent HTML page from scrolling
+window.onkeydown = function(e) { 
+    return !(e.keyCode == 32);
+};
+
+// space bar to fire
+document.addEventListener('keyup', e => {
+    if (e.key == " " || e.code == "Space") {
+
+        console.log("Space BAR!")
+        fireClick(selectedCell)
+        selectedCell = undefined;
+
+    }
+})
+
+//TESTS
 // experimental numbers
 cruiserEl.addEventListener("click", () => {
     fillWithIds(cellsEl)
