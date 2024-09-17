@@ -649,7 +649,7 @@ const computerFires = () => {
                 adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
             }  else {} */
             
-            adjacentCells = calculateAdjacent(toTarget[0], gridSize, aGrid);
+            adjacentCells = calculateAdjacent(toTarget[0], gridSize);
             console.log("Adjacent cells to target ", adjacentCells)
 
             //filter adjacent cells so they can't be above 100
@@ -660,7 +660,7 @@ const computerFires = () => {
             console.log("Adjacent cells to target after filter ", adjacentCells)
 
             // highlight suggested cells
-            highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
+            blockCells(cellsEl, adjacentCells, colors.suggest);
 
             // highlight suggested cells – COMPUTER  NOT NEEDED
             //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);

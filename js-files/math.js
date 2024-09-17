@@ -59,14 +59,16 @@ const calculateAdjacent = (cell, size, playerBoard) => {
     })
 
     // exclude members of arr if they are in playerBoard array
-    for (let i = 0; i < playerBoard.length; i++) {
-        // if not undefined, note its index + 1, save it to a variable, see if it is in arr array, remove it
-        if (playerBoard[i] !== undefined) {
-            let j = i + 1;
-            arr = arr.filter((el) => {
-                return el !== j;
-            });
-        } 
+    if (playerBoard) {
+        for (let i = 0; i < playerBoard.length; i++) {
+            // if not undefined, note its index + 1, save it to a variable, see if it is in arr array, remove it
+            if (playerBoard[i] !== undefined) {
+                let j = i + 1;
+                arr = arr.filter((el) => {
+                    return el !== j;
+                });
+            } 
+        }
     }
 
     // sort in ascending order

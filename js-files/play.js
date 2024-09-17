@@ -90,9 +90,9 @@ export const analyzeAttack = (cell, aGrid,
 
 }
 
-export const attackNext = () => {
-    
-}
+/*export const attackNext = (cell, size) => {
+
+}*/
 
 export const winner = (ships) => {
     
