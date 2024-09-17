@@ -336,6 +336,7 @@ const trackLength = (obj, index) => {
     }
 }
 
+// calculate computer array
 const computerArray = (size) => {
     
     const arr = [];

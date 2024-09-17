@@ -171,7 +171,8 @@ let computerReady = false;
 let selectedCell;
 
 // game specific variables
-let hitCount = 0;
+let hitCount = 0; // human
+let hitCountComp = 0; // computer
 let missArr = []; // IDs of missed cells
 let hitArr = []; // IDs of hit cells
 let deadArr = []; // IDs of dead cells with revealed ships
@@ -560,7 +561,7 @@ const fireClick = (selectedCell) => {
     } else {
         
         immediateEl.textContent = "Click on an opponent's grid cell"
-        
+
     }
 
     // color the board
@@ -607,32 +608,101 @@ const fireClick = (selectedCell) => {
 const computerFires = () => {
     // set message
     computerEl.textContent = "Computer is thinking..."
-    // if known number in hitArr between 1 and grid size squared
-    // but it is not in deadArr
+
+    // hits by computer – below ID 100
+    let compHits = hitArr.filter((a) => {
+        return a <= gridSquared;
+    })
+
+    console.log(compHits);
+
+    let concDeadArr = [];
+    concDeadArr = deadArr.map((arr) => {
+        return concDeadArr.concat(arr);
+    })
+
+    // if ID compHits but NOT in dead, target it!
+    // toTarget can NEVER be more than one value
+    let toTarget = compHits.filter((a) => {
+        return !concDeadArr.includes(a);
+    })
+
+    // initialize ID
+    let i;
+
+    // if time to target
+    if (toTarget.length === 1) {
+        
+        console.log("Attack is on! ID to target is ", toTarget)
+        console.log("Type of toTarget", typeof(toTarget))
 
         // produce number from adjacent array
+        // orientation check
+        function orientationAdjacent() {
+            // determine orientation
+            /*if (hitCountComp === 2) {
+                shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
+            } */
 
-    // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
-    // can't choose the same cell twice – recursive function
-    
-    let i;
-    function randomCell() {
-        i = playerArray[randomIndex(playerArray)];
-        if (missArr.includes(i) || hitArr.includes(i)) {
-            console.log("regenerating ID");
-            randomCell();
+            // calculate adjacent cells
+            /*if (hitCountComp >= 2) {
+                adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
+            }  else {} */
+            
+            adjacentCells = calculateAdjacent(toTarget[0], gridSize, aGrid);
+            console.log("Adjacent cells to target ", adjacentCells)
+
+            //filter adjacent cells so they can't be above 100
+            adjacentCells = adjacentCells.filter((cell) => {
+                return cell <= gridSquared;
+            })
+            
+            console.log("Adjacent cells to target after filter ", adjacentCells)
+
+            // highlight suggested cells
+            highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
+
+            // highlight suggested cells – COMPUTER  NOT NEEDED
+            //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
         }
+
+        orientationAdjacent();
+
+        function randomCell() {
+            i = adjacentCells[randomIndex(adjacentCells)];
+            if (missArr.includes(i) || hitArr.includes(i)) {
+                console.log("regenerating ID");
+                randomCell();
+            }
+        }
+
+        randomCell();
+
+    } // produce random i
+    else {
+
+        // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
+        // can't choose the same cell twice – recursive function
+        function randomCell() {
+            i = playerArray[randomIndex(playerArray)];
+            if (missArr.includes(i) || hitArr.includes(i)) {
+                console.log("regenerating ID");
+                randomCell();
+            }
+        }
+
+        randomCell();
     }
 
-    randomCell();
 
     console.log("ID chosen by computer is ", i)
 
-    // assign that number to the cell
+    // assign that ID to the cell
     selectedCell = i;
 
     // analyze attack
-    let attackMessage = analyzeAttack(selectedCell, aGrid, ships, hitCount, missArr, hitArr, deadArr, compScore, "computer");
+    let attackMessage = analyzeAttack(selectedCell, aGrid, ships, hitCountComp, missArr, hitArr, deadArr, compScore, "computer");
+    console.log("Computer hit count is ", hitCountComp)
     console.log("Missed array is ", missArr)
     console.log("Hit array is ", hitArr) 
     console.log("Dead array is ", deadArr)
@@ -656,6 +726,9 @@ const computerFires = () => {
 
     }, timeDelay);
 
+    // if dead – reset hitCount
+
+
     // if message equals to first hit, generate an adjacent array
 
 
@@ -668,6 +741,9 @@ const computerFires = () => {
         // block out the cells around
 
     // check for winner
+
+    // clear toTarget
+    toTarget = undefined;
 }
 
 const renderWinLossMsg = () => {

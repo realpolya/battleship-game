@@ -90,31 +90,8 @@ export const analyzeAttack = (cell, aGrid,
 
 }
 
-const computerFires = () => {
-    // if known number in hitArr between 1 and grid size squared
-    // but it is not in deadArr
-
-        // produce number from adjacent array
-
-    // generate random number between 1 and grid size squared
-
-    // assign that number to the cell
-
-    // time delay
-
-    // analyzeAttack button
-
-    // if message equals to first hit, generate an adjacent array
-
-    // if the following message is missed, go back to the hit cell
-
-    // keep trying until ship is sunk
-
-    // if ship is sunk
-
-        // block out the cells around
-
-    // check for winner
+export const attackNext = () => {
+    
 }
 
 export const winner = (ships) => {
