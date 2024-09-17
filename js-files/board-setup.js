@@ -32,13 +32,26 @@ const highlightCells = (elArray, arr, unavailArr, suggestiveColor) => {
     });
 }
 
-// highlight blocked adjacent cells, arr for array of needed ids
-const blockCells = (elArray, arr, color) => {
-    elArray.forEach((el) => {
-        if (arr.includes(+el.id)) {
-            el.style.backgroundColor = color;
-        }
-    })
+// highlight blocked adjacent cells, arr for array of needed ids, sizeSquared is limit
+const blockCells = (elArray, arr, color, sizeSquared) => {
+    if (sizeSquared) {
+
+        elArray.forEach((el) => {
+            if (arr.includes(+el.id) && +el.id > sizeSquared) {
+                el.style.backgroundColor = color;
+            }
+        })
+
+    } else {
+
+        elArray.forEach((el) => {
+            if (arr.includes(+el.id)) {
+                el.style.backgroundColor = color;
+            }
+        })
+
+    }
+
 }
 
 const unhighlightCells = (elArray, suggestiveColor, boardColor) => {

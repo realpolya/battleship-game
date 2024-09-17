@@ -134,7 +134,7 @@ const gridColumnsCalculate = (size, computer) => {
 }
 
 // calculate cell options for 2nd and later clicks
-const updateAdjacent = (size, orientation, location, hor2D, ver2D, length) => {
+const updateAdjacent = (size, orientation, location, hor2D, ver2D) => {
 
     const finalArr = location.map((locID, i, location) => {
         
@@ -382,4 +382,65 @@ const randomIndex = (arr) => {
 
 }
 
-export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj, computerArray, randomIndex };
+// pass toTarget into arr
+// calculate next cell for attack if orientation is clear
+const attackNext = (size, orientation, arr, hor2D, ver2D) => {
+    
+    const finalArr = arr.map((locID, i, arr) => {
+        
+        let newArrayMember;
+        let possible = [];
+
+        if (orientation === "horizontal") {
+            
+            possible = [locID + 1, locID - 1] // horizontal options
+
+            // understand which sub-array in horArray corresponds to this locID 
+            hor2D.forEach((subArray) => {
+                
+                // only 1 subArray will much so the loop will only run once
+                if (subArray.includes(locID)) {
+                    // overlap
+                    possible.forEach((num) => {
+                        
+                        if (!arr.includes(num) && subArray.includes(num)) {
+                            // assigning newArrayMember
+                            newArrayMember = num;
+                        }
+
+                    })
+                }
+            })
+
+        } // if vertical
+        else if (orientation === "vertical") {
+            
+            possible = [locID + size, locID - size] // vertical options
+
+            // understand which sub-array in horArray corresponds to this locID 
+            ver2D.forEach((subArray) => {
+                
+                // only 1 subArray will much so the loop will only run once
+                if (subArray.includes(locID)) {
+                    // overlap
+                    possible.forEach((num) => {
+                        if (!arr.includes(num) && subArray.includes(num)) {
+                            // assigning newArrayMember
+                            newArrayMember = num;
+                        }
+                    })
+                }
+            })
+
+        }
+
+        return newArrayMember;
+
+    }).filter((a) => {
+        return a !== undefined;
+    })
+
+    return finalArr;
+}
+
+export { calculateAdjacent, updateAdjacent, orientationCheck, gridColumnsCalculate, gridRowsCalculate, trackLength, calcBlockedAdj, computerArray, randomIndex, attackNext };

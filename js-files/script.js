@@ -1,7 +1,7 @@
 /* IMPORTS */
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
     gridColumnsCalculate, gridRowsCalculate, trackLength, 
-    calcBlockedAdj, computerArray, randomIndex } from "./math.js"
+    calcBlockedAdj, computerArray, randomIndex, attackNext } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
     unhighlightCells, blockCells, shipInCell, renderScore } from "./board-setup.js"
 import { analyzeAttack, winner } from "./play.js";
@@ -569,9 +569,9 @@ const fireClick = (selectedCell) => {
 
     }
 
-    // color the board
+    // color the board – avoid coloring your board by adding gridSquared
     blockCells(cellsEl, missArr, colors.miss);
-    blockCells(cellsEl, hitArr, colors.hit);
+    blockCells(cellsEl, hitArr, colors.hit, gridSquared); // randomly colors computer
     renderComputer(false, true);
 
     // check for winner
@@ -579,7 +579,7 @@ const fireClick = (selectedCell) => {
     
     if (win) {
         
-        console.log("We have a winner")
+        console.log("We have a winner – player")
 
         // set the whoWon variable
         whoWon = "You";
@@ -624,9 +624,16 @@ const computerFires = () => {
 
     // concatenated deadArr
     let concDeadArr = [];
-    concDeadArr = deadArr.map((arr) => {
+    concDeadArr = [].concat(...deadArr);
+    
+    /*concDeadArr = deadArr.map((arr) => {
         return concDeadArr.concat(arr);
-    })
+    }) */
+    
+    console.log("ConcDeadArr is ", concDeadArr)
+
+    // TODO: do not target cells around dead cells
+    let emptyCells = [];
 
     // if ID compHits but NOT in dead, target it!
     // toTarget is an array initialized every time from nothing
@@ -672,16 +679,33 @@ const computerFires = () => {
     } // if two or more cells of the ship were discovered (not dead yet)
     else if (toTarget.length > 1) {
         
-        // determine orientation
-        if (toTarget.length === 2) {
-            shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
-            console.log("Attacked ship's orientation is ", shipOrientation)
+        function moreHits() {
+            // determine orientation
+            if (toTarget.length === 2) {
+                shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
+                console.log("Attacked ship's orientation is ", shipOrientation)
+            }
+            
+            // calculate adjacent cells
+            adjacentCells = attackNext(gridSize, shipOrientation, toTarget, horArray2D, verArray2D)
+
+            //filter adjacent cells so they can't be above 100 and were not chosen before
+            adjacentCells = adjacentCells.filter((cell) => {
+                return (cell <= gridSquared && !missArr.includes(cell) && !hitArr.includes(cell));
+            })
+
+            // highlight suggested cells – DELETE later
+            blockCells(cellsEl, adjacentCells, colors.suggest);
         }
         
-        // calculate adjacent cells
-            /*if (hitCountComp >= 2) {
-                adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
-            }  else {} */
+        moreHits();
+
+        function randomCell() {
+            i = adjacentCells[randomIndex(adjacentCells)];
+        }
+
+        randomCell();
+
     }
     // produce random i if no hits before or if previous are dead
     else {
@@ -742,16 +766,25 @@ const computerFires = () => {
     // update score on screen
     scoreEl.textContent = renderScore(score);
 
-
-    // if the following message is missed, go back to the hit cell
-
-    // keep trying until ship is sunk
-
-    // if ship is sunk
-
-        // block out the cells around
-
     // check for winner
+    let win = winner(ships)
+    
+    if (win) {
+        
+        console.log("We have a winner - computer")
+
+        // set the whoWon variable
+        whoWon = "Computer";
+        sessionStorage.setItem("whoWon", JSON.stringify(whoWon));
+        
+        // render win page
+        window.location.href = "../templates/winloss.html";
+
+        // reset session_computer for new game
+        session_computer = false;
+        sessionStorage.setItem("computer", session_computer)
+
+    }
 
 }
 
@@ -764,6 +797,8 @@ const renderWinLossMsg = () => {
     
     if (whoWon === "You") {
         immediateEl.textContent = "You won! Congrats!"
+    } else if (whoWon === "Computer") {
+        immediateEl.textContent = "Computer won! Sorry. Try again?"
     }
 
     // clear who Won
