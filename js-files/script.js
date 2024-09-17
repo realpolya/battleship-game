@@ -137,8 +137,9 @@ const colors = {
 let computer = true;
 let session_computer; // once value is stored to Session storage, reloads won't affect it
 
-// computer IDs array
+// computer IDs array, human IDs array
 let compArray = [];
+let playerArray = [];
 
 // two-dimensional arrays for human 1 through grid size squared
 let horArray2D = [];
@@ -176,6 +177,7 @@ let deadArr = []; // IDs of dead cells with revealed ships
 
 let playerScore = 0;
 let compScore = 0;
+let whoWon;
 
 
 
@@ -452,9 +454,14 @@ const computerSetup = () => {
 
 }
 
-// render existing player's and computer's boards onto the new page
+// render existing player's (and computer's) board onto the new page
 const renderPlayerSetup = () => {
-    
+    // populate human IDs array
+    for (let i = 1; i <= gridSquared; i++) {
+        playerArray.push(i);
+    }
+    console.log("human id array populated, ", playerArray)
+
     // retrieving information from previous page
     aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
 
@@ -468,7 +475,7 @@ const renderPlayerSetup = () => {
 
 }
 
-// for visibility. Pass false to see dead ships.
+// computer setup. render, dead = booleans
 const renderComputer = (render, dead) => {
     
     // retrieve aGrid with computer info
@@ -529,8 +536,6 @@ const gameClick = (e) => {
 
 const fireClick = (selectedCell) => {
     
-    console.log(selectedCell)
-    
     if (selectedCell > 100) {
 
         console.log("Fire button has been fired");
@@ -551,19 +556,82 @@ const fireClick = (selectedCell) => {
     blockCells(cellsEl, hitArr, colors.hit);
     renderComputer(false, true);
 
+    // check for winner
     let win = winner(shipsComputer)
     
     if (win) {
         
         console.log("We have a winner")
+
+        // set the whoWon variable
+        whoWon = "You";
+        sessionStorage.setItem("whoWon", JSON.stringify(whoWon));
         
         // render win page
         window.location.href = "../templates/winloss.html";
 
-        immediateEl.textContent = "You won! Congrats!"
+        // reset session_computer for new game
+        session_computer = false;
+        sessionStorage.setItem("computer", session_computer)
 
     }
 
+    // computer fires
+    computerFires();
+
+}
+
+const computerFires = () => {
+    // if known number in hitArr between 1 and grid size squared
+    // but it is not in deadArr
+
+        // produce number from adjacent array
+
+    // generate random number between 1 and grid size squared
+
+    let i = playerArray[randomIndex(playerArray)];
+    console.log("ID chosen by computer is ", i)
+
+    // assign that number to the cell
+    selectedCell = i;
+
+    // time delay
+
+    // analyzeAttack button
+    immediateEl.textContent = analyzeAttack(selectedCell, aGrid, ships, hitCount, missArr, hitArr, deadArr, compScore, "computer")
+
+    // color
+    blockCells(cellsEl, missArr, colors.miss);
+    blockCells(cellsEl, hitArr, colors.hit);
+
+    // if message equals to first hit, generate an adjacent array
+
+    // if the following message is missed, go back to the hit cell
+
+    // keep trying until ship is sunk
+
+    // if ship is sunk
+
+        // block out the cells around
+
+    // check for winner
+}
+
+const renderWinLossMsg = () => {
+
+    // obtain whoWon variable
+    whoWon = JSON.parse(sessionStorage.getItem("whoWon"));
+
+    console.log("Who won? ", whoWon);
+    
+    if (whoWon === "You") {
+        immediateEl.textContent = "You won! Congrats!"
+    }
+
+    // clear who Won
+    whoWon = "undefined";
+    sessionStorage.setItem("whoWon", JSON.stringify(whoWon));
+    
 }
 
 
@@ -595,7 +663,7 @@ onload = () => {
     arrays2D();
     
     // if setup page
-    if (setupCommandEl.textContent === "Setup Instructions:") {
+    if (setupCommandEl?.textContent === "Setup Instructions:") {
 
         // click on a cell for setup
         gameTableEl.addEventListener("click", handleClickSetup)
@@ -604,7 +672,7 @@ onload = () => {
         immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
 
     } // if play page – render player setup and calculate computer setup
-    else {
+    else if (setupCommandEl?.textContent === "Board Instructions:") {
         
         // render player setup
         renderPlayerSetup();
@@ -617,6 +685,7 @@ onload = () => {
 
         // update whether the computer setup has been done
         session_computer = JSON.parse(sessionStorage.getItem("computer"));
+        console.log("session_computer ", session_computer)
         
         // if the computer setup is not done, do it
         if (!session_computer) {
@@ -630,21 +699,22 @@ onload = () => {
 
     }
 
+    renderWinLossMsg();
+
 };
 
 
 
 // click on a cell for setup
-compTableEl.addEventListener("click", gameClick)
+compTableEl?.addEventListener("click", gameClick)
 
 // fire button functionality
-fireButton.addEventListener('click', () => {
+fireButton?.addEventListener('click', () => {
     fireClick(selectedCell);
     selectedCell = undefined;
 })
 
 // add the same funcitonality with the space bar click
-
 // prevent HTML page from scrolling
 window.onkeydown = function(e) { 
     return !(e.keyCode == 32);
@@ -663,7 +733,7 @@ document.addEventListener('keyup', e => {
 
 //TESTS
 // experimental numbers
-cruiserEl.addEventListener("click", () => {
+cruiserEl?.addEventListener("click", () => {
     fillWithIds(cellsEl)
     console.log(cellsEl)
 });

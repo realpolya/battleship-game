@@ -1,7 +1,7 @@
 /* this file has functions for the game logic of battleship */
 
 export const analyzeAttack = (cell, aGrid, 
-    ships, hitCount, missArr, hitArr, deadArr, score) => {
+    ships, hitCount, missArr, hitArr, deadArr, score, computer) => {
     
     let shipHasSunk = false;
     let sunkShip;
@@ -60,10 +60,16 @@ export const analyzeAttack = (cell, aGrid,
         if (shipHasSunk) {
             
             console.log(`${sunkShip} was sunk!`, ships)
+            if (computer) {
+                return `Computer sank your ${sunkShip}!`
+            }
             return `${sunkShip} was sunk!`
 
         }
         console.log("Hit", ships)
+        if (computer) {
+            return "Computer hit!"
+        }
         return "Hit!";
 
 
@@ -75,6 +81,9 @@ export const analyzeAttack = (cell, aGrid,
         // push into missedArr
         missArr.push(cell)
 
+        if (computer) {
+            return "Computer missed!"
+        }
         return "Miss!"
 
     }
@@ -82,7 +91,30 @@ export const analyzeAttack = (cell, aGrid,
 }
 
 const computerFires = () => {
+    // if known number in hitArr between 1 and grid size squared
+    // but it is not in deadArr
 
+        // produce number from adjacent array
+
+    // generate random number between 1 and grid size squared
+
+    // assign that number to the cell
+
+    // time delay
+
+    // analyzeAttack button
+
+    // if message equals to first hit, generate an adjacent array
+
+    // if the following message is missed, go back to the hit cell
+
+    // keep trying until ship is sunk
+
+    // if ship is sunk
+
+        // block out the cells around
+
+    // check for winner
 }
 
 export const winner = (ships) => {
