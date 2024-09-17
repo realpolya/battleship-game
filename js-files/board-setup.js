@@ -73,5 +73,9 @@ function shipInCell(grid, cell, ships, sizeSquared, shipIndex, cellsEl, unavailC
     }
 }
 
+const renderScore = (score) => {
+    return `Score: ${score.player} / ${score.computer}`;
+}
 
-export { updateBoard, fillWithIds, highlightCells, unhighlightCells, blockCells, shipInCell };
+export { updateBoard, fillWithIds, highlightCells, unhighlightCells, 
+    blockCells, shipInCell, renderScore };

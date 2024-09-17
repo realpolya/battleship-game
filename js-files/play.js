@@ -1,7 +1,7 @@
 /* this file has functions for the game logic of battleship */
 
 export const analyzeAttack = (cell, aGrid, 
-    ships, hitCount, missArr, hitArr, deadArr, score, computer) => {
+    ships, missArr, hitArr, deadArr, score, computer) => {
     
     let shipHasSunk = false;
     let sunkShip;
@@ -17,9 +17,6 @@ export const analyzeAttack = (cell, aGrid,
 
     // see if the cell is empty or not
     if (aGrid[cell - 1]) {
-
-        // update hitCount
-        hitCount++;
 
         // push to the hit array
         hitArr.push(cell)
@@ -42,9 +39,6 @@ export const analyzeAttack = (cell, aGrid,
                         // change alive boolean
                         ship.alive = false;
 
-                        // update score
-                        score++;
-
                         // push to dead cells array
                         deadArr.push(ship.location);
 
@@ -59,10 +53,14 @@ export const analyzeAttack = (cell, aGrid,
         
         if (shipHasSunk) {
             
-            console.log(`${sunkShip} was sunk!`, ships)
+            console.log(`${sunkShip} has sunk!`, ships)
+            
             if (computer) {
+                score.computer++;
                 return `Computer sank your ${sunkShip}!`
             }
+
+            score.player++;
             return `${sunkShip} was sunk!`
 
         }

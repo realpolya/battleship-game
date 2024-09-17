@@ -3,7 +3,7 @@ import { calculateAdjacent, updateAdjacent, orientationCheck,
     gridColumnsCalculate, gridRowsCalculate, trackLength, 
     calcBlockedAdj, computerArray, randomIndex } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
-    unhighlightCells, blockCells, shipInCell } from "./board-setup.js"
+    unhighlightCells, blockCells, shipInCell, renderScore } from "./board-setup.js"
 import { analyzeAttack, winner } from "./play.js";
 
 /* BATTLESHIP
@@ -131,6 +131,12 @@ const colors = {
     firebutton: "grey"
 }
 
+// score variable
+const score = {
+    player: 0,
+    computer: 0
+}
+
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -177,8 +183,6 @@ let missArr = []; // IDs of missed cells
 let hitArr = []; // IDs of hit cells
 let deadArr = []; // IDs of dead cells with revealed ships
 
-let playerScore = 0;
-let compScore = 0;
 let whoWon;
 
 let timeDelay = 2000; // 1000 equals to 1 second
@@ -201,6 +205,7 @@ const compTableEl = document.getElementById('computer-table');
 // instructions for the current ship, score-keeper for game
 const immediateEl = document.getElementById('immediate-instruction');
 const computerEl = document.getElementById('computer-move');
+const scoreEl = document.getElementById('score');
 
 // buttons
 const reButton = document.getElementById('ready-restart');
@@ -550,7 +555,7 @@ const fireClick = (selectedCell) => {
         console.log("Fire button has been fired");
 
         // function that analyzes what happens after a fire click
-        immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, hitCount, missArr, hitArr, deadArr, playerScore)
+        immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, missArr, hitArr, deadArr, score)
         clickResult = immediateEl.textContent
 
 
@@ -591,6 +596,9 @@ const fireClick = (selectedCell) => {
 
     fireButton.style.backgroundColor = colors.firebutton
 
+    // update score on screen
+    scoreEl.textContent = renderScore(score);
+
     // computer fires
     // only proceed if the player indeed made a move
     if (clickResult === "Hit!" || clickResult === "Miss!" ||
@@ -614,15 +622,14 @@ const computerFires = () => {
         return a <= gridSquared;
     })
 
-    console.log(compHits);
-
+    // concatenated deadArr
     let concDeadArr = [];
     concDeadArr = deadArr.map((arr) => {
         return concDeadArr.concat(arr);
     })
 
     // if ID compHits but NOT in dead, target it!
-    // toTarget can NEVER be more than one value
+    // toTarget is an array
     let toTarget = compHits.filter((a) => {
         return !concDeadArr.includes(a);
     })
@@ -637,48 +644,41 @@ const computerFires = () => {
         console.log("Type of toTarget", typeof(toTarget))
 
         // produce number from adjacent array
-        // orientation check
-        function orientationAdjacent() {
-            // determine orientation
-            /*if (hitCountComp === 2) {
-                shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
-            } */
-
-            // calculate adjacent cells
-            /*if (hitCountComp >= 2) {
-                adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
-            }  else {} */
+        function firstHit() {
             
             adjacentCells = calculateAdjacent(toTarget[0], gridSize);
-            console.log("Adjacent cells to target ", adjacentCells)
 
-            //filter adjacent cells so they can't be above 100
+            //filter adjacent cells so they can't be above 100 and were not chosen before
             adjacentCells = adjacentCells.filter((cell) => {
-                return cell <= gridSquared;
+                return (cell <= gridSquared && missArr.includes(cell) && hitArr.includes(cell));
             })
             
-            console.log("Adjacent cells to target after filter ", adjacentCells)
+            console.log("Hit 1: Adjacent cells to target after filter ", adjacentCells)
 
-            // highlight suggested cells
+            // highlight suggested cells – DELETE later
             blockCells(cellsEl, adjacentCells, colors.suggest);
-
-            // highlight suggested cells – COMPUTER  NOT NEEDED
-            //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
         }
 
-        orientationAdjacent();
+        firstHit();
 
         function randomCell() {
             i = adjacentCells[randomIndex(adjacentCells)];
-            if (missArr.includes(i) || hitArr.includes(i)) {
-                console.log("regenerating ID");
-                randomCell();
-            }
         }
 
         randomCell();
 
-    } // produce random i
+    } // if two or more cells of the ship were discovered (not dead yet)
+    else if (toTarget.length > 1) {
+        // determine orientation
+            /*if (hitCountComp === 2) {
+                shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
+            } */
+        // calculate adjacent cells
+            /*if (hitCountComp >= 2) {
+                adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, horArray2D, verArray2D)
+            }  else {} */
+    }
+    // produce random i if no hits before or if pervious are dead
     else {
 
         // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
@@ -701,7 +701,7 @@ const computerFires = () => {
     selectedCell = i;
 
     // analyze attack
-    let attackMessage = analyzeAttack(selectedCell, aGrid, ships, hitCountComp, missArr, hitArr, deadArr, compScore, "computer");
+    let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
     console.log("Computer hit count is ", hitCountComp)
     console.log("Missed array is ", missArr)
     console.log("Hit array is ", hitArr) 
@@ -727,9 +727,15 @@ const computerFires = () => {
     }, timeDelay);
 
     // if dead – reset hitCount
+    if (attackMessage === "Computer hit!") {
+        hitCountComp++;
+        console.log("Hit! hit count is ", hitCountComp)
+    } else if (attackMessage.includes("sank your")) {
+        hitCountComp = 0;
+    }
 
-
-    // if message equals to first hit, generate an adjacent array
+    // update score on screen
+    scoreEl.textContent = renderScore(score);
 
 
     // if the following message is missed, go back to the hit cell
