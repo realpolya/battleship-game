@@ -190,7 +190,8 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D) => {
     return finalArr;
 }
 
-// color blocked adjacent cells after ship is complete (obtain ids)
+// color blocked adjacent cells after ship is complete (obtain ids), computer is 
+// a boolean to work on computer board
 const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => {
  
     let finalArr = [];

@@ -177,8 +177,6 @@ let computerReady = false;
 let selectedCell;
 
 // game specific variables
-let hitCount = 0; // human
-let hitCountComp = 0; // computer
 let missArr = []; // IDs of missed cells
 let hitArr = []; // IDs of hit cells
 let deadArr = []; // IDs of dead cells with revealed ships
@@ -186,6 +184,7 @@ let deadArr = []; // IDs of dead cells with revealed ships
 let whoWon;
 
 let timeDelay = 2000; // 1000 equals to 1 second
+let emptyCells = []; // cells not to target for computer
 
 
 
@@ -338,6 +337,7 @@ const allShipsComplete = () => {
         nextShip = false;
         shipsOnBoard = 0;
         adjacentCells = undefined;
+        unavailCells.length = 0;
 
         return true;
     }
@@ -625,15 +625,7 @@ const computerFires = () => {
     // concatenated deadArr
     let concDeadArr = [];
     concDeadArr = [].concat(...deadArr);
-    
-    /*concDeadArr = deadArr.map((arr) => {
-        return concDeadArr.concat(arr);
-    }) */
-    
     console.log("ConcDeadArr is ", concDeadArr)
-
-    // TODO: do not target cells around dead cells
-    let emptyCells = [];
 
     // if ID compHits but NOT in dead, target it!
     // toTarget is an array initialized every time from nothing
@@ -659,7 +651,10 @@ const computerFires = () => {
 
             //filter adjacent cells so they can't be above 100 and were not chosen before
             adjacentCells = adjacentCells.filter((cell) => {
-                return (cell <= gridSquared && !missArr.includes(cell) && !hitArr.includes(cell));
+                return (cell <= gridSquared 
+                    && !missArr.includes(cell) 
+                    && !hitArr.includes(cell)
+                    && !emptyCells.includes(cell));
             })
             
             console.log("Hit 1: Adjacent cells to target after filter ", adjacentCells)
@@ -691,7 +686,10 @@ const computerFires = () => {
 
             //filter adjacent cells so they can't be above 100 and were not chosen before
             adjacentCells = adjacentCells.filter((cell) => {
-                return (cell <= gridSquared && !missArr.includes(cell) && !hitArr.includes(cell));
+                return (cell <= gridSquared 
+                    && !missArr.includes(cell) 
+                    && !hitArr.includes(cell)
+                    && !emptyCells.includes(cell));
             })
 
             // highlight suggested cells – DELETE later
@@ -715,8 +713,7 @@ const computerFires = () => {
         function randomCell() {
             i = playerArray[randomIndex(playerArray)];
             
-            if (missArr.includes(i) || hitArr.includes(i)) {
-                console.log("regenerating ID");
+            if (missArr.includes(i) || hitArr.includes(i) || emptyCells.includes(i)) {
                 randomCell();
             }
         }
@@ -755,12 +752,25 @@ const computerFires = () => {
 
     }, timeDelay);
 
-    // if hit – count up, if dead – reset hitCount
-    if (attackMessage === "Computer hit!") {
-        hitCountComp++;
-        console.log("Hit! hit count is ", hitCountComp)
-    } else if (attackMessage.includes("sank your")) {
-        hitCountComp = 0;
+    if (attackMessage.includes("sank your")) {
+
+        // do not target cells around dead cells
+        deadArr.forEach((arr) => {
+            
+            let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
+
+            cells.forEach((id) => {
+                if (!emptyCells.includes(id) && id <= gridSquared) {
+                    emptyCells.push(id);
+                }
+            })
+
+        })
+
+        // color blocked cells
+        //blockCells(cellsEl, emptyCells, colors.adjacent)
+        console.log("Empty cells after sinking a ship ", emptyCells)
+
     }
 
     // update score on screen

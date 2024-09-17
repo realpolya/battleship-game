@@ -88,10 +88,6 @@ export const analyzeAttack = (cell, aGrid,
 
 }
 
-/*export const attackNext = (cell, size) => {
-
-}*/
-
 export const winner = (ships) => {
     
     let answer = ships.every((ship) => {
