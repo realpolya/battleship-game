@@ -234,15 +234,11 @@ const handleClickSetup = (e) => {
         && e.target.classList.contains("cell") 
         && !unavailCells.includes(selectedCell)) {
 
-        console.log("This fired")
-
         // track click
         clickOrder.push(selectedCell)
 
         // uncolor the previous suggested color
         unhighlightCells(cellsEl, colors.suggest, colors.board);
-
-        console.log(selectedCell)
 
         // place ship in cell
         shipInCell(aGrid, selectedCell, ships, gridSquared, shipIndex, cellsEl, unavailCells)
@@ -289,7 +285,6 @@ const handleClickSetup = (e) => {
             // at index 0 would be blocked cells for 1 ship
             let cellsOccupied = blockedAdjCells.concat(ships[shipIndex].location)
             goBackBlockedCells.push(cellsOccupied); // has all of the blocked cells for this ship
-            console.log("goBackBlockedCells are ", goBackBlockedCells)
 
             // concat with unavailableCells 
             unavailCells = unavailCells.concat(blockedAdjCells);
@@ -324,7 +319,6 @@ const handleClickSetup = (e) => {
 // reset click, change ship
 const shipIsComplete = () => {
     
-    console.log("Ship is complete")
     adjacentCells = undefined;
     blockedAdjCells = undefined;
     clickNumber = 0;
@@ -372,8 +366,7 @@ const allShipsComplete = () => {
 
 // TESTING
 const goBackResetTrackers = () => {
-    
-    console.log("resetting trackers after goBack button")
+
 
     clickNumber = 0;
     adjacentCells = undefined;
@@ -391,16 +384,12 @@ const goBackResetTrackers = () => {
         
     })
 
-    console.log("After go back button, ships on board are ", shipsOnBoard)
-
 }
 
 const resetReadyButton = () => {
     
     // only run if ships were previously completed
     if (!allShipsComplete() && allShipsDoneBefore) {
-        
-        console.log("We detected that player was ready before, but pressed Go Back button!!!")
 
         // activate ready button
         reButton.textContent = "Player Not Ready Yet";
@@ -508,12 +497,12 @@ const computerSetup = () => {
         
         if (shipsOnBoard === shipsComputer.length) {
             
-            console.log("all ships are on board")
             computerReady = true;
             return true;
 
         } else {
             
+            // recursive function (untill all ships are completed)
             computerBoard();
 
         }
@@ -521,7 +510,6 @@ const computerSetup = () => {
     }
     
     computerBoard();
-    console.log("ComputerReady is ", computerReady)
     
     if (computerReady) {
         
@@ -544,7 +532,6 @@ const renderPlayerSetup = () => {
     for (let i = 1; i <= gridSquared; i++) {
         playerArray.push(i);
     }
-    console.log("human id array populated, ", playerArray)
 
     // retrieving information from previous page
     aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
@@ -574,7 +561,6 @@ const renderComputer = (render, dead, hide) => {
             blockCells(cellsEl, ship.location, colors.ship)
         } // hide the ship
         else if (ship.alive && hide){
-            console.log("RenderComputer is hiding")
             blockCells(cellsEl, ship.location, colors.board)
         }
 
@@ -610,8 +596,6 @@ const gameClick = (e) => {
     unhighlightCells(cellsEl, colors.fire, colors.board)
 
     selectedCell = +e.target.id
-    console.log(selectedCell);
-    console.log(e);
 
     // can only click on the cell with ids more than 100
     if (selectedCell > 100 && e.target.classList.contains("cell")) {
@@ -630,16 +614,9 @@ const fireClick = (selectedCell) => {
 
     if (selectedCell > 100) {
 
-        console.log("Fire button has been fired");
-
         // function that analyzes what happens after a fire click
         immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, missArr, hitArr, deadArr, score)
         clickResult = immediateEl.textContent
-
-
-        console.log("Missed array is ", missArr)
-        console.log("Hit array is ", hitArr)
-        console.log("Dead array is ", deadArr)
 
     } else {
         
@@ -656,8 +633,6 @@ const fireClick = (selectedCell) => {
     let win = winner(shipsComputer)
     
     if (win) {
-        
-        console.log("We have a winner – player")
 
         // set the whoWon variable
         whoWon = "You";
@@ -692,6 +667,7 @@ const fireClick = (selectedCell) => {
 }
 
 const computerFires = () => {
+    
     // set message
     computerEl.textContent = "Computer is thinking..."
 
@@ -703,24 +679,17 @@ const computerFires = () => {
     // concatenated deadArr
     let concDeadArr = [];
     concDeadArr = [].concat(...deadArr);
-    console.log("ConcDeadArr is ", concDeadArr)
 
     // if ID compHits but NOT in dead, target it!
-    // toTarget is an array initialized every time from nothing
     let toTarget = compHits.filter((a) => {
         return !concDeadArr.includes(a);
     })
-    
-    console.log("Current toTarget array is...", toTarget)
 
     // initialize ID
     let i;
 
-    // if time to target
+    // if there is one cell that was hit
     if (toTarget.length === 1) {
-        
-        console.log("Attack is on! ID to target is ", toTarget)
-        console.log("Type of toTarget", typeof(toTarget))
 
         // produce number from adjacent array
         function firstHit() {
@@ -734,8 +703,6 @@ const computerFires = () => {
                     && !hitArr.includes(cell)
                     && !emptyCells.includes(cell));
             })
-            
-            console.log("Hit 1: Adjacent cells to target after filter ", adjacentCells)
 
             // highlight suggested cells – DELETE later
             //blockCells(cellsEl, adjacentCells, colors.suggest);
@@ -749,14 +716,15 @@ const computerFires = () => {
 
         randomCell();
 
-    } // if two or more cells of the ship were discovered (not dead yet)
+    } 
+    
+    // if two or more cells of the ship were discovered (not dead yet)
     else if (toTarget.length > 1) {
         
         function moreHits() {
             // determine orientation
             if (toTarget.length === 2) {
                 shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
-                console.log("Attacked ship's orientation is ", shipOrientation)
             }
             
             // calculate adjacent cells
@@ -783,45 +751,29 @@ const computerFires = () => {
         randomCell();
 
     }
+    
     // produce random i if no hits before or if previous are dead
     else {
 
-        // new array to pick a cell from
-        // identical to playerArray but excludes missArr, hitArr, and emptyCells are
+
         let availableCells = Array.from(playerArray)
+        
         availableCells = availableCells.filter((cell) => {
             return (!missArr.includes(cell) && !hitArr.includes(cell) && !emptyCells.includes(cell))
         })
-        console.log("Available cells to pick from are ", availableCells)
         
         function randomCell() {
             i = availableCells[randomIndex(availableCells)];
         }
 
-        /* RECURSIVE FUNCTION
-        function randomCell() {
-            i = playerArray[randomIndex(playerArray)];
-            
-            if (missArr.includes(i) || hitArr.includes(i) || emptyCells.includes(i)) {
-                randomCell();
-            }
-        } */
-
         randomCell();
     }
-
-
-    console.log("ID chosen by computer is ", i)
 
     // assign that ID to the cell
     selectedCell = i;
 
     // analyze attack
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
-    console.log("Missed array is ", missArr)
-    console.log("Hit array is ", hitArr) 
-    console.log("Dead array is ", deadArr)
-    console.log("User's ships ", ships)
 
     // time delay to reveal the result
     setTimeout(() => {
@@ -838,6 +790,9 @@ const computerFires = () => {
         deadArr.forEach((arr) => {
             blockCells(cellsEl, arr, colors.dead);
         })
+
+        // update turn message
+        computerEl.textContent = "Player's turn"
 
     }, timeDelay);
 
@@ -858,7 +813,6 @@ const computerFires = () => {
 
         // color blocked cells
         //blockCells(cellsEl, emptyCells, colors.adjacent)
-        console.log("Empty cells after sinking a ship ", emptyCells)
 
     }
 
@@ -869,8 +823,6 @@ const computerFires = () => {
     let win = winner(ships)
     
     if (win) {
-        
-        console.log("We have a winner - computer")
 
         // set the whoWon variable
         whoWon = "Computer";
@@ -941,7 +893,6 @@ onload = () => {
         // click on a cell for setup
         gameTableEl.addEventListener("click", handleClickSetup)
 
-        console.log("this is setup page");
         immediateEl.textContent = `Build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
 
     } // if play page – render player setup and calculate computer setup
@@ -958,7 +909,6 @@ onload = () => {
 
         // update whether the computer setup has been done
         session_computer = JSON.parse(sessionStorage.getItem("computer"));
-        console.log("session_computer ", session_computer)
         
         // if the computer setup is not done, do it
         if (!session_computer) {
@@ -967,8 +917,6 @@ onload = () => {
 
         // render computer's setup – CHANGE TO FALSE FOR GAME
         renderComputer(false, false);
-
-        console.log(aGrid);
 
     }
 
@@ -993,7 +941,6 @@ goBackButton?.addEventListener("click", () => {
         unavailCells = unavailCells.filter((cell) => {
             return !ships[lastID].location.includes(cell);
         })
-        console.log("After removeShipIndex, unavail cells are ", unavailCells)
 
         // remove color from ships[lastID].location
         blockCells(cellsEl, ships[lastID].location, colors.board)
@@ -1012,7 +959,6 @@ goBackButton?.addEventListener("click", () => {
             
             // cycle through the arr
             let freeArr = goBackBlockedCells.pop()
-            console.log("freeArr is ", freeArr)
 
             // filter freeArr to make sure it doesn't have overlapping elements with goBackBlockedCells
             goBackBlockedCells.forEach((blockedArr) => {
@@ -1026,14 +972,10 @@ goBackButton?.addEventListener("click", () => {
                 }
             })
 
-            console.log("after filtering freeArr is ", freeArr)
-            console.log("goBackBlockedCells after Go Back are ", goBackBlockedCells)
-
             // remove from unavail cells
             unavailCells = unavailCells.filter((cell) => {
                 return !freeArr.includes(cell);
             })
-            console.log("Unavail cells now are ", unavailCells)
 
             // uncolor freeArr
             blockCells(cellsEl, freeArr, colors.board)
@@ -1086,11 +1028,9 @@ showComputerButton?.addEventListener("click", () => {
 
     // change text of the button & render cells
     if (showComputer) {
-        console.log("showing")
         renderComputer(showComputer, false);
         showComputerButton.textContent = "Click to hide computer setup";
     } else {
-        console.log("hiding")
         renderComputer(showComputer, false, "hide");
         showComputerButton.textContent = "Click to show computer setup";
     }
@@ -1115,7 +1055,6 @@ window.onkeydown = function(e) {
 document.addEventListener('keyup', e => {
     if (e.key == " " || e.code == "Space") {
 
-        console.log("Space BAR!")
         fireClick(selectedCell)
         selectedCell = undefined;
 
@@ -1129,5 +1068,4 @@ document.addEventListener('keyup', e => {
 // experimental numbers
 cruiserEl?.addEventListener("click", () => {
     fillWithIds(cellsEl)
-    console.log(cellsEl)
 });

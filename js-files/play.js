@@ -6,14 +6,10 @@ export const analyzeAttack = (cell, aGrid,
     let shipHasSunk = false;
     let sunkShip;
 
-    console.log("Analyze attack is working");
-
     // check that the cell has not been hit yet (for human only)
     if (!computer && (missArr.includes(cell) || hitArr.includes(cell))) {
         return "This cell has already been hit";
     }
-
-    console.log("aGrid is ", aGrid)
 
     // see if the cell is empty or not
     if (aGrid[cell - 1]) {
@@ -25,16 +21,12 @@ export const analyzeAttack = (cell, aGrid,
             ships.forEach((ship) => {
                 // do they overlap
                 if (ship.location.includes(cell)) {
-                    
-                    console.log(`${ship.name} was hit`)
 
                     // update hit count of that specific ship
                     ship.hits++;
 
                     // if hit count equals to length
                     if (ship.hits === ship.length) {
-                        
-                        console.log(`${ship.name} has sunk`)
 
                         // change alive boolean
                         ship.alive = false;
@@ -53,8 +45,6 @@ export const analyzeAttack = (cell, aGrid,
         
         if (shipHasSunk) {
             
-            console.log(`${sunkShip} has sunk!`, ships)
-            
             if (computer) {
                 score.computer++;
                 return `Computer sank your ${sunkShip}!`
@@ -64,7 +54,7 @@ export const analyzeAttack = (cell, aGrid,
             return `${sunkShip} was sunk!`
 
         }
-        console.log("Hit", ships)
+
         if (computer) {
             return "Computer hit!"
         }
@@ -73,8 +63,6 @@ export const analyzeAttack = (cell, aGrid,
 
     } // if the cell is empty
     else {
-        
-        console.log("This was a miss")
 
         // push into missedArr
         missArr.push(cell)

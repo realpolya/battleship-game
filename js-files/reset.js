@@ -4,8 +4,6 @@
 // button is enabled only if some ships are positioned (aka aGrid has a truthy value)
 const goBack = (ships, grid) => {
 
-    console.log("At the beginning, aGrid was ", grid)
-
     let emojiToRemove;
 
     // go through ships from last index to 0
@@ -22,8 +20,6 @@ const goBack = (ships, grid) => {
 
     }
 
-    console.log(emojiToRemove)
-
     // remove emoji from grid
     let newGrid = grid.map((cell, i) => {
         if (cell === emojiToRemove) {
@@ -31,9 +27,6 @@ const goBack = (ships, grid) => {
         }
         return cell;
     })
-
-    console.log("After go back button ships are ", ships);
-    console.log("After go back button new grid is ", newGrid)
 
     return newGrid;
 
