@@ -5,7 +5,8 @@ import { calculateAdjacent, updateAdjacent, orientationCheck,
     attackNext } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
     unhighlightCells, blockCells, shipInCell, 
-    renderScore, goBack } from "./board-setup.js"
+    renderScore } from "./board-setup.js"
+import { goBack, removeShipIndex } from "./reset.js"
 import { analyzeAttack, winner } from "./play.js";
 
 /* BATTLESHIP
@@ -176,6 +177,7 @@ let nextShip = false;
 let shipOrientation;
 let shipsOnBoard = 0;
 let computerReady = false;
+let allShipsDoneBefore = false;
 
 // store selected cell
 let selectedCell;
@@ -230,6 +232,8 @@ const handleClickSetup = (e) => {
         && e.target.classList.contains("cell") 
         && !unavailCells.includes(selectedCell)) {
 
+        console.log("This fired")
+
         // track click
         clickOrder.push(selectedCell)
 
@@ -281,7 +285,9 @@ const handleClickSetup = (e) => {
             
             // add to goBack 2D array
             // at index 0 would be blocked cells for 1 ship
-            goBackBlockedCells.push(blockedAdjCells);
+            let cellsOccupied = blockedAdjCells.concat(ships[shipIndex].location)
+            goBackBlockedCells.push(cellsOccupied); // has all of the blocked cells for this ship
+            console.log("goBackBlockedCells are ", goBackBlockedCells)
 
             // concat with unavailableCells 
             unavailCells = unavailCells.concat(blockedAdjCells);
@@ -302,7 +308,7 @@ const handleClickSetup = (e) => {
     }
 
     // check if all ships are complete
-    allShipsComplete();
+    allShipsDoneBefore = allShipsComplete();
 
     // update the instructions message if the ships aren't complete
     if (!allShipsComplete() && nextShip) {
@@ -325,39 +331,15 @@ const shipIsComplete = () => {
 
 }
 
-// TESTING
-const goBackResetTrackers = () => {
-    
-    console.log("resetting trackers after goBack button")
-
-    clickNumber = 0;
-    adjacentCells = undefined;
-    blockedAdjCells = undefined;
-    
-    // recalculate trackers
-    shipIndex = 0;
-    shipsOnBoard = 0;
-    ships.forEach((ship) => {
-        
-        if (ship.location.length !== 0) {
-            shipIndex++;
-            shipsOnBoard++;
-        }
-        
-    })
-
-}
-
 // all ships complete
 const allShipsComplete = () => {
+    
     if (shipsOnBoard === ships.length) {
         
         console.log("Player is ready to begin")
 
         // store the grid and ships in the JSON
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
-        aGrid = JSON.parse(sessionStorage.getItem("aGrid"));
-        console.log(aGrid);
 
         // activate ready button
         reButton.textContent = "Ready?";
@@ -382,6 +364,57 @@ const allShipsComplete = () => {
     }
 
     return false;
+}
+
+/*-------------------------------- SETUP RESET Page Functions --------------------------------*/
+
+// TESTING
+const goBackResetTrackers = () => {
+    
+    console.log("resetting trackers after goBack button")
+
+    clickNumber = 0;
+    adjacentCells = undefined;
+    blockedAdjCells = undefined;
+    
+    // recalculate trackers
+    shipIndex = 0;
+    shipsOnBoard = 0;
+    ships.forEach((ship) => {
+        
+        if (ship.location.length !== 0) {
+            shipIndex++;
+            shipsOnBoard++;
+        }
+        
+    })
+
+    console.log("After go back button, ships on board are ", shipsOnBoard)
+
+}
+
+const resetReadyButton = () => {
+    
+    // only run if ships were previously completed
+    if (!allShipsComplete() && allShipsDoneBefore) {
+        
+        console.log("We detected that player was ready before, but pressed Go Back button!!!")
+
+        // activate ready button
+        reButton.textContent = "Player Not Ready Yet";
+        reButton.style.backgroundColor = colors.disabled;
+        reButton.setAttribute('disabled', 'true');
+
+        // remove event listener from board
+        gameTableEl.addEventListener("click", handleClickSetup)
+
+        // update instructions message
+        immediateEl.textContent = `Now build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`;
+
+        // reset allShipsDoneBefore
+        allShipsDoneBefore = false;
+    }
+
 }
 
 /*-------------------------------- PLAY Page Functions --------------------------------*/
@@ -928,33 +961,68 @@ onload = () => {
 // TESTING
 // go back on a setup page
 goBackButton?.addEventListener("click", () => {
-    if (goBackButton.style.backgroundColor = colors.button) {
+    
+    // only work if available
+    if (goBackButton.style.backgroundColor === colors.button) {
         
         // save ships on board to temporary variable
         let goBackShipsOnBoard = shipsOnBoard
 
-        // remove the last ship that was built
-        let object = goBack(ships, aGrid, unavailCells)
-        console.log("object is... ", object)
-        aGrid = object[0];
-        unavailCells = object[1];
+        // find out the index of the last ship – before goBack function
+        let lastID = removeShipIndex(ships)
 
-        // reset trackers
+        // remove from unavail cells
+        unavailCells = unavailCells.filter((cell) => {
+            return !ships[lastID].location.includes(cell);
+        })
+        console.log("After removeShipIndex, unavail cells are ", unavailCells)
+
+        // remove color from ships[lastID].location
+        blockCells(cellsEl, ships[lastID].location, colors.board)
+
+        // remove the last ship that was built – free up its location
+        aGrid = goBack(ships, aGrid)
+
+        // reset trackers – shipsOnBoard might change
         goBackResetTrackers();
+
+        // render new message
+        immediateEl.textContent = `Now build a ${ships[shipIndex].length}-cell ${ships[shipIndex].name}`
 
         // if shipsOnBoard differs, then free up the unavail cells
         if (goBackShipsOnBoard !== shipsOnBoard) {
             
             // cycle through the arr
-            let lastIndex = goBackBlockedCells.length - 1
-            let freeArr = goBackBlockedCells[lastIndex];
+            let freeArr = goBackBlockedCells.pop()
+            console.log("freeArr is ", freeArr)
+
+            // filter freeArr to make sure it doesn't have overlapping elements with goBackBlockedCells
+            goBackBlockedCells.forEach((blockedArr) => {
+                for (let i = 0; i < freeArr.length; i++) {
+                    if (blockedArr.includes(freeArr[i])) {
+                        // remove 
+                        freeArr.splice(i, 1)
+                        // reset to -1 to make sure not to skip elements (as the index shifts once els are removed)
+                        i = -1; // i++ will return it to 0
+                    }
+                }
+            })
+
+            console.log("after filtering freeArr is ", freeArr)
+            console.log("goBackBlockedCells after Go Back are ", goBackBlockedCells)
 
             // remove from unavail cells
             unavailCells = unavailCells.filter((cell) => {
                 return !freeArr.includes(cell);
             })
             console.log("Unavail cells now are ", unavailCells)
-        }
+
+            // uncolor freeArr
+            blockCells(cellsEl, freeArr, colors.board)
+        } 
+
+        // disable the ready button if needed
+        resetReadyButton();
 
         // colors
         function colorReset() {
@@ -974,15 +1042,14 @@ goBackButton?.addEventListener("click", () => {
         })
         if (gridCheck.length === 0) {
             goBackButton.style.backgroundColor = colors.disabled
-            resetButton.style.backggroundColor = colors.disabled
-
+            resetButton.style.backgroundColor = colors.disabled
         }
     }
 
 })
 
 resetButton?.addEventListener("click", () => {
-    if (resetButton.style.backgroundColor = colors.button) {
+    if (resetButton.style.backgroundColor === colors.button) {
         location.reload();
     }
 })
