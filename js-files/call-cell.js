@@ -53,7 +53,6 @@ export const generateAlphabet = (size) => {
     for (let i = 0; i < size; i++) {
         retainedAlphabet.push(alphabet[i]);
     }
-
-    console.log("Alphabet is ", retainedAlphabet)
+    
     return retainedAlphabet;
 }

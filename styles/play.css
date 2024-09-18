@@ -51,7 +51,6 @@
 
 .cell {
     background-color: var(--board-color);
-    font-size: 2rem;
 }
 
 /* player-setup - child of board */
@@ -145,24 +144,51 @@
 
 /* media queries */
 @media (max-width: 1100px) {
+    
+    .board {
+        width: 100%;
+    }
+    
     #player-setup {
       display: flex;
       flex-direction: column-reverse;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin: auto;
+      width: 100%;
     }
 
-    .board-button {
+    /*.board-button {
         min-width: 20%;
         text-wrap: wrap;
-        padding: 1rem;
-    }
+        padding: 0 1rem;
+        height: 20%;
+        max-height: 20%;
+    }*/
 
     #game-buttons {
         display: flex;
         flex-direction: row;
         background-color: brown;
         min-width: 100%;
-        justify-content: space-evenly;
+        justify-content: space-between;
+        max-height: 2.5rem;
+        align-items: center;
+    }
+
+    #fire, #show-ships {
+        min-width: 40%;
+        text-wrap: wrap;
+        padding: 0 1rem;
+        
+        min-height: 2.5rem;
+        max-height: 2.5rem;
+        height: 2.5rem;
+        
+        /*min-height: 20px;
+        max-height: 20px;
+        height: 20px; THIS WORKS*/
     }
   
     body {
@@ -170,10 +196,60 @@
     }
 
     .game-table {
-        margin: auto;
+        margin: 0.5rem auto 0.5rem auto;
+    }
+
+    .player-board, .computer-table, #game-buttons {
+        margin: 0.25rem auto 0.25rem auto;
     }
 
     #main-title {
         display: none;
     }
+
+    #updates {
+        display: flex;
+        flex-direction: row;
+        font-size: 0.7rem;
+    }
+
+    .instructions {
+        padding: .5rem 1rem;
+        font-size: 1rem;
+        height: 4.2rem;
+        margin: 0;
+        background-color: brown;
+    }
+
+    .board-header {
+        height: 2rem;
+        align-items: center;
+    }
+
+    .board-title, .target-info {
+        font-size: 0.7rem;
+    }
+
+    .target-info {
+        height: 1em;
+        padding: 0;
+    }
+
+    /*
+    td {
+        width: 1.5rem;
+        */
+    
+    td {
+        font-size: 0.7rem;
+        height: 1.8rem;
+        width: 1.8rem;
+        /*
+        min-height: 1.5rem;
+        min-width: 1.5rem;
+        max-height: 1.7rem;
+        max-width: 1.7rem;
+        aspect-ratio: 1/1; */
+    }
+
 }

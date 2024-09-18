@@ -788,7 +788,6 @@ const computerFires = () => {
 
     // assign that ID to the cell
     selectedCell = i;
-    console.log("1 cell", selectedCell)
 
     // analyze attack
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
@@ -799,7 +798,6 @@ const computerFires = () => {
         
         // reset computerEl
         computerEl.textContent = "";
-        console.log("3 cell", selectedCell)
         
         // analyzeAttack button
         immediateEl.textContent = attackMessage;
