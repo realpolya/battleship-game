@@ -32,7 +32,7 @@
     <section class="board">
         <div class="instructions">
             <div id="score-keeper">
-                <h5 id="setup-play">Board Instructions:</h5>
+                <h5 id="setup-play">Board Instructions:</h5><!--DO NOT TOUCH this h5-->
                 <h5 id="score">Score: 0/0</h5>
             </div>
             <p id="computer-move">Player's turn</p>
@@ -40,9 +40,15 @@
         </div>
         <div id="player-setup">
             <div class="player-board">
-                <h5>
-                    Your Board
-                </h5>
+                <div class="board-header">
+                    <h5>
+                        Your Board
+                    </h5>
+                    <p>
+                        Computer targeted:
+                        <p id="computer-target-cell"></p>
+                    </p>
+                </div>
                 <table class="game-table" id="player-table"> <!--10x10 grid -->
                     <tr>
                         <td></td>
@@ -190,9 +196,15 @@
                 </table>
             </div>
             <div class="computer-table">
-                <h5>
-                    Computer's Board
-                </h5>
+                <div class="board-header">
+                    <h5>
+                        Computer's Board
+                    </h5>
+                    <p>
+                        You targeted:
+                        <p id="player-target-cell"></p>
+                    </p>
+                </div>
                 <table class="game-table" id="computer-table"> <!--10x10 grid -->
                     <tr>
                         <td></td>
