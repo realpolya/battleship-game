@@ -147,6 +147,7 @@ const score = {
 // use computer as additional value in some functions
 let computer = true;
 let session_computer; // once value is stored to Session storage, reloads won't affect it
+let showComputer = false;
 
 // computer IDs array, human IDs array
 let compArray = [];
@@ -218,6 +219,7 @@ const resetButton = document.getElementById('reset')
 const reButton = document.getElementById('ready-restart');
 const fireButton = document.getElementById('fire');
 const setupCommandEl = document.getElementById('setup-play');
+const showComputerButton = document.getElementById('show-ships');
 
 /*-------------------------------- SETUP Page Functions --------------------------------*/
 
@@ -558,7 +560,7 @@ const renderPlayerSetup = () => {
 }
 
 // computer setup. render, dead = booleans
-const renderComputer = (render, dead) => {
+const renderComputer = (render, dead, hide) => {
     
     // retrieve aGrid with computer info
     aGrid = JSON.parse(sessionStorage.getItem("aGrid")); 
@@ -568,9 +570,13 @@ const renderComputer = (render, dead) => {
         ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
         
         // if render
-        if (render) {
+        if (render && ship.alive) {
             blockCells(cellsEl, ship.location, colors.ship)
-        };
+        } // hide the ship
+        else if (ship.alive && hide){
+            console.log("RenderComputer is hiding")
+            blockCells(cellsEl, ship.location, colors.board)
+        }
 
     })
 
@@ -732,7 +738,7 @@ const computerFires = () => {
             console.log("Hit 1: Adjacent cells to target after filter ", adjacentCells)
 
             // highlight suggested cells – DELETE later
-            blockCells(cellsEl, adjacentCells, colors.suggest);
+            //blockCells(cellsEl, adjacentCells, colors.suggest);
         }
 
         firstHit();
@@ -765,7 +771,7 @@ const computerFires = () => {
             })
 
             // highlight suggested cells – DELETE later
-            blockCells(cellsEl, adjacentCells, colors.suggest);
+            //blockCells(cellsEl, adjacentCells, colors.suggest);
         }
         
         moreHits();
@@ -901,6 +907,7 @@ const renderWinLossMsg = () => {
 
 /*----------------------------- Event Listeners -----------------------------*/
 
+/*----------------------------- onload & SETUP Event Listeners -----------------------------*/
 
 // get instruction for the first ship to build
 onload = () => {
@@ -948,7 +955,7 @@ onload = () => {
         }
 
         // render computer's setup – CHANGE TO FALSE FOR GAME
-        renderComputer(true, false);
+        renderComputer(false, false);
 
         console.log(aGrid);
 
@@ -1054,6 +1061,31 @@ resetButton?.addEventListener("click", () => {
     }
 })
 
+/*----------------------------- PLAY Event Listeners -----------------------------*/
+
+
+showComputerButton?.addEventListener("click", () => {
+    
+    // change showComputer to the opposite (at the load, showComputer = false)
+    if (showComputer) {
+        showComputer = false;
+    } else {
+        showComputer = true;
+    }
+
+    // change text of the button & render cells
+    if (showComputer) {
+        console.log("showing")
+        renderComputer(showComputer, false);
+        showComputerButton.textContent = "Click to hide computer setup";
+    } else {
+        console.log("hiding")
+        renderComputer(showComputer, false, "hide");
+        showComputerButton.textContent = "Click to show computer setup";
+    }
+
+})
+
 // click on a cell to pick for attack
 compTableEl?.addEventListener("click", gameClick)
 
@@ -1078,6 +1110,9 @@ document.addEventListener('keyup', e => {
 
     }
 })
+
+
+/*----------------------------- Experimental Listeners -----------------------------*/
 
 //TESTS
 // experimental numbers
