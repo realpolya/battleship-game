@@ -786,15 +786,26 @@ const computerFires = () => {
     // produce random i if no hits before or if previous are dead
     else {
 
-        // generate random number between 1 and grid size squared (recursive to avoid picking the same cell twice)
-        // can't choose the same cell twice – recursive function
+        // new array to pick a cell from
+        // identical to playerArray but excludes missArr, hitArr, and emptyCells are
+        let availableCells = Array.from(playerArray)
+        availableCells = availableCells.filter((cell) => {
+            return (!missArr.includes(cell) && !hitArr.includes(cell) && !emptyCells.includes(cell))
+        })
+        console.log("Available cells to pick from are ", availableCells)
+        
+        function randomCell() {
+            i = availableCells[randomIndex(availableCells)];
+        }
+
+        /* RECURSIVE FUNCTION
         function randomCell() {
             i = playerArray[randomIndex(playerArray)];
             
             if (missArr.includes(i) || hitArr.includes(i) || emptyCells.includes(i)) {
                 randomCell();
             }
-        }
+        } */
 
         randomCell();
     }
