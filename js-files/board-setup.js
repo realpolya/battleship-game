@@ -1,10 +1,10 @@
 /* BOARD SETUP RENDER FUNCTIONS */
 
 // update board function – sizeSquared to hide computer
-const updateBoard = (elArray, playerBoard, sizeSquared) => {
+const updateBoard = (elArray, grid, sizeSquared) => {
 
     for (let x = 0; x < sizeSquared; x++) {
-        elArray[x].textContent = playerBoard[x];
+        elArray[x].textContent = grid[x];
     }
 
 }
@@ -90,5 +90,67 @@ const renderScore = (score) => {
     return `Score: ${score.player} / ${score.computer}`;
 }
 
+// TESTING
+// go back button function – erases the last ship
+// button is enabled only if some ships are positioned (aka aGrid has a truthy value)
+const goBack = (ships, grid, unavailCells) => {
+    
+    let unavailCellsUpdated = [];
+    let toFreeCells = [];
+
+    console.log("At the beginning, aGrid was ", grid[0])
+
+    let emojiToRemove;
+
+    // go through ships from last index to 0
+    for (let i = ships.length - 1; i >= 0; i--) {
+
+        // remove location at the first instance where it is there
+        if (ships[i].location.length > 0) {
+            
+            // update toFreeCells
+            toFreeCells = Array.from(ships[i].location);
+            console.log("free us!", toFreeCells)
+
+            ships[i].location.length = 0
+            emojiToRemove = ships[i].emoji
+            break;
+
+        }
+
+    }
+
+    // update unavailCells
+
+    unavailCellsUpdated = unavailCells.filter((cell) => {
+        console.log("analyzing")
+        if (toFreeCells.includes(cell)) {
+            console.log("Cell overlap!", cell)
+        }
+        return !toFreeCells.includes(cell);
+    })
+
+
+    console.log(emojiToRemove)
+
+    // remove emoji from grid
+    let newGrid = grid.map((cell, i) => {
+        if (cell === emojiToRemove) {
+            console.log(i)
+            cell = undefined;
+        }
+        return cell;
+    })
+
+
+
+    console.log("After go back button ships are ", ships);
+    console.log("After go back button new grid is ", newGrid)
+
+    let objectToReturn = [newGrid, unavailCellsUpdated]
+    return objectToReturn;
+
+}
+
 export { updateBoard, fillWithIds, highlightCells, unhighlightCells, 
-    blockCells, shipInCell, renderScore };
+    blockCells, shipInCell, renderScore, goBack };

@@ -1,9 +1,11 @@
 /* IMPORTS */
 import { calculateAdjacent, updateAdjacent, orientationCheck, 
     gridColumnsCalculate, gridRowsCalculate, trackLength, 
-    calcBlockedAdj, computerArray, randomIndex, attackNext } from "./math.js"
+    calcBlockedAdj, computerArray, randomIndex, 
+    attackNext } from "./math.js"
 import { updateBoard, fillWithIds, highlightCells, 
-    unhighlightCells, blockCells, shipInCell, renderScore } from "./board-setup.js"
+    unhighlightCells, blockCells, shipInCell, 
+    renderScore, goBack } from "./board-setup.js"
 import { analyzeAttack, winner } from "./play.js";
 
 /* BATTLESHIP
@@ -128,7 +130,8 @@ const colors = {
     hit: "red",
     miss: "blue",
     dead: "black",
-    firebutton: "grey"
+    firebutton: "grey",
+    disabled: "white" // check with CSS
 }
 
 // score variable
@@ -157,6 +160,7 @@ let comHorArray2D = [];
 let comVerArray2D = []; 
 
 // tracker of unavailable cells
+let goBackBlockedCells = []; // array for go Back button TESTING
 let unavailCells = [];
 
 // array of adjacent cells
@@ -207,6 +211,8 @@ const computerEl = document.getElementById('computer-move');
 const scoreEl = document.getElementById('score');
 
 // buttons
+const goBackButton = document.getElementById('go-back')
+const resetButton = document.getElementById('reset')
 const reButton = document.getElementById('ready-restart');
 const fireButton = document.getElementById('fire');
 const setupCommandEl = document.getElementById('setup-play');
@@ -234,6 +240,10 @@ const handleClickSetup = (e) => {
 
         // place ship in cell
         shipInCell(aGrid, selectedCell, ships, gridSquared, shipIndex, cellsEl, unavailCells)
+
+        // change color of goBack button and resetButton
+        goBackButton.style.backgroundColor = colors.button
+        resetButton.style.backgroundColor = colors.button
 
         // change color of the blocked cell
         e.target.style.backgroundColor = colors.block;
@@ -268,6 +278,12 @@ const handleClickSetup = (e) => {
 
             // color the blocked cells
             blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
+            
+            // add to goBack 2D array
+            // at index 0 would be blocked cells for 1 ship
+            goBackBlockedCells.push(blockedAdjCells);
+
+            // concat with unavailableCells 
             unavailCells = unavailCells.concat(blockedAdjCells);
 
             blockCells(cellsEl, blockedAdjCells, colors.adjacent)
@@ -306,6 +322,29 @@ const shipIsComplete = () => {
     clickNumber = 0;
     shipIndex++; // to change once the first ship has been setup
     shipsOnBoard++;
+
+}
+
+// TESTING
+const goBackResetTrackers = () => {
+    
+    console.log("resetting trackers after goBack button")
+
+    clickNumber = 0;
+    adjacentCells = undefined;
+    blockedAdjCells = undefined;
+    
+    // recalculate trackers
+    shipIndex = 0;
+    shipsOnBoard = 0;
+    ships.forEach((ship) => {
+        
+        if (ship.location.length !== 0) {
+            shipIndex++;
+            shipsOnBoard++;
+        }
+        
+    })
 
 }
 
@@ -886,9 +925,69 @@ onload = () => {
 
 };
 
+// TESTING
+// go back on a setup page
+goBackButton?.addEventListener("click", () => {
+    if (goBackButton.style.backgroundColor = colors.button) {
+        
+        // save ships on board to temporary variable
+        let goBackShipsOnBoard = shipsOnBoard
+
+        // remove the last ship that was built
+        let object = goBack(ships, aGrid, unavailCells)
+        console.log("object is... ", object)
+        aGrid = object[0];
+        unavailCells = object[1];
+
+        // reset trackers
+        goBackResetTrackers();
+
+        // if shipsOnBoard differs, then free up the unavail cells
+        if (goBackShipsOnBoard !== shipsOnBoard) {
+            
+            // cycle through the arr
+            let lastIndex = goBackBlockedCells.length - 1
+            let freeArr = goBackBlockedCells[lastIndex];
+
+            // remove from unavail cells
+            unavailCells = unavailCells.filter((cell) => {
+                return !freeArr.includes(cell);
+            })
+            console.log("Unavail cells now are ", unavailCells)
+        }
+
+        // colors
+        function colorReset() {
+            // update board and render ships
+            updateBoard(cellsEl, aGrid, gridSquared)
+
+            // unhighlight suggested color
+            unhighlightCells(cellsEl, colors.suggest, colors.board);
+        }
+
+        colorReset();
 
 
-// click on a cell for setup
+        // if grid is totally empty
+        let gridCheck = aGrid.filter((i) => {
+            return i !== undefined;
+        })
+        if (gridCheck.length === 0) {
+            goBackButton.style.backgroundColor = colors.disabled
+            resetButton.style.backggroundColor = colors.disabled
+
+        }
+    }
+
+})
+
+resetButton?.addEventListener("click", () => {
+    if (resetButton.style.backgroundColor = colors.button) {
+        location.reload();
+    }
+})
+
+// click on a cell to pick for attack
 compTableEl?.addEventListener("click", gameClick)
 
 // fire button functionality
@@ -902,7 +1001,6 @@ fireButton?.addEventListener('click', () => {
 window.onkeydown = function(e) { 
     return !(e.keyCode == 32);
 };
-
 // space bar to fire
 document.addEventListener('keyup', e => {
     if (e.key == " " || e.code == "Space") {
