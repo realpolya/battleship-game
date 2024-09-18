@@ -556,12 +556,17 @@ const renderComputer = (render, dead, hide) => {
     shipsComputer.forEach((ship) => {
         ship.location = JSON.parse(sessionStorage.getItem(`shipsComputer-${ship.name}`));
         
+        // only render cells that haven't been hit
+        let cellsToRender = ship.location.filter((cell) => {
+            return !hitArr.includes(cell);
+        })
+
         // if render
         if (render && ship.alive) {
-            blockCells(cellsEl, ship.location, colors.ship)
+            blockCells(cellsEl, cellsToRender, colors.ship)
         } // hide the ship
         else if (ship.alive && hide){
-            blockCells(cellsEl, ship.location, colors.board)
+            blockCells(cellsEl, cellsToRender, colors.board)
         }
 
     })
