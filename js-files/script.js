@@ -8,6 +8,7 @@ import { updateBoard, fillWithIds, highlightCells,
     renderScore } from "./board-setup.js"
 import { goBack, removeShipIndex } from "./reset.js"
 import { analyzeAttack, winner } from "./play.js";
+import { callCell, generateAlphabet } from "./call-cell.js";
 
 /* BATTLESHIP
 
@@ -32,7 +33,7 @@ const ships = [
     {
         name: "carrier",
         length: 5,
-        emoji: "🚢",
+        emoji: "🚢", //🚢 ../assets/try.png
         location: [],
         hits: 0,
         alive: true
@@ -140,6 +141,9 @@ const score = {
     player: 0,
     computer: 0
 }
+
+// alphabet
+let alphabet = [];
 
 
 /*---------------------------- Variables (state) ----------------------------*/
@@ -521,6 +525,9 @@ const computerSetup = () => {
 
         // reassign aGrid to the JSON variable so it is saved
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
+
+        // reset selectedCell
+        selectedCell = undefined;
 
     } 
 
@@ -906,6 +913,8 @@ onload = () => {
         // render player setup
         renderPlayerSetup();
 
+        alphabet = generateAlphabet(gridSize);
+
         // add event listener to restart button (a way to erase the computer ship setup)
         reButton.addEventListener('click', () => {
             session_computer = false;
@@ -1034,10 +1043,10 @@ showComputerButton?.addEventListener("click", () => {
     // change text of the button & render cells
     if (showComputer) {
         renderComputer(showComputer, false);
-        showComputerButton.textContent = "Click to hide computer setup";
+        showComputerButton.textContent = "Hide computer setup";
     } else {
         renderComputer(showComputer, false, "hide");
-        showComputerButton.textContent = "Click to show computer setup";
+        showComputerButton.textContent = "Show computer setup";
     }
 
 })

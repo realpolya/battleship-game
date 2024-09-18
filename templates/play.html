@@ -41,13 +41,13 @@
         <div id="player-setup">
             <div class="player-board">
                 <div class="board-header">
-                    <h5>
+                    <h5 class="board-title">
                         Your Board
                     </h5>
-                    <p>
+                    <div class="target-info">
                         Computer targeted:
                         <p id="computer-target-cell"></p>
-                    </p>
+                    </div>
                 </div>
                 <table class="game-table" id="player-table"> <!--10x10 grid -->
                     <tr>
@@ -197,13 +197,13 @@
             </div>
             <div class="computer-table">
                 <div class="board-header">
-                    <h5>
+                    <h5 class="board-title">
                         Computer's Board
                     </h5>
-                    <p>
+                    <div class="target-info">
                         You targeted:
                         <p id="player-target-cell"></p>
-                    </p>
+                    </div>
                 </div>
                 <table class="game-table" id="computer-table"> <!--10x10 grid -->
                     <tr>
@@ -356,7 +356,7 @@
                     Fire!
                 </button>
                 <button class="board-button" id="show-ships">
-                    Click to show computer setup
+                    Show computer setup
                 </button>
             </div>
         </div>
