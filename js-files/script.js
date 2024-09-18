@@ -558,7 +558,7 @@ const renderComputer = (render, dead, hide) => {
         
         // only render cells that haven't been hit
         let cellsToRender = ship.location.filter((cell) => {
-            return !hitArr.includes(cell);
+            return (!hitArr.includes(cell) && cell !== selectedCell);
         })
 
         // if render
