@@ -1,5 +1,5 @@
 // returns cell letter and number
-export const callCell = (cell, size, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, computer) => {
+export const callCell = (cell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, computer) => {
     
     let letter;
     let number;
@@ -41,8 +41,6 @@ export const callCell = (cell, size, alphabet, horArray2D, verArray2D, comHorArr
     }
 
     let calledCell = letter + number;
-    console.log("called cell is ", calledCell)
-    console.log(typeof(calledCell));
     return calledCell;
 
 }

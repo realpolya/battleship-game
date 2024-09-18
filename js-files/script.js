@@ -225,6 +225,10 @@ const fireButton = document.getElementById('fire');
 const setupCommandEl = document.getElementById('setup-play');
 const showComputerButton = document.getElementById('show-ships');
 
+// call cell
+const computerTargetsEl = document.getElementById("computer-target-cell");
+const playerTargetsEl = document.getElementById("player-target-cell");
+
 /*-------------------------------- SETUP Page Functions --------------------------------*/
 
 // handle click on a cell
@@ -629,6 +633,7 @@ const fireClick = (selectedCell) => {
         // function that analyzes what happens after a fire click
         immediateEl.textContent = analyzeAttack(selectedCell, aGrid, shipsComputer, missArr, hitArr, deadArr, score)
         clickResult = immediateEl.textContent
+        playerTargetsEl.textContent = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D)
 
     } else {
         
@@ -783,15 +788,18 @@ const computerFires = () => {
 
     // assign that ID to the cell
     selectedCell = i;
+    console.log("1 cell", selectedCell)
 
     // analyze attack
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
+    let calledCell = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, "computer");
 
     // time delay to reveal the result
     setTimeout(() => {
         
         // reset computerEl
         computerEl.textContent = "";
+        console.log("3 cell", selectedCell)
         
         // analyzeAttack button
         immediateEl.textContent = attackMessage;
@@ -805,6 +813,10 @@ const computerFires = () => {
 
         // update turn message
         computerEl.textContent = "Player's turn"
+
+        // update cell 
+        computerTargetsEl.textContent = calledCell;
+
 
     }, timeDelay);
 
