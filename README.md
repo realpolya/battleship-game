@@ -91,17 +91,23 @@ Battleship game has multiple HTML templates. Besides the landing page (index.htm
 
 * Script.js
 
+Main JS file with all the variables, cached elements, game functions, and event listeners. Other files serve as module to this one.
+
 * Math.js
 
-
+Math.js mainly calculates cell IDs. The grid-size is irrelevant – the HTML grid can be of any size (6x6 or 10x10 or 15x15 or anything else), and the functions will recalculate everything accordingly.
 
 * Board-setup.js
 
+Board-setup.js contains additional functions to display board setup on the page.
+
 * Reset.js
+
+Reset.js contains functions for go back button.
 
 * Call-cell.js
 
-
+Identifies the cell clicked.
 
 
 
