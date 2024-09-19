@@ -1080,7 +1080,7 @@ window.onkeydown = function(e) {
 
 // space bar to fire – only on the setup play page
 document.addEventListener('keyup', e => {
-    if (e.key == " " || e.code == "Space") {
+    if ((e.key == " " || e.code == "Space") && setupCommandEl?.textContent === "Board Instructions:") {
 
         fireClick(selectedCell)
         selectedCell = undefined;

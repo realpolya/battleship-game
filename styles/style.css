@@ -1,7 +1,8 @@
-/* code for all pages */
+/* code for all pages – main elements, plus header */
 /* storing variables */
 :root {
     --board-color: #E0E1DD;
+    --button-color: 
 }
 
 * {
