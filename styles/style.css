@@ -110,6 +110,8 @@ td {
 .top-banner {
     font-weight: 600;
     font-size: 1.2rem;
+    display: flex;
+    align-items: start;
 }
 
 .site-menu {
@@ -124,6 +126,7 @@ td {
 
     .top-banner {
         font-size: 1rem;
+        margin: 1rem;
     }
 
 }
