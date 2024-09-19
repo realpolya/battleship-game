@@ -1,0 +1,35 @@
+/* ONLY for instructions page */
+
+h3 {
+    margin: 1rem;
+}
+
+li {
+    margin: .5rem;
+    padding: .2rem;
+}
+
+#setup-image {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+@media (max-width: 1000px) {
+
+    #setup-image {
+        flex-direction: column;
+    }
+
+    #image-logic {
+        display: flex;
+        align-items: center;
+    }
+
+    img {
+        width: 30%;
+        height: auto;
+        align-items: center;
+        margin: auto;
+    }
+}

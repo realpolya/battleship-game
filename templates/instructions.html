@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/play.css">
+    <link rel="stylesheet" href="../styles/instruct.css">
+    <script src="../js-files/script.js" type="module" defer></script>
+
+    <!--inserting icon-->
+    <link href="../assets/favicon.ico" rel="icon">
+
+    <!--Google Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+    <title>Battleship</title>
+</head>
+<body>
+    <!--header to be copied onto other files-->
+    <header>
+        <p class="top-banner">Battleship</p>
+        <div class="site-menu">
+            <p><a href="./play-setup.html">Play</a></p>
+            <p><a href="./instructions.html">Instructions</a></p>
+            <p><a href="https://github.com/realpolya">Creator</a></p>
+        </div>
+    </header>
+    <h1>Battleship</h1>
+    <div id="game-instructions-page">
+        <div id="setup-image">
+            <div id="setup-logic">
+                <h3>Setup Logic</h3>
+                <ol>
+                    <li>Player is presented with 10x10 grid and has a fleet of 5 ships:
+                        <ul>
+                            <li>carrier – 5 cells</li>
+                            <li>battleship - 4 cells</li>
+                            <li>cruiser – 3 cells</li>
+                            <li>submarine – 3 cells</li>
+                            <li>destroyer – 2 cells</li>
+                        </ul>
+                    </li>
+                    <li>Following the instructions, player clicks on the grid to start the setup.</li>
+                    <li>Player clicks on the one of the suggested grid cells to continue positioning the first ship.</li>
+                    <li>Playes keep clicking until the first ship is positioned.</li>
+                    <li>When ship is positioned, occupied cells are greyed out, adjacent cells are also disabled (blocked out).</li>
+                    <li>Player has the option to return the ship back to the marina with the "Go back" button.</li>
+                    <li>Player repeats steps 2-5 for each ship.</li>
+                    <li>The player is not allowed to position new ships into the occupied cells.</li>
+                    <li>Player can press the button "Start Game" only when all of the ships are positioned.</li>
+                </ol>
+            </div>
+            <div id="image-logic">
+                <img src="../assets/favicon.ico">
+            </div>
+        </div>
+        <h3>Computer Setup Logic</h3>
+        <ol>
+            <li>
+                Once "Start Game" button has been clicked, computer randomly generates its own setup and stores ships' location data in an object.
+            </li>
+        </ol>
+        <h3>Game Logic</h3>
+        <ol>
+            <li>Page with 2 boards is displayed:
+                <ul>
+                    <li>One is player's with positioned ships visible</li>
+                    <li>One is opponent's with empty grid (hidden ships)</li>
+                </ul>
+            </li>
+            <li>It is player's turn.</li>
+            <li>Player clicks on a cell in a 10x10 opponent's grid. To fire, player follows his first click with clicking the "Fire!" button or pressing SPACE bar.</li>
+            <li>A message is rendered (either "Hit!" or "Miss!"). "Fire" button greys out. The clicked cell is assigned a color (one for "Miss", another for "Hit").</li>
+            <li>It is opponent's turn.</li>
+            <li>Computer randomly chooses one cell to attack on the player's field. Computer has a built-in logic to target adjacent cells once it records a "Hit" on player's board until player's ship sinks.</li>
+            <li>A message is rendered (either "Hit!" or "Miss!"). Once player clicks on the next cell, "Fire" button is activated again.</li>
+            <li>Repeat steps 2-7.</li>
+            <li>If a computer's ship is completely out, it is revealed, all of its cells are assigned a color.</li>
+            <li>Once all of the ships are out for one of the players, "You won" or "Computer won" message is rendered.</li>
+            <li>Player can press "Restart game" button at any point in the game.</li>
+            <li>Player can't click on disabled cells to fire.</li>
+            <li>Player can click "Show computer setup" to see computer's hidden ships. Player can then hide their positions.</li>
+        </ol>
+    </div>
+    <button id="play-game" onclick="window.location.href='play-setup.html'">Play</button>
+</body>
+</html>
