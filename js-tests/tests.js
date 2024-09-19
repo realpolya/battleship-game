@@ -1,117 +1,89 @@
 /* JUST TESTS, NOT NEEDED */
 
-/* DRAG AND DROP
-// drag and drop – used tutorial from Appwrite
-let newX = 0
-let newY = 0
-let startX = 0
-let startY = 0
+// REWRITE calculateAdjacent – Sep 19
 
-/* drag and drop functions – for battleShip element - DISABLED
-const mouseMove = (e) => {
-    newX = startX - e.clientX
-    newY = startY - e.clientY
-
-    // dynamically updating current position
-    startX = e.clientX
-    startY = e.clientY
-
-    battleshipEl.style.left = (battleshipEl.offsetLeft - newX) + 'px';
-    battleshipEl.style.top = (battleshipEl.offsetTop - newY) + 'px';
-}
-
-const mouseUp = e => {
-    document.removeEventListener('mousemove', mouseMove)
-} */
-
-
-// TEST SEP 18 MORNING
-// TESTING
-// go back button function – erases the last ship
-// button is enabled only if some ships are positioned (aka aGrid has a truthy value)
-const goBack = (ships, grid, unavailCells) => {
+// calculate cell options for the first click
+const calculateAdjacent = (cell, size, sizeSquared, horArray2D, verArray2D, playerBoard) => {
     
-    let unavailCellsUpdated = [];
-    let toFreeCells = [];
+    // initiate array to return
+    let arr = [];
 
-    console.log("At the beginning, aGrid was ", grid[0])
+    // convert cell to number
+    cell = +cell;
 
-    let emojiToRemove;
+    let a; let b; let c; let d;
 
-    // go through ships from last index to 0
-    for (let i = ships.length - 1; i >= 0; i--) {
+    // pick two values from horArray for hor (a, b)
+    // pick two values from verArray for ver (c, d)
+    
 
-        // remove location at the first instance where it is there
-        if (ships[i].location.length > 0) {
-            
-            // update toFreeCells
-            toFreeCells = Array.from(ships[i].location);
-            console.log("free us!", toFreeCells)
 
-            ships[i].location.length = 0
-            emojiToRemove = ships[i].emoji
-            break;
-
+    // all numbers divisible by 6 are at the right border
+    if (cell % size === 0) {
+        // if 6
+        if (cell == size) {
+            b = cell - 1;
+            d = cell + size;
+        } // if 36
+        else if (cell === squared) {
+            b = cell - 1;
+            c = cell - size;
+        } else {
+            b = cell - 1;
+            c = cell - size; d = cell + size;
         }
-
+    } // if first row
+    else if (cell < size) {
+        if (cell === 1) {
+            a = cell + 1;
+            d = cell + size;
+        } else {
+            a = cell + 1; b = cell - 1; 
+            d = cell + size;
+        }
+    } //all numbers 1 and +6 are at the left border (remainder 1)
+    else if (cell % size === 1) {
+        // if the bottom right cell
+        if (cell === squared - (size - 1)) {
+            a = cell + 1;
+            c = cell - size;
+        } else {
+            a = cell + 1;
+            c = cell - size; d = cell + size;
+        }
+    } // between 36 through 31 are at the bottom
+    else if (cell < squared && cell > squared - (size - 1)) {
+        a = cell + 1; b = cell - 1; 
+        c = cell - size;
+    } // everything else – center
+    else {
+        a = cell + 1; b = cell - 1; // horizontal
+        c = cell - size; d = cell + size; // vertical
     }
 
-    // update unavailCells
-
-    unavailCellsUpdated = unavailCells.filter((cell) => {
-        if (toFreeCells.includes(cell)) {
-            console.log("Cell overlap!", cell)
-        }
-        return !toFreeCells.includes(cell);
+    arr.push(a, b, c, d);
+    arr = arr.filter((el) => {
+        return el !== undefined;
     })
 
-
-    console.log(emojiToRemove)
-
-    // remove emoji from grid
-    let newGrid = grid.map((cell, i) => {
-        if (cell === emojiToRemove) {
-            cell = undefined;
+    // exclude members of arr if they are in playerBoard array (either pass none, aGrid or bGrid)
+    if (playerBoard) {
+        for (let i = 0; i < playerBoard.length; i++) {
+            // if not undefined, note its index + 1, save it to a variable, see if it is in arr array, remove it
+            if (playerBoard[i] !== undefined) {
+                let j = i + 1; // cell ID is index + 1
+                arr = arr.filter((el) => {
+                    return el !== j;
+                });
+            } 
         }
-        return cell;
-    })
+    }
 
-
-
-    console.log("After go back button ships are ", ships);
-    console.log("After go back button new grid is ", newGrid)
-
-    let objectToReturn = [newGrid, unavailCellsUpdated]
-    return objectToReturn;
-
-}
-
-
-
-function shipInCell(grid, cell, ships, shipIndex, cellsEl, unavailCells) {
-    // assign shipEl to the selectedCell
-    grid[cell - 1] = ships[shipIndex].emoji;
-
-    // update the location of the ship in the ships object
-    ships[shipIndex].location.push(cell)
-
-    // sort the order of the location (always ascending)
-    ships[shipIndex].location = ships[shipIndex].location.sort((a, b) => {
+    // sort in ascending order
+    arr = arr.sort((a, b) => {
         return a - b;
     });
 
-    // update board
-    updateBoard(cellsEl, grid);
-
-    // update unavailable cells
-    unavailCells.push(cell);
+    // update arr array
+    return arr;
 }
-
-/* drag and drop – DISABLED
-battleshipEl.addEventListener("mousedown", (e) => {
-    startX = e.clientX // provides coordinates
-    startY = e.clientY
-
-    document.addEventListener('mousemove', mouseMove);
-    document.addEventListener('mouseup', mouseUp);
-}) */
