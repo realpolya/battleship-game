@@ -790,9 +790,6 @@ const computerFires = () => {
     // time delay to reveal the result
     setTimeout(() => {
         
-        // reset computerEl
-        computerEl.textContent = "";
-        
         // analyzeAttack button
         immediateEl.textContent = attackMessage;
 
