@@ -1,6 +1,10 @@
 # Battleship
 
-## Setup Logic
+<img src="./assets/favicon.ico" alt="blue ship pixelated" width="200"/>
+
+## Game
+
+### Setup Logic
 1. Player is presented with 10x10 grid and has a fleet of 5 ships:
     * carrier – 5 cells
     * battleship - 4 cells
@@ -16,10 +20,10 @@
 8. The player is not allowed to position new ships into the occupied cells.
 9. Player can press the button "Start Game" only when all of the ships are positioned.
 
-## Computer Setup Logic
+### Computer Setup Logic
 1. Once "Start Game" button has been clicked, computer randomly generates its own setup and stores ships' location data in an object.
 
-## Game Logic
+### Game Logic
 1. Page with 2 boards is displayed:
     * One is player's with positioned ships visible
     * One is opponent's with empty grid (hidden ships)
@@ -35,3 +39,139 @@
 11. Player can press "Restart game" button at any point in the game.
 12. Player can't click on disabled cells to fire.
 13. Player can click "Show computer setup" to see computer's hidden ships. Player can then hide their positions.
+
+## Behind the Scenes
+
+### Wireframe
+Wireframe work was completed using Figma.
+
+![game wireframe](./assets/wireframe.png)
+
+### Pages
+
+Battleship game has multiple HTML templates. Besides the landing page (index.html), Battleship has:
+* **Play-setup.html** – page to setup player's fleet.
+* **Play.html** – main playing page where the player plays against computer.
+* **Instructions.html** – page containing instructions on setup and play logic.
+* **Winloss.html** – it is rendered when one player wins.
+
+#### *Landing page*
+![landing page screenshot](./assets/index.png)
+
+#### *Play-setup page*
+![play-setup page screenshot](./assets/play-setup.png)
+##### *Fleet setup*
+![play-setup page screenshot](./assets/play-setup2.png)
+![play-setup page screenshot](./assets/play-setup3.png)
+
+#### *Play page*
+![play page screenshot](./assets/play.png)
+![play page screenshot](./assets/play2.png)
+![play page screenshot](./assets/play3.png)
+
+#### *Win/loss page*
+![win/loss page screenshot](./assets/winloss.png)
+
+#### *Instructions page*
+![instructions page screenshot](./assets/instructions.png)
+
+### Mobile versions
+
+#### *Play-setup page on mobile*
+![play-setup page mobile screenshot](./assets/play-setup-mobile.png)
+
+#### *Play page on mobile*
+![play page mobile screenshot](./assets/play-mobile.png)
+
+#### *Instructions page on mobile*
+![instructions page mobile screenshot](./assets/instructions-mobile.png)
+
+
+### JS files
+
+* Script.js
+
+* Math.js
+
+
+
+* Board-setup.js
+
+* Reset.js
+
+* Call-cell.js
+
+
+
+
+
+
+## Future improvements
+
+### Maximum Call Stack Error
+The logic for the computer setup employs a recursive function that sometimes leads to maximum call stack error as it can't find the next cell for the ship. If it happens, reloading the page usually solves it, but ideally this needs to be debugged. 
+
+What happens is that the game does not account for ships occupying other cells when it calculates orientation and adjacent cells. Imagine the situation below from a player setup:
+
+![instructions page mobile screenshot](./assets/bug.png)
+After the carrier was set, battleship needs to occupy 4 cells. It technically can't go horizontally since there is not enough room. However, the code still suggests horizontal cell as an option. See what happens if we click on the horizontal cell:
+![instructions page mobile screenshot](./assets/bug2.png)
+A player can click GO BACK button in this situation and restart the building process of this specific ship.
+
+The computer, however, does not have a GO BACK button. In this situation, it will keep looking for a cell to occupy via recursive function depicted below. It won't find any options and will exceed maximum call stack.
+
+```javascript
+    
+    // render ships for computer
+    function computerBoard() {
+      
+        //...picking the cell from available ones...
+        
+        if (shipsOnBoard === shipsComputer.length) {
+            
+            computerReady = true;
+            console.log(aGrid);
+            return true;
+
+        } else {
+            
+            // recursive function (untill all ships are completed)
+            computerBoard();
+
+        }
+
+    }
+    
+    computerBoard();
+```
+
+In order to solve this issue, I need to introduce another function that recalculates the available cells to ensure that the computer does not see starting cells with not enough room nearby as an option.
+
+### Mobile
+The mobile version of the game can be improved further. The grid is too large, and its cells do not maintain 1/1 aspect ratio. The appearance and related functionality need more work.
+### Site menu – mobile
+Site menu should shrink into a menu icon that displays a drop-down menu once clicked.
+
+### Audio sounds
+The game can employ various sounds to make it more entertaining. Sounds can differ based on whether the attack hit a ship or whether it sank a ship.
+
+### Emojis
+At this time, the game uses Unicode emojis to depict the ships. They are stored as strings and easily retrievable from the object depicted below.
+
+```javascript
+const ships = [
+    {
+        name: "carrier",
+        length: 5,
+        emoji: "🚢", 
+        location: [],
+        hits: 0,
+        alive: true
+    }
+]
+```
+For the design improvement of the game, it would be great to use pixelated PNG emojis of the ships, similar to the one depicted below. However, it is not yet clear on how to store a retrievable PNG inside the object as a string without making it too complicated.
+<img src="./assets/favicon.ico" alt="blue ship" width="200"/>
+
+
+

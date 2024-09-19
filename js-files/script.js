@@ -10,14 +10,6 @@ import { goBack, removeShipIndex } from "./reset.js"
 import { analyzeAttack, winner } from "./play.js";
 import { callCell, generateAlphabet } from "./call-cell.js";
 
-/* BATTLESHIP
-
-// current ship is
-// ships[shipIndex].name
-// location of ship:
-// ships[shipIndex].location.push()
-
-
 /*-------------------------------- Constants --------------------------------*/
 
 // aGrid – concatenated grid for all players
@@ -116,7 +108,6 @@ const shipsComputer = [
     }
 ]
 
-
 // event tracker
 const clickOrder = [];
 
@@ -142,11 +133,12 @@ const score = {
     computer: 0
 }
 
-// alphabet
-let alphabet = [];
 
 
 /*---------------------------- Variables (state) ----------------------------*/
+
+// alphabet
+let alphabet = [];
 
 // use computer as additional value in some functions
 let computer = true;
@@ -200,10 +192,6 @@ let emptyCells = []; // cells not to target for computer
 
 
 /*------------------------ Cached Element References ------------------------*/
-
-// images of the ship
-const battleshipEl = document.getElementById("battleship");
-const cruiserEl = document.getElementById("cruiser");
 
 // cells – player cells 1-100, computer 101-200 for 10x10
 const cellsEl = document.querySelectorAll('.cell');
@@ -372,7 +360,7 @@ const allShipsComplete = () => {
 
 /*-------------------------------- SETUP RESET Page Functions --------------------------------*/
 
-// TESTING
+// reset trackers if go back button was clicked
 const goBackResetTrackers = () => {
 
 
@@ -394,6 +382,7 @@ const goBackResetTrackers = () => {
 
 }
 
+// disable ready button if go back button was clicked
 const resetReadyButton = () => {
     
     // only run if ships were previously completed
@@ -558,7 +547,7 @@ const renderPlayerSetup = () => {
 
 }
 
-// computer setup. render, dead = booleans
+// computer setup. render, dead, hide = booleans
 const renderComputer = (render, dead, hide) => {
     
     // retrieve aGrid with computer info
@@ -606,7 +595,7 @@ const renderComputer = (render, dead, hide) => {
 
 /*-------------------------------- ACTIVE ATTACK Functions --------------------------------*/
 
-// click on cell
+// click on cell to choose it
 const gameClick = (e) => {
 
     // free up any previously selected cell
@@ -624,6 +613,7 @@ const gameClick = (e) => {
 
 }
 
+// fireClick follows if the cell has been chosen
 const fireClick = (selectedCell) => {
 
 
@@ -685,6 +675,7 @@ const fireClick = (selectedCell) => {
 
 }
 
+// computer fires in response
 const computerFires = () => {
     
     // set message
@@ -863,6 +854,7 @@ const computerFires = () => {
 
 }
 
+// render message on a new page once game is over
 const renderWinLossMsg = () => {
 
     // obtain whoWon variable
@@ -881,16 +873,6 @@ const renderWinLossMsg = () => {
     sessionStorage.setItem("whoWon", JSON.stringify(whoWon));
     
 }
-
-
-
-
-
-
-
-
-
-
 
 /*----------------------------- Event Listeners -----------------------------*/
 
@@ -1093,12 +1075,3 @@ document.addEventListener('keyup', e => {
 
     }
 })
-
-
-/*----------------------------- Experimental Listeners -----------------------------*/
-
-//TESTS
-// experimental numbers
-cruiserEl?.addEventListener("click", () => {
-    fillWithIds(cellsEl)
-});
