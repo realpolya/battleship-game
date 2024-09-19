@@ -7,7 +7,7 @@
     <!--styling files-->
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/play.css">
-    <link rel="stylesheet" href="../styles/play-setup.css">
+    <link rel="stylesheet" href="../styles/play-setup.css"> <!--last file takes precedence-->
 
     <!--js file-->
     <script src="../js-files/script.js" type="module" defer></script>
@@ -24,25 +24,24 @@
     <header>
         <p class="top-banner">Battleship</p>
         <div class="site-menu">
-            <p>Play</p>
-            <p>Instructions</p>
-            <p>Creator</p>
+            <p><a href="./play-setup.html">Play</a></p>
+            <p><a href="../index.html">Instructions</a></p>
+            <p><a href="https://github.com/realpolya">Creator</a></p>
         </div>
     </header>
-    <h1>Battleship</h1>
+    <h1 id="main-title">Battleship</h1>
     <section class="board">
         <div class="instructions">
             <h5 id="setup-play">Setup Instructions:</h5><!--DO NOT TOUCH this h5-->
-            <p>
-                Place all ships from the fleet onto the board.
-            </p>
-            <p id="immediate-instruction">Here</p>
+            <div id="updates">
+                <p id="setup-overall">
+                Click on grid one by one. Position 5 ships per instructions.
+                </p>
+                <p id="immediate-instruction">Here</p>
+            </div>
         </div>
         <div id="player-setup">
-            <div id="fleet">
-                
-            </div>
-            <table class="game-table"> <!--10x10 grid -->
+            <table class="game-table" id="player-table"> <!--10x10 grid -->
                 <tr>
                     <td></td>
                     <td>A</td>
@@ -194,13 +193,14 @@
                 <button class="board-button" id="go-back">
                     Go back
                 </button>
+                <button class="board-button" 
+                disabled onclick="window.location.href='play.html'" 
+                id="ready-restart">
+                    Player Not Ready Yet
+                </button>
             </div>
         </div>
     </section>
-    <button disabled onclick="window.location.href='play.html'" id="ready-restart">
-        Player Not Ready Yet
-    </button>
-    <table style="display: hidden;" id="computer-table"></table>
 </body>
 </html>
 

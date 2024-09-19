@@ -346,7 +346,7 @@ const allShipsComplete = () => {
         sessionStorage.setItem("aGrid", JSON.stringify(aGrid));
 
         // activate ready button
-        reButton.textContent = "Ready?";
+        reButton.textContent = "Start Game";
         reButton.style.backgroundColor = colors.button;
         reButton.removeAttribute('disabled');
 

@@ -23,9 +23,9 @@
     <header>
         <p class="top-banner">Battleship</p>
         <div class="site-menu">
-            <p>Play</p>
-            <p>Instructions</p>
-            <p>Creator</p>
+            <p><a href="./play-setup.html">Play</a></p>
+            <p><a href="../index.html">Instructions</a></p>
+            <p><a href="https://github.com/realpolya">Creator</a></p>
         </div>
     </header>
     <h1 id="main-title">Battleship</h1>
@@ -48,7 +48,7 @@
                         Your Board
                     </h5>
                     <div class="target-info">
-                        Computer targeted:
+                        Computer targeted  
                         <p id="computer-target-cell">N/A</p>
                     </div>
                 </div>
@@ -361,12 +361,12 @@
                 <button class="board-button" id="show-ships">
                     Show computer setup
                 </button>
+                <button class="board-button" onclick="window.location.href='play-setup.html'" id="ready-restart">
+                    Restart game
+                </button>
             </div>
         </div>
     </section>
-    <button onclick="window.location.href='play-setup.html'" id="ready-restart">
-        Restart
-    </button>
     <div id="winloss"></div>
 </body>
 </html>

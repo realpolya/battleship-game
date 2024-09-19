@@ -30,11 +30,17 @@ button {
 }
 
 a {
-    font-family: "Raleway", sans-serif;
-    font-weight: 500;
     text-decoration: none;
-    color: black;
-    font-size: 1.5rem;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    color: white;
+}
+
+a:hover {
+    color: yellow;
+    cursor: pointer;
 }
 
 section {
@@ -66,7 +72,7 @@ header {
     justify-content: space-between;
 }
 
-p {
+p, a {
     padding: 1rem;
     margin: 0;
 }
