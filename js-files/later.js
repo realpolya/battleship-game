@@ -1,6 +1,4 @@
 // ships and their length
-
-
 // ships – player setup
 const ships = [
     {

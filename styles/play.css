@@ -147,6 +147,10 @@
 /* media queries */
 @media (max-width: 1000px) {
     
+    p {
+        padding: .4rem;
+    }
+
     #play-game {
         width: 60%;
     }
