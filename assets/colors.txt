@@ -1,2 +1,19 @@
 COLORS FOR Battleship
 
+Colors:
+
+- body: 
+- text: 
+- buttons:
+- button-fire:
+- button-disabled:
+
+cells colors:
+- board:
+- block:
+- adjacent:
+- suggested: 
+- completed ship: 
+- miss:
+- hit:
+- dead:

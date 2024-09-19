@@ -6,12 +6,12 @@
 
 /* instructions - child of board */
 .instructions {
-    margin: auto;
+    margin: 1rem auto;
     padding: 1rem;
-    border: white 1px solid;
+    border: var(--board-color) 1px solid;
     border-radius: 20px;
     width: 90%;
-    background-color: teal;
+    background-color: #1B263B;
 }
 
 .board-header {

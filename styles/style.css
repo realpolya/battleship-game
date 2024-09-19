@@ -1,7 +1,7 @@
 /* code for all pages */
 /* storing variables */
 :root {
-    --board-color: thistle;
+    --board-color: #E0E1DD;
 }
 
 * {
@@ -17,8 +17,8 @@ body {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    background-color: blue;
-    color: white;
+    background-color: #415A77;
+    color: #E0E1DD;
 }
 
 button {
@@ -39,7 +39,8 @@ a {
 }
 
 a:hover {
-    color: yellow;
+    /* color: indianred; */
+    color: mistyrose;
     cursor: pointer;
 }
 
@@ -51,7 +52,7 @@ section {
 }
 
 h1 {
-    margin: auto;
+    margin: 0 auto;
     padding: 2rem;
 }
 
