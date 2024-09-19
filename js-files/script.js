@@ -350,7 +350,7 @@ const allShipsComplete = () => {
         nextShip = false;
         shipsOnBoard = 0;
         adjacentCells = undefined;
-        unavailCells.length = 0;
+        //unavailCells.length = 0; => leads to issues with going back
 
         return true;
     }
@@ -366,7 +366,8 @@ const goBackResetTrackers = () => {
 
     clickNumber = 0;
     adjacentCells = undefined;
-    blockedAdjCells = undefined;
+    //blockedAdjCells = undefined;
+    console.log(blockedAdjCells)
     
     // recalculate trackers
     shipIndex = 0;
