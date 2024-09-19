@@ -2,7 +2,10 @@
 /* storing variables */
 :root {
     --board-color: #E0E1DD;
-    --button-color: 
+    --button-color: #778DA9;
+    --body-color: #004d4d; /* 415A77 004d4d 006666*/
+    --text-color: #E0E1DD;
+    --button-text: #0D1B2A;
 }
 
 * {
@@ -18,8 +21,47 @@ body {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    background-color: #004d4d; /* 415A77 004d4d 006666*/
-    color: #E0E1DD;
+    background-color: var(--body-color);
+    color: var(--text-color);
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+p {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--text-color);
+}
+
+a:hover {
+    color: mediumseagreen;
+    cursor: pointer;
+}
+
+
+h1 {
+    font-family: "Pixelify Sans";
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0 auto;
+    padding: 0 0 1rem 0;
+    font-size: 3rem;
 }
 
 button {
@@ -32,78 +74,12 @@ button {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    color: #0D1B2A;
-}
-
-a {
-    text-decoration: none;
-    font-family: "Raleway", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
-    color: white;
-}
-
-a:hover {
-    /* color: indianred; */
-    color: mistyrose;
-    cursor: pointer;
-}
-
-section {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    min-width: 90%;
-}
-
-h1 {
-    font-family: "Pixelify Sans";
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    margin: 0 auto;
-    padding: 0 0 1rem 0;
-    font-size: 3rem;
-}
-
-h3 {
-    margin: auto;
-    padding: 2rem;
+    color: var(--button-text);
+    background-color: var(--button-color);
 }
 
 h5 {
     font-size: 1.1rem;
-    /*padding: 1rem;
-    margin: auto;*/
-}
-
-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-p {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    margin: 0;
-}
-
-table {
-    border: 1px solid;
-    min-width: 300px;
-    margin: 1rem;
-}
-
-td {
-    border: 1px solid;
-    width: 3rem;
-    height: 3rem;
-    text-align: center;
-    font-size: 1rem;
-    aspect-ratio: 1/1 ;
 }
 
 /* classes */
@@ -126,12 +102,27 @@ td {
     justify-content: space-between;
 }
 
+/* IDs */
+
+/* BUTTON */
+#play-game {
+    font-size: 1.5rem;
+    width: 20%;
+    margin: 1rem auto;
+}
+
 /* media queries */
 @media (max-width: 1000px) {
 
     .top-banner {
         font-size: 1rem;
         margin: 1rem;
+    }
+
+    #play-game {
+        width: 60%;
+        margin: 2rem auto;
+        font-size: 1rem;
     }
 
 }

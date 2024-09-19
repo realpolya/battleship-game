@@ -128,7 +128,7 @@ const colors = {
     board: "#E0E1DD",
     ship: "#778DA9", //778DA9 1B263B
     button: "indianred",
-    fire: "#4DA167", //4DA167(shamrock green)
+    fire: "mediumseagreen", //4DA167(shamrock green)
     hit: "indianred",
     miss: "#415A77", //415A77
     dead: "#0D1B2A",
@@ -914,6 +914,10 @@ onload = () => {
     // if setup page
     if (setupCommandEl?.textContent === "Setup Instructions:") {
 
+        // every time you land on this page, computer's setup is gone
+        session_computer = false;
+        sessionStorage.setItem("computer", session_computer)
+
         // click on a cell for setup
         gameTableEl.addEventListener("click", handleClickSetup)
 
@@ -935,10 +939,12 @@ onload = () => {
 
         // update whether the computer setup has been done
         session_computer = JSON.parse(sessionStorage.getItem("computer"));
+        console.log(session_computer);
         
         // if the computer setup is not done, do it
         if (!session_computer) {
             computerSetup();
+            console.log("a Grid", aGrid)
         }
 
         // render computer's setup – CHANGE TO FALSE FOR GAME
