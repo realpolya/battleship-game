@@ -122,18 +122,18 @@ const clickOrder = [];
 
 // COLORS
 const colors = {
-    block: "lightgrey",
-    adjacent: "honeydew",
-    suggest: "hotpink",
-    board: "thistle",
-    ship: "darkblue",
-    button: "purple",
-    fire: "hotpink",
-    hit: "red",
-    miss: "blue",
-    dead: "black",
+    block: "white",
+    adjacent: "#415A77", //#415A77
+    suggest: "mediumseagreen", // can't be the same as fire SOLVE GREEN COLORS
+    board: "#E0E1DD",
+    ship: "#778DA9", //778DA9 1B263B
+    button: "indianred",
+    fire: "#4DA167", //4DA167(shamrock green)
+    hit: "indianred",
+    miss: "#415A77",
+    dead: "#0D1B2A",
     firebutton: "grey",
-    disabled: "white" // check with CSS
+    disabled: "grey" // check with CSS
 }
 
 // score variable
@@ -1077,6 +1077,7 @@ fireButton?.addEventListener('click', () => {
 window.onkeydown = function(e) { 
     return !(e.keyCode == 32);
 };
+
 // space bar to fire
 document.addEventListener('keyup', e => {
     if (e.key == " " || e.code == "Space") {
