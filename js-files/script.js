@@ -443,7 +443,7 @@ const computerSetup = () => {
             && !unavailCells.includes(selectedCell)) {
 
                 // ship in cell
-                shipInCell(aGrid, selectedCell, shipsComputer, gridSquared, shipIndex, cellsEl, unavailCells, bGrid, true);
+                shipInCell(aGrid, selectedCell, shipsComputer, gridSquared, shipIndex, cellsEl, unavailCells, bGrid);
 
                 // move click number
                 clickNumber++;
@@ -506,6 +506,7 @@ const computerSetup = () => {
         if (shipsOnBoard === shipsComputer.length) {
             
             computerReady = true;
+            console.log(aGrid);
             return true;
 
         } else {
@@ -624,7 +625,8 @@ const gameClick = (e) => {
 }
 
 const fireClick = (selectedCell) => {
-    
+
+
     // avoid clicking the same button twice
     let clickResult;
 

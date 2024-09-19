@@ -127,6 +127,9 @@
 .board-button {
     min-width: 100%;
     padding: 0;
+}
+
+.board-button, #play-game {
     background-color: hotpink;
 }
 
@@ -137,9 +140,18 @@
     border: black solid 2px;
 }
 
+#play-game {
+    width: 20%;
+    margin: 1rem auto;
+}
+
 /* media queries */
 @media (max-width: 1000px) {
     
+    #play-game {
+        width: 60%;
+    }
+
     .site-menu, a {
         font-size: .7rem;
     }
