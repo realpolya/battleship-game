@@ -130,7 +130,7 @@ const colors = {
     button: "indianred",
     fire: "#4DA167", //4DA167(shamrock green)
     hit: "indianred",
-    miss: "#415A77",
+    miss: "#415A77", //415A77
     dead: "#0D1B2A",
     firebutton: "grey",
     disabled: "grey" // check with CSS
@@ -628,7 +628,7 @@ const fireClick = (selectedCell) => {
 
 
     // avoid clicking the same button twice
-    let clickResult;
+    let clickResult = "Not yet fired"; // avoid "undefined error"
 
     if (selectedCell > 100) {
 
@@ -673,9 +673,9 @@ const fireClick = (selectedCell) => {
 
     // computer fires
     // only proceed if the player indeed made a move
-    if (clickResult === "Hit!" || clickResult === "Miss!" ||
-        clickResult.includes("was sunk!")) {
+    if (clickResult === "Hit!" || clickResult === "Miss!" || clickResult.includes("was sunk!")) {
         
+        console.log("Computer's turn to fire")
         computerFires();
 
     }
@@ -1078,7 +1078,7 @@ window.onkeydown = function(e) {
     return !(e.keyCode == 32);
 };
 
-// space bar to fire
+// space bar to fire – only on the setup play page
 document.addEventListener('keyup', e => {
     if (e.key == " " || e.code == "Space") {
 

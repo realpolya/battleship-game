@@ -17,7 +17,7 @@ body {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    background-color: #415A77;
+    background-color: #004d4d; /* 415A77 004d4d 006666*/
     color: #E0E1DD;
 }
 
@@ -62,7 +62,7 @@ h1 {
     font-weight: 400;
     font-style: normal;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0 0 1rem 0;
     font-size: 3rem;
 }
 
@@ -112,6 +112,10 @@ td {
     font-size: 1.2rem;
     display: flex;
     align-items: start;
+    font-family: "Pixelify Sans";
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .site-menu {
