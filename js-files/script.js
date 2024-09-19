@@ -114,17 +114,17 @@ const clickOrder = [];
 // COLORS
 const colors = {
     block: "white",
-    adjacent: "#415A77", //#415A77
-    suggest: "mediumseagreen", // can't be the same as fire SOLVE GREEN COLORS
+    adjacent: "#415A77", 
+    suggest: "mediumseagreen",
     board: "#E0E1DD",
-    ship: "#778DA9", //778DA9 1B263B
+    ship: "#778DA9", 
     button: "indianred",
     fire: "mediumseagreen", //4DA167(shamrock green)
     hit: "indianred",
-    miss: "#415A77", //415A77
+    miss: "#415A77", 
     dead: "#0D1B2A",
     firebutton: "grey",
-    disabled: "grey" // check with CSS
+    disabled: "grey" 
 }
 
 // score variable

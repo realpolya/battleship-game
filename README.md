@@ -147,8 +147,28 @@ The computer, however, does not have a GO BACK button. In this situation, it wil
 
 In order to solve this issue, I need to introduce another function that recalculates the available cells to ensure that the computer does not see starting cells with not enough room nearby as an option.
 
+### Color values in JS
+Colors below for ```fire``` and ```suggest``` keys do not properly work if passed as hex values. The ```unhighlightCells()``` function does not remove the color. If they are passed as simple string color names, everything works. Not sure why this is happening. Ideally, shamrock green color would replace the ```fire``` and ```suggest``` values.
+```javascript
+const colors = {
+    block: "white",
+    adjacent: "#415A77", 
+    suggest: "mediumseagreen",
+    board: "#E0E1DD",
+    ship: "#778DA9", 
+    button: "indianred",
+    fire: "mediumseagreen", //#4DA167(shamrock green)
+    hit: "indianred",
+    miss: "#415A77", 
+    dead: "#0D1B2A",
+    firebutton: "grey",
+    disabled: "grey" 
+}
+```
+
 ### Mobile
 The mobile version of the game can be improved further. The grid is too large, and its cells do not maintain 1/1 aspect ratio. The appearance and related functionality need more work.
+
 ### Site menu – mobile
 Site menu should shrink into a menu icon that displays a drop-down menu once clicked.
 
@@ -171,7 +191,15 @@ const ships = [
 ]
 ```
 For the design improvement of the game, it would be great to use pixelated PNG emojis of the ships, similar to the one depicted below. However, it is not yet clear on how to store a retrievable PNG inside the object as a string without making it too complicated.
+
 <img src="./assets/favicon.ico" alt="blue ship" width="200"/>
+<img src="./assets/emoji-4.png" alt="blue ship" width="150"/>
+<img src="./assets/emoji-1.png" alt="blue ship" width="150"/>
+<img src="./assets/emoji-3.png" alt="blue ship" width="150"/>
+<img src="./assets/emoji-5.png" alt="blue ship" width="150"/>
+<img src="./assets/emoji-2.png" alt="blue ship" width="150"/>
+
+
 
 
 
