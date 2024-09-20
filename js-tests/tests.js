@@ -2,77 +2,140 @@
 
 // REWRITE calculateAdjacent – Sep 19
 
+
+const horArray = [
+    [
+      1, 2, 3, 4,  5,
+      6, 7, 8, 9, 10
+    ],
+    [
+      11, 12, 13, 14, 15,
+      16, 17, 18, 19, 20
+    ],
+    [
+      21, 22, 23, 24, 25,
+      26, 27, 28, 29, 30
+    ],
+    [
+      31, 32, 33, 34, 35,
+      36, 37, 38, 39, 40
+    ],
+    [
+      41, 42, 43, 44, 45,
+      46, 47, 48, 49, 50
+    ],
+    [
+      51, 52, 53, 54, 55,
+      56, 57, 58, 59, 60
+    ],
+    [
+      61, 62, 63, 64, 65,
+      66, 67, 68, 69, 70
+    ],
+    [
+      71, 72, 73, 74, 75,
+      76, 77, 78, 79, 80
+    ],
+    [
+      81, 82, 83, 84, 85,
+      86, 87, 88, 89, 90
+    ],
+    [
+      91, 92, 93, 94,  95,
+      96, 97, 98, 99, 100
+    ]
+  ]
+
+const verArray = [
+    [
+       1, 11, 21, 31, 41,
+      51, 61, 71, 81, 91
+    ],
+    [
+       2, 12, 22, 32, 42,
+      52, 62, 72, 82, 92
+    ],
+    [
+       3, 13, 23, 33, 43,
+      53, 63, 73, 83, 93
+    ],
+    [
+       4, 14, 24, 34, 44,
+      54, 64, 74, 84, 94
+    ],
+    [
+       5, 15, 25, 35, 45,
+      55, 65, 75, 85, 95
+    ],
+    [
+       6, 16, 26, 36, 46,
+      56, 66, 76, 86, 96
+    ],
+    [
+       7, 17, 27, 37, 47,
+      57, 67, 77, 87, 97
+    ],
+    [
+       8, 18, 28, 38, 48,
+      58, 68, 78, 88, 98
+    ],
+    [
+       9, 19, 29, 39, 49,
+      59, 69, 79, 89, 99
+    ],
+    [
+      10, 20, 30, 40,  50,
+      60, 70, 80, 90, 100
+    ]
+  ]
+
 // calculate cell options for the first click
 const calculateAdjacent = (cell, size, sizeSquared, horArray2D, verArray2D, playerBoard) => {
     
     // initiate array to return
-    let arr = [];
+    let array = [];
 
     // convert cell to number
     cell = +cell;
 
-    let a; let b; let c; let d;
+    let hor; // horizontal cells
+    let ver; // vertical cells
 
-    // pick two values from horArray for hor (a, b)
-    // pick two values from verArray for ver (c, d)
-    
+    // get horizontal adjacent values
+    horArray2D.forEach((arr) => {
 
+        if (arr.includes(cell)) {
 
-    // all numbers divisible by 6 are at the right border
-    if (cell % size === 0) {
-        // if 6
-        if (cell == size) {
-            b = cell - 1;
-            d = cell + size;
-        } // if 36
-        else if (cell === squared) {
-            b = cell - 1;
-            c = cell - size;
-        } else {
-            b = cell - 1;
-            c = cell - size; d = cell + size;
+            hor = arr.filter((num) => {
+                return (num - cell === 1 || cell - num === 1);
+            })
         }
-    } // if first row
-    else if (cell < size) {
-        if (cell === 1) {
-            a = cell + 1;
-            d = cell + size;
-        } else {
-            a = cell + 1; b = cell - 1; 
-            d = cell + size;
-        }
-    } //all numbers 1 and +6 are at the left border (remainder 1)
-    else if (cell % size === 1) {
-        // if the bottom right cell
-        if (cell === squared - (size - 1)) {
-            a = cell + 1;
-            c = cell - size;
-        } else {
-            a = cell + 1;
-            c = cell - size; d = cell + size;
-        }
-    } // between 36 through 31 are at the bottom
-    else if (cell < squared && cell > squared - (size - 1)) {
-        a = cell + 1; b = cell - 1; 
-        c = cell - size;
-    } // everything else – center
-    else {
-        a = cell + 1; b = cell - 1; // horizontal
-        c = cell - size; d = cell + size; // vertical
-    }
 
-    arr.push(a, b, c, d);
-    arr = arr.filter((el) => {
-        return el !== undefined;
     })
 
-    // exclude members of arr if they are in playerBoard array (either pass none, aGrid or bGrid)
+    // get vertical adjacent values
+    verArray2D.forEach((arr) => {
+
+        if (arr.includes(cell)) {
+
+            ver = arr.filter((num) => {
+                return (num - cell === size || cell - num === size);
+            })
+        }
+
+    })
+
+    // push into return array
+    array.push(...hor)
+    array.push(...ver)
+
+    // exclude members of array if they are in playerBoard array (either pass none, aGrid or bGrid)
     if (playerBoard) {
         for (let i = 0; i < playerBoard.length; i++) {
             // if not undefined, note its index + 1, save it to a variable, see if it is in arr array, remove it
             if (playerBoard[i] !== undefined) {
                 let j = i + 1; // cell ID is index + 1
-                arr = arr.filter((el) => {
+                array = array.filter((el) => {
                     return el !== j;
                 });
             } 
@@ -80,10 +143,12 @@ const calculateAdjacent = (cell, size, sizeSquared, horArray2D, verArray2D, play
     }
 
     // sort in ascending order
-    arr = arr.sort((a, b) => {
+    array = array.sort((a, b) => {
         return a - b;
     });
 
     // update arr array
-    return arr;
+    return array;
 }
+
+calculateAdjacent("45", 10, 100, horArray, verArray)
