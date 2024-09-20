@@ -259,7 +259,7 @@ const handleClickSetup = (e) => {
             if (clickNumber >= 2) {
                 adjacentCells = updateAdjacent(gridSize, shipOrientation, ships[shipIndex].location, horArray2D, verArray2D)
             } else {
-                adjacentCells = calculateAdjacent(selectedCell, gridSize, aGrid);
+                adjacentCells = calculateAdjacent(selectedCell, gridSize, horArray2D, verArray2D, aGrid);
             }
 
             // highlight suggested cells
@@ -449,7 +449,7 @@ const computerSetup = () => {
                     if (clickNumber >= 2) {
                         adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
                     } else {
-                        adjacentCells = calculateAdjacent(selectedCell, gridSize, bGrid);
+                        adjacentCells = calculateAdjacent(selectedCell, gridSize, comHorArray2D, comVerArray2D, bGrid);
                     }
 
                     //filter adjacent cells so they can't be below 100
@@ -705,7 +705,7 @@ const computerFires = () => {
         // produce number from adjacent array
         function firstHit() {
             
-            adjacentCells = calculateAdjacent(toTarget[0], gridSize);
+            adjacentCells = calculateAdjacent(toTarget[0], gridSize, horArray2D, verArray2D);
 
             //filter adjacent cells so they can't be above 100 and were not chosen before
             adjacentCells = adjacentCells.filter((cell) => {
