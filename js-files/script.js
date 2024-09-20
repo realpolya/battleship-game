@@ -602,15 +602,18 @@ const gameClick = (e) => {
     // free up any previously selected cell
     unhighlightCells(cellsEl, colors.fire, colors.board)
 
-    selectedCell = +e.target.id
+    if (computerEl.textContent === "Player's turn") {
 
-    // can only click on the cell with ids more than 100
-    if (selectedCell > 100 && e.target.classList.contains("cell")
-        && !hitArr.includes(selectedCell) && !missArr.includes(selectedCell)) {
+        selectedCell = +e.target.id
 
-        e.target.style.backgroundColor = colors.fire
-        fireButton.style.backgroundColor = colors.hit
+        // can only click on the cell with ids more than 100
+        if (selectedCell > 100 && e.target.classList.contains("cell")
+            && !hitArr.includes(selectedCell) && !missArr.includes(selectedCell)) {
 
+            e.target.style.backgroundColor = colors.fire
+            fireButton.style.backgroundColor = colors.hit
+
+        }
     }
 
 }
