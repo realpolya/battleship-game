@@ -605,7 +605,8 @@ const gameClick = (e) => {
     selectedCell = +e.target.id
 
     // can only click on the cell with ids more than 100
-    if (selectedCell > 100 && e.target.classList.contains("cell")) {
+    if (selectedCell > 100 && e.target.classList.contains("cell")
+        && !hitArr.includes(selectedCell) && !missArr.includes(selectedCell)) {
 
         e.target.style.backgroundColor = colors.fire
         fireButton.style.backgroundColor = colors.hit
@@ -616,7 +617,6 @@ const gameClick = (e) => {
 
 // fireClick follows if the cell has been chosen
 const fireClick = (selectedCell) => {
-
 
     // avoid clicking the same button twice
     let clickResult = "Not yet fired"; // avoid "undefined error"
@@ -786,6 +786,7 @@ const computerFires = () => {
     // analyze attack
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
     let calledCell = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, "computer");
+    let currentScore = renderScore(score);
 
     // time delay to reveal the result
     setTimeout(() => {
@@ -806,6 +807,8 @@ const computerFires = () => {
         // update cell 
         computerTargetsEl.textContent = calledCell;
 
+        // update score on screen
+        scoreEl.textContent = currentScore;
 
     }, timeDelay);
 
@@ -828,9 +831,6 @@ const computerFires = () => {
         //blockCells(cellsEl, emptyCells, colors.adjacent)
 
     }
-
-    // update score on screen
-    scoreEl.textContent = renderScore(score);
 
     // check for winner
     let win = winner(ships)
