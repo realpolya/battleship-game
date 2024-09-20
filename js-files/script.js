@@ -115,11 +115,11 @@ const clickOrder = [];
 const colors = {
     block: "white",
     adjacent: "#415A77", 
-    suggest: "mediumseagreen",
+    suggest: "rgb(77, 161, 103)", // Shamrock green! can use rgb, but not HEX
     board: "#E0E1DD",
     ship: "#778DA9", 
     button: "indianred",
-    fire: "mediumseagreen", //4DA167(shamrock green)
+    fire: "rgb(77, 161, 103)", //4DA167(shamrock green) mediumseagreen
     hit: "indianred",
     miss: "#415A77", 
     dead: "#0D1B2A",
