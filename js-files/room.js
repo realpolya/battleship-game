@@ -34,8 +34,8 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
         } else {
 
             // going through cells one by one (can this be an option?)
-     
-            availHorCells.forEach((array) => {
+            /*
+            availHorCells = availHorCells.map((array) => {
                 // the cell passes a test if it has a number of consecutive cells nearby
                 // as long as the length itself
                 for (let i = 0; i < array.length; i++) {
@@ -45,14 +45,12 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
                         valuesTest.push(breakPattern);
                     }
                 }
-            });
+            });*/
 
-
+            let experimentArr = [];
+            let tracker = 0;
             // if an array piece lasts nextLength without a break, it is approved
-            for (let i = 0; i < nextLength; i++) {
-
-
-            }
+            valuesTest
 
             // start counting from the first cell
 
@@ -91,3 +89,34 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
 
 
 // there needs to be room either in vertical or horizontal array for a cell to be available
+
+
+
+
+
+/* SOLUTION
+
+let experimentalArray
+let counter
+
+Go through EACH array from horArray2D
+
+if (array[i] + 1 === array[i + 1]) {
+    experimentalArray.push(array[i]);
+    counter++;
+
+    if (counter >= length && array[i + 2] === string) {
+        potentialArray.push(...experimentalArray)
+
+        // reset tracker
+        experimentalArray.length = 0
+        counter = 0
+    }
+} else {
+
+    experimentalArray.length = 0
+    counter = 0
+
+}
+
+*/
