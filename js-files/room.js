@@ -42,7 +42,51 @@ const horArray = [
     ]
   ]
 
-unavailCells = [ 23, 24, 25, 33, 34, 35, 43, 44, 45, 53, 54, 55, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86 ]
+const verArray = [
+    [
+       1, 11, 21, 31, 41,
+      51, 61, 71, 81, 91
+    ],
+    [
+       2, 12, 22, 32, 42,
+      52, 62, 72, 82, 92
+    ],
+    [
+       3, 13, 23, 33, 43,
+      53, 63, 73, 83, 93
+    ],
+    [
+       4, 14, 24, 34, 44,
+      54, 64, 74, 84, 94
+    ],
+    [
+       5, 15, 25, 35, 45,
+      55, 65, 75, 85, 95
+    ],
+    [
+       6, 16, 26, 36, 46,
+      56, 66, 76, 86, 96
+    ],
+    [
+       7, 17, 27, 37, 47,
+      57, 67, 77, 87, 97
+    ],
+    [
+       8, 18, 28, 38, 48,
+      58, 68, 78, 88, 98
+    ],
+    [
+       9, 19, 29, 39, 49,
+      59, 69, 79, 89, 99
+    ],
+    [
+      10, 20, 30, 40,  50,
+      60, 70, 80, 90, 100
+    ]
+  ]
+/* hor
+unavailCells = [ 23, 24, 25, 33, 34, 35, 43, 44, 45, 53, 54, 55, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86 ] */
+unavailCells = [ 21, 31, 41, 51, 61, 22, 32, 42, 52, 62, 23, 33, 43, 53, 63 ]
 
 const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D, computer) => {
 
@@ -71,11 +115,30 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
 
         })
 
+        // replace unavail cells with "break" in vertical array as well
+        let availVerCells = verArray2D.map((array) => {
+            
+            let newArray = array.map((cell) => {
+                
+                if (unavailCells.includes(cell)) {
+                    return breakPattern;
+                } else {
+                    return cell;
+                }
+
+            }) 
+
+            return newArray;
+
+        })
+
         console.log(availHorCells);
+        console.log(availVerCells);
 
         let experimentalArray = [];
-        let madeItArray = [];
         let tracker = 0;
+        let madeItArray = []; // horizontal array reviewed
+        let madeItArrayVer = [];
 
         availHorCells.forEach((array) => {
             
@@ -87,12 +150,11 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
                     experimentalArray.push(array[i]);
                     tracker++;
 
-                    console.log("tracker", tracker, "i=",  i)
+                    //console.log("tracker", tracker, "i=",  i)
 
                     // if tracker reaches or exceeds length of the ship AND (next item is string OR array is done) - maybe no string in array
                     if (tracker >= nextLength && (typeof(array[i+1]) === "string" || i === array.length - 1)) {
                         
-                        console.log(tracker, nextLength, i)
                         // push to made it
                         madeItArray.push(Array.from(experimentalArray));
                         
@@ -106,7 +168,49 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
                         // reset trackers
                         experimentalArray.length = 0;
                         tracker = 0;
+
+                    }
+
+                } else {
+                    
+                    // reset trackers
+                    experimentalArray.length = 0;
+                    tracker = 0;
+
+                }
+            }
+            
+        })
+
+        availVerCells.forEach((array) => {
+            
+            for (let i = 0; i < array.length; i++) {
+                
+                // if number
+                if (typeof(array[i]) === "number") {
+                    
+                    experimentalArray.push(array[i]);
+                    tracker++;
+
+                    console.log("tracker", tracker, "i=",  i)
+
+                    // if tracker reaches or exceeds length of the ship AND (next item is string OR array is done) - maybe no string in array
+                    if (tracker >= nextLength && (typeof(array[i+1]) === "string" || i === array.length - 1)) {
+
+                        // push to made it
+                        madeItArrayVer.push(Array.from(experimentalArray));
                         
+                        // reset trackers
+                        experimentalArray.length = 0;
+                        tracker = 0;
+
+                    } // reach the end of this array – must reset
+                    else if (i === array.length - 1) {
+                        
+                        // reset trackers
+                        experimentalArray.length = 0;
+                        tracker = 0;
+
                     }
 
                 } else {
@@ -121,6 +225,7 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
         })
 
         console.log("made it array is ", madeItArray)
+        console.log("made it VER is", madeItArrayVer)
 
         /* SOLUTION
 
@@ -152,7 +257,7 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
 
 }
 
-checkRoom(0, 0, 0, 1, unavailCells, horArray);
+checkRoom(0, 0, 0, 1, unavailCells, horArray, verArray);
 
 
         /*
