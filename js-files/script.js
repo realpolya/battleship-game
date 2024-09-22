@@ -9,6 +9,7 @@ import { updateBoard, fillWithIds, highlightCells,
 import { goBack, removeShipIndex } from "./reset.js"
 import { analyzeAttack, winner } from "./play.js";
 import { callCell, generateAlphabet } from "./call-cell.js";
+import { checkRoom } from "./room.js";
 
 /*-------------------------------- Constants --------------------------------*/
 
@@ -224,6 +225,9 @@ const handleClickSetup = (e) => {
 
     // current cell is assigned
     selectedCell = +e.target.id;
+
+    // run calculation for room.js - is there room for this cell to be clicked? after 1 ship
+    let roomyCells = 1;
 
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet
     if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 

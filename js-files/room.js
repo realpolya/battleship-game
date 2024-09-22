@@ -88,14 +88,17 @@ const verArray = [
 unavailCells = [ 23, 24, 25, 33, 34, 35, 43, 44, 45, 53, 54, 55, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86 ] */
 unavailCells = [ 21, 31, 41, 51, 61, 22, 32, 42, 52, 62, 23, 33, 43, 53, 63 ]
 
-const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D, computer) => {
+export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D, computer) => {
 
-    let roomyCells;
+    let roomyCells = {
+        horizontal: [],
+        vertical: []
+    };
 
     if (shipsOnBoard >= 1) {
 
         //let nextLength = ships[shipIndex].length;
-        let nextLength = 4;
+        let nextLength = ships[shipIndex].length;
         let breakPattern = "break";
 
         // replace unavail cells with "break"
@@ -132,12 +135,9 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
 
         })
 
-        console.log(availHorCells);
-        console.log(availVerCells);
-
         let experimentalArray = [];
         let tracker = 0;
-        let madeItArray = []; // horizontal array reviewed
+        let madeItArrayHor = []; // horizontal array reviewed
         let madeItArrayVer = [];
 
         availHorCells.forEach((array) => {
@@ -156,7 +156,7 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
                     if (tracker >= nextLength && (typeof(array[i+1]) === "string" || i === array.length - 1)) {
                         
                         // push to made it
-                        madeItArray.push(Array.from(experimentalArray));
+                        madeItArrayHor.push(Array.from(experimentalArray));
                         
                         // reset trackers
                         experimentalArray.length = 0;
@@ -224,141 +224,13 @@ const checkRoom = (size, ships, shipIndex, shipsOnBoard, unavailCells, horArray2
             
         })
 
-        console.log("made it array is ", madeItArray)
-        console.log("made it VER is", madeItArrayVer)
-
-        /* SOLUTION
-
-        let experimentalArray
-        let counter
-
-        Go through EACH array from horArray2D
-
-        if (array[i] + 1 === array[i + 1]) {
-            experimentalArray.push(array[i]);
-            counter++;
-
-            if (counter >= length && array[i + 2] === string) {
-                potentialArray.push(...experimentalArray)
-
-                // reset tracker
-                experimentalArray.length = 0
-                counter = 0
-            }
-        } else {
-
-            experimentalArray.length = 0
-            counter = 0
-
-        } */
+        roomyCells.horizontal = Array.from(madeItArrayHor);
+        roomyCells.vertical = Array.from(madeItArrayVer);
 
     }
 
+    return roomyCells;
 
 }
 
-checkRoom(0, 0, 0, 1, unavailCells, horArray, verArray);
-
-
-        /*
-        let availVerCells = verArray2D.filter((array) => {
-            let newArray = array.filter((cell) => {
-                return !unavailCells.includes(cell);
-            }) 
-            return newArray;
-        })*/
-        
-        // based on the length of the ship, see if there is enough room for each ship
-        // left and right, up and down
-
-        /*
-        let valuesTest = [];
-
-        if (computer) {
-
-        } else {
-
-            // going through cells one by one (can this be an option?)
-            
-            availHorCells = availHorCells.map((array) => {
-                // the cell passes a test if it has a number of consecutive cells nearby
-                // as long as the length itself
-                for (let i = 0; i < array.length; i++) {
-                    if (array[i] + 1 === array [i + 1]) {
-                        valuesTest.push(array[i]);
-                    } else {
-                        valuesTest.push(breakPattern);
-                    }
-                }
-            });
-
-            let experimentArr = [];
-            let tracker = 0;
-            // if an array piece lasts nextLength without a break, it is approved
-            valuesTest
-
-            // start counting from the first cell
-
-            // if you count to Length, save these 4 cells
-
-            // if you encounter a break before reaching Length, cells are out
-
-            
-
-            for (let i = 0; i < (size * size); i++) {
-
-                availHorCells.forEach((array) => {
-                    // the cell passes a test if it has a number of consecutive cells nearby
-                    // as long as the length itself
-
-                })
-
-            }
-
-        }
-
-
-
-    }
-
-    return roomyCells;*/
-
-// if the first ship is completed – shipsOnBoard >= 1
-
-// retrieve the locations of all previously set ships, push them into a single array
-
-
-// update the adjacent cells to see if there is room in vertical and horizontal arrays
-// before making the cell available to click on
-
-
-// there needs to be room either in vertical or horizontal array for a cell to be available
-
-
-
-
-
-/* SOLUTION
-
-let experimentalArray
-let counter
-
-Go through EACH array from horArray2D
-
-if (array[i] + 1 === array[i + 1]) {
-    experimentalArray.push(array[i]);
-    counter++;
-
-    if (counter >= length && array[i + 2] === string) {
-        potentialArray.push(...experimentalArray)
-
-        // reset tracker
-        experimentalArray.length = 0
-        counter = 0
-    }
-} else {
-
-    experimentalArray.length = 0
-    counter = 0
-
-} */
+console.log(checkRoom(0, 0, 0, 1, unavailCells, horArray, verArray));
