@@ -86,7 +86,7 @@ const verArray = [
   ]
 /* hor
 unavailCells = [ 23, 24, 25, 33, 34, 35, 43, 44, 45, 53, 54, 55, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86 ] */
-unavailCells = [ 21, 31, 41, 51, 61, 22, 32, 42, 52, 62, 23, 33, 43, 53, 63 ]
+let unavailCells = [ 21, 31, 41, 51, 61, 22, 32, 42, 52, 62, 23, 33, 43, 53, 63 ]
 
 export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D, computer) => {
 
@@ -192,8 +192,6 @@ export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray
                     experimentalArray.push(array[i]);
                     tracker++;
 
-                    console.log("tracker", tracker, "i=",  i)
-
                     // if tracker reaches or exceeds length of the ship AND (next item is string OR array is done) - maybe no string in array
                     if (tracker >= nextLength && (typeof(array[i+1]) === "string" || i === array.length - 1)) {
 
@@ -233,4 +231,4 @@ export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray
 
 }
 
-console.log(checkRoom(0, 0, 0, 1, unavailCells, horArray, verArray));
+//checkRoom(0, 0, 0, 1, unavailCells, horArray, verArray);

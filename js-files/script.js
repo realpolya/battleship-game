@@ -109,9 +109,6 @@ const shipsComputer = [
     }
 ]
 
-// event tracker
-const clickOrder = [];
-
 // COLORS
 const colors = {
     block: "white",
@@ -226,16 +223,29 @@ const handleClickSetup = (e) => {
     // current cell is assigned
     selectedCell = +e.target.id;
 
-    // run calculation for room.js - is there room for this cell to be clicked? after 1 ship
-    let roomyCells = 1;
+    // TODO:
+    // run calculation for room.js - is there room for this cell to be clicked? after 1 ship – only needs to run ONCE at the start of the ship
+    let roomyHorCells = [].concat(...Array.from(horArray2D));
+    let roomyVerCells = [].concat(...Array.from(verArray2D));
 
-    // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet
+    // remains true until recalculated at the end of handleClickSetup
+    if (nextShip) {
+        
+        let roomy = checkRoom(ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D); // returns an object with available hor and ver cells
+        roomyHorCells = [].concat(...roomy.horizontal);
+        roomyVerCells = [].concat(...roomy.vertical);
+
+        console.log("horizontals are ", roomyHorCells)
+        console.log("vertical are ", roomyVerCells)
+
+    }
+
+    // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet AND there is room for cell in the roomyCells
     if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
         && e.target.classList.contains("cell") 
-        && !unavailCells.includes(selectedCell)) {
-
-        // track click
-        clickOrder.push(selectedCell)
+        && !unavailCells.includes(selectedCell)
+        // TODO:
+        && (roomyHorCells.includes(selectedCell) || roomyVerCells.includes(selectedCell))) {
 
         // uncolor the previous suggested color
         unhighlightCells(cellsEl, colors.suggest, colors.board);
@@ -266,13 +276,17 @@ const handleClickSetup = (e) => {
                 adjacentCells = calculateAdjacent(selectedCell, gridSize, horArray2D, verArray2D, aGrid);
             }
 
+            // TODO:
+            // adjacent cells not in roomy cells have to be filtered out
+            //adjacentCells = adjacentCells.filter(())
+
             // highlight suggested cells
             highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
         }
 
         orientationAdjacent();
 
-        // check for length of ship
+        // check for length of ship EVERY TIME
         nextShip = trackLength(ships, shipIndex);
         
         // ship is complete
