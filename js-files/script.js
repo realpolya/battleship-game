@@ -230,7 +230,7 @@ const handleClickSetup = (e) => {
     let roomyVerCells = [].concat(...Array.from(verArray2D));
 
     // remains true until recalculated at the end of handleClickSetup
-    if (nextShip) {
+    if (nextShip && shipsOnBoard !== 0) {
         
         let roomy = checkRoom(ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D); // returns an object with available hor and ver cells
         roomyHorCells = [].concat(...roomy.horizontal);
