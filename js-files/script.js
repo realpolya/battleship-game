@@ -223,7 +223,8 @@ const handleClickSetup = (e) => {
     // current cell is assigned
     selectedCell = +e.target.id;
 
-    // TODO:
+    
+    // TODO: work on go back button functionality – it gets messed up with the array below
     // run calculation for room.js - is there room for this cell to be clicked? after 1 ship – only needs to run ONCE at the start of the ship
     let roomyHorCells = [].concat(...Array.from(horArray2D));
     let roomyVerCells = [].concat(...Array.from(verArray2D));
@@ -239,7 +240,7 @@ const handleClickSetup = (e) => {
         console.log("vertical are ", roomyVerCells)
 
     }
-
+    
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet AND there is room for cell in the roomyCells
     if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
         && e.target.classList.contains("cell") 
@@ -276,9 +277,27 @@ const handleClickSetup = (e) => {
                 adjacentCells = calculateAdjacent(selectedCell, gridSize, horArray2D, verArray2D, aGrid);
             }
 
+            console.log(adjacentCells);
+
             // TODO:
-            // adjacent cells not in roomy cells have to be filtered out
-            //adjacentCells = adjacentCells.filter(())
+            // adjacent cells not in roomy cells have to be filtered out 
+            // adjacent cells are always in the ascending order 
+
+            // filtering process should only happen when the ship is being built
+            if (nextShip) {
+                
+                let adjHorCells = adjacentCells.filter((cell) => {
+                    return (Math.abs(cell - selectedCell) === 1 && roomyHorCells.includes(cell));
+                })
+    
+                let adjVerCells = adjacentCells.filter((cell) => {
+                    return (Math.abs(cell - selectedCell) === gridSize && roomyVerCells.includes(cell));
+                })
+    
+                adjacentCells = [].concat(...adjVerCells, ...adjHorCells)
+                console.log("Again ", adjacentCells)
+
+            }
 
             // highlight suggested cells
             highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
@@ -384,9 +403,7 @@ const goBackResetTrackers = () => {
 
     clickNumber = 0;
     adjacentCells = undefined;
-    //blockedAdjCells = undefined;
-    console.log(blockedAdjCells)
-    
+    //blockedAdjCells = undefined;    
     // recalculate trackers
     shipIndex = 0;
     shipsOnBoard = 0;

@@ -162,7 +162,9 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D) => {
         return newArrayMember;
     }).filter((a) => {
         return a !== undefined;
-    })
+    }).sort((a, b) => {
+        return a - b;
+    });
 
     return finalArr;
 }
