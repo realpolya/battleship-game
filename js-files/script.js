@@ -1026,6 +1026,10 @@ onload = () => {
         console.log(session_computer);
         
         // if the computer setup is not done, do it
+
+        // FIXME: – testing for maximum call stack issue
+        //session_computer = false;
+
         if (!session_computer) {
             computerSetup();
             console.log("a Grid", aGrid)
