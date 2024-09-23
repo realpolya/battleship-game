@@ -466,8 +466,8 @@ const computerSetup = () => {
             roomyHorCells = [].concat(...roomy.horizontal);
             roomyVerCells = [].concat(...roomy.vertical);
 
-            console.log("horizontals for computer are ", roomyHorCells)
-            console.log("verticals for computer are ", roomyVerCells)
+            console.log(`horizontals for computer at index ${shipIndex} are `, roomyHorCells)
+            console.log(`verticals for computer at index ${shipIndex} are `, roomyVerCells)
 
         }
 
@@ -477,13 +477,35 @@ const computerSetup = () => {
         let i;
 
         // after the first move, selected cell is one of the available ones from adjacent cells
-        if (clickNumber === 0) {
+        console.log("nextShip is ", nextShip)
+        console.log("Click number is", clickNumber)
+        if (clickNumber === 0 && !nextShip) {
             i = compArray[randomIndex(compArray)];
-        } else if (nextShip) {
-            // one of the available ones from roomy cells
+        } 
+        else if (nextShip) {
+            
+            // TODO: one of the available ones from roomy cells
+            // filter roomyCells so no duplicates
+            let interimArr = [];
+            let roomyCells = Array.from(roomyHorCells).concat(roomyVerCells).filter((cell) => {
+                
+                let x; // undefined
+                if (!interimArr.includes(cell)) {
+                    x = cell;
+                }
+                interimArr.push(cell);
+                return x;
+                
+            })
+
+            console.log('roomy cells if next ship are', roomyCells)
+
+            i = roomyCells[randomIndex(roomyCells)];
+            //i = compArray[randomIndex(compArray)]; – old solution
+
         }
         else {
-            // filter adjacent cells with roomy cells
+            // TODO: filter adjacent cells with roomy cells
             i = adjacentCells[randomIndex(adjacentCells)];
         }
 
