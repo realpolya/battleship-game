@@ -466,8 +466,8 @@ const computerSetup = () => {
             roomyHorCells = [].concat(...roomy.horizontal);
             roomyVerCells = [].concat(...roomy.vertical);
 
-            console.log(`horizontals for computer at index ${shipIndex} are `, roomyHorCells)
-            console.log(`verticals for computer at index ${shipIndex} are `, roomyVerCells)
+            //console.log(`horizontals for computer at index ${shipIndex} are `, roomyHorCells)
+            //console.log(`verticals for computer at index ${shipIndex} are `, roomyVerCells)
 
         }
 
@@ -498,14 +498,13 @@ const computerSetup = () => {
                 
             })
 
-            console.log('roomy cells if next ship are', roomyCells)
+            //console.log('roomy cells if next ship are', roomyCells)
 
             i = roomyCells[randomIndex(roomyCells)];
             //i = compArray[randomIndex(compArray)]; – old solution
 
         }
         else {
-            // TODO: filter adjacent cells with roomy cells
             i = adjacentCells[randomIndex(adjacentCells)];
         }
 
@@ -541,6 +540,26 @@ const computerSetup = () => {
                     
                     // highlight suggested cells – COMPUTER  NOT NEEDED
                     //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
+
+                    // TODO:
+                    // filtering process should only happen when the ship is being built
+                    if (nextShip) {
+                        
+                        console.log("Adjacent cells BEFORE roomy cells ", adjacentCells)
+
+                        let adjHorCells = adjacentCells.filter((cell) => {
+                            return (Math.abs(cell - selectedCell) === 1 && roomyHorCells.includes(cell));
+                        })
+            
+                        let adjVerCells = adjacentCells.filter((cell) => {
+                            return (Math.abs(cell - selectedCell) === gridSize && roomyVerCells.includes(cell));
+                        })
+            
+                        adjacentCells = [].concat(...adjVerCells, ...adjHorCells)
+                        console.log("Again ", adjacentCells)
+
+                    }
+                    
                 }
 
                 orientationAdjacent();
