@@ -449,16 +449,41 @@ const computerSetup = () => {
     // get all of the IDs 101-200
     compArray = computerArray(gridSize);
 
+     // TODO: work on go back button functionality – it gets messed up with the array below
+    let roomyHorCells = [].concat(...Array.from(comHorArray2D));
+    let roomyVerCells = [].concat(...Array.from(comVerArray2D));
+
+    ////
+
     // render ships for computer
     function computerBoard() {
+
+        // TODO: work on go back button functionality – it gets messed up with the array below
+        // remains true until recalculated at the end of handleClickSetup
+        if (nextShip && shipsOnBoard !== 0) {
+            
+            let roomy = checkRoom(ships, shipIndex, shipsOnBoard, unavailCells, comHorArray2D, comVerArray2D); // returns an object with available hor and ver cells
+            roomyHorCells = [].concat(...roomy.horizontal);
+            roomyVerCells = [].concat(...roomy.vertical);
+
+            console.log("horizontals for computer are ", roomyHorCells)
+            console.log("verticals for computer are ", roomyVerCells)
+
+        }
+
+        ////
 
         // computer index
         let i;
 
         // after the first move, selected cell is one of the available ones from adjacent cells
-        if (nextShip || clickNumber === 0) {
+        if (clickNumber === 0) {
             i = compArray[randomIndex(compArray)];
-        } else {
+        } else if (nextShip) {
+            // one of the available ones from roomy cells
+        }
+        else {
+            // filter adjacent cells with roomy cells
             i = adjacentCells[randomIndex(adjacentCells)];
         }
 

@@ -88,7 +88,7 @@ const verArray = [
 unavailCells = [ 23, 24, 25, 33, 34, 35, 43, 44, 45, 53, 54, 55, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86 ] */
 let unavailCells = [ 21, 31, 41, 51, 61, 22, 32, 42, 52, 62, 23, 33, 43, 53, 63 ]
 
-export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D, computer) => {
+export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray2D, verArray2D) => {
 
     let roomyCells = {
         horizontal: [],
