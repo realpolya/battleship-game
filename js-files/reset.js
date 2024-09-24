@@ -23,7 +23,8 @@ const goBack = (ships, grid) => {
     // remove emoji from grid
     let newGrid = grid.map((cell, i) => {
         if (cell === emojiToRemove) {
-            cell = undefined;
+            cell = false; // FIXME: conflicts with updateBoard (undefined swapped for false)
+            // innerHTML and undefined issue
         }
         return cell;
     })
