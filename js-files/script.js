@@ -29,8 +29,6 @@ const cruiserEmoji = '<img class="emoji" src="../assets/emoji-4.png">' //FIXME: 
 const destroyerEmoji = '<img class="emoji" src="../assets/emoji-5.png">' //FIXME: "⛵"
 
 
-
-
 // ships – player setup
 const ships = [
     {
