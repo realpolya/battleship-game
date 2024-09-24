@@ -72,6 +72,11 @@ td {
 
 }
 
+.emoji {
+    width: 2rem;
+    height: auto;
+}
+
 #computer-target-cell, #player-target-cell {
     padding: 0.5rem;
     margin: 0 0 0 .3rem;

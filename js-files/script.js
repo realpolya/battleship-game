@@ -21,12 +21,22 @@ let bGrid = []; // only computer values
 const gridSize = 10;
 const gridSquared = gridSize * gridSize;
 
+// FIXME: change to emoji
+const carrierEmoji = '<img class="emoji" src="../assets/emoji-6.png">' // FIXME: "🚢" 
+const battleshipEmoji = '<img class="emoji" src="../assets/emoji-1.png">' // FIXME: "🛳️"
+const submarineEmoji = '<img class="emoji" src="../assets/emoji-2.png">' //FIXME: "🛥️"
+const cruiserEmoji = '<img class="emoji" src="../assets/emoji-4.png">' //FIXME: "⛴️"
+const destroyerEmoji = '<img class="emoji" src="../assets/emoji-5.png">' //FIXME: "⛵"
+
+
+
+
 // ships – player setup
 const ships = [
     {
         name: "carrier",
         length: 5,
-        emoji: "🚢", //🚢 ../assets/try.png
+        emoji: carrierEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -34,7 +44,7 @@ const ships = [
     {
         name: "battleship",
         length: 4,
-        emoji: "🛳️",
+        emoji: battleshipEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -42,7 +52,7 @@ const ships = [
     {
         name: "submarine",
         length: 3,
-        emoji: "🛥️",
+        emoji: submarineEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -50,7 +60,7 @@ const ships = [
     {
         name: "cruiser",
         length: 3,
-        emoji: "⛴️",
+        emoji: cruiserEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -58,7 +68,7 @@ const ships = [
     {
         name: "destroyer",
         length: 2,
-        emoji: "⛵",
+        emoji: destroyerEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -70,7 +80,7 @@ const shipsComputer = [
     {
         name: "carrier",
         length: 5,
-        emoji: "🚢",
+        emoji: carrierEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -78,7 +88,7 @@ const shipsComputer = [
     {
         name: "battleship",
         length: 4,
-        emoji: "🛳️",
+        emoji: battleshipEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -86,7 +96,7 @@ const shipsComputer = [
     {
         name: "submarine",
         length: 3,
-        emoji: "🛥️",
+        emoji: submarineEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -94,7 +104,7 @@ const shipsComputer = [
     {
         name: "cruiser",
         length: 3,
-        emoji: "⛴️",
+        emoji: cruiserEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -102,7 +112,7 @@ const shipsComputer = [
     {
         name: "destroyer",
         length: 2,
-        emoji: "⛵",
+        emoji: destroyerEmoji,
         location: [],
         hits: 0,
         alive: true
@@ -685,7 +695,7 @@ const renderComputer = (render, dead, hide) => {
                 // place emoji into cellsEl for computer
                 for (let x = gridSquared; x < aGrid.length; x++) {
                     if (ship.emoji === aGrid[x]) {
-                        cellsEl[x].textContent = ship.emoji;
+                        cellsEl[x].innerHTML = ship.emoji; //FIXME: textContent changed to innerHTML
                     }
                 }
             }

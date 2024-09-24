@@ -3,8 +3,13 @@
 // update board function – sizeSquared to hide computer
 const updateBoard = (elArray, grid, sizeSquared) => {
 
+    // FIXME: change textContent for innerHTML
     for (let x = 0; x < sizeSquared; x++) {
-        elArray[x].textContent = grid[x];
+        
+        // FIXME: add if statement for innerHTML to not render undefined
+        if (grid[x] !== undefined) {
+            elArray[x].innerHTML = grid[x];
+        }
     }
 
 }
