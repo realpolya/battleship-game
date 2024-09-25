@@ -192,7 +192,7 @@ let hitArr = []; // IDs of hit cells
 let deadArr = []; // IDs of dead cells with revealed ships
 
 let whoWon;
-let emptyCells = []; // cells not to target for computer – TODO: can I reuse unavail cells for this?
+let emptyCells = []; // cells not to target for computer
 
 
 
@@ -230,8 +230,6 @@ const handleClickSetup = (e) => {
     // current cell is assigned
     selectedCell = +e.target.id;
 
-    
-    // TODO: work on go back button functionality – it gets messed up with the array below
     // run calculation for room.js - is there room for this cell to be clicked? after 1 ship – only needs to run ONCE at the start of the ship
     let roomyHorCells = [].concat(...Array.from(horArray2D));
     let roomyVerCells = [].concat(...Array.from(verArray2D));
@@ -252,7 +250,6 @@ const handleClickSetup = (e) => {
     if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
         && e.target.classList.contains("cell") 
         && !unavailCells.includes(selectedCell)
-        // TODO:
         && (roomyHorCells.includes(selectedCell) || roomyVerCells.includes(selectedCell))) {
 
         // uncolor the previous suggested color
@@ -283,12 +280,6 @@ const handleClickSetup = (e) => {
             } else {
                 adjacentCells = calculateAdjacent(selectedCell, gridSize, horArray2D, verArray2D, aGrid);
             }
-
-            console.log(adjacentCells);
-
-            // TODO:
-            // adjacent cells not in roomy cells have to be filtered out 
-            // adjacent cells are always in the ascending order 
 
             // filtering process should only happen when the ship is being built
             if (nextShip) {
@@ -456,7 +447,6 @@ const computerSetup = () => {
     // get all of the IDs 101-200
     compArray = computerArray(gridSize);
 
-     // TODO: work on go back button functionality – it gets messed up with the array below
     let roomyHorCells = [].concat(...Array.from(comHorArray2D));
     let roomyVerCells = [].concat(...Array.from(comVerArray2D));
 
@@ -465,7 +455,6 @@ const computerSetup = () => {
     // render ships for computer
     function computerBoard() {
 
-        // TODO: work on go back button functionality – it gets messed up with the array below
         // remains true until recalculated at the end of handleClickSetup
         if (nextShip && shipsOnBoard !== 0) {
             
@@ -473,25 +462,20 @@ const computerSetup = () => {
             roomyHorCells = [].concat(...roomy.horizontal);
             roomyVerCells = [].concat(...roomy.vertical);
 
-            //console.log(`horizontals for computer at index ${shipIndex} are `, roomyHorCells)
-            //console.log(`verticals for computer at index ${shipIndex} are `, roomyVerCells)
-
         }
-
-        ////
 
         // computer index
         let i;
 
         // after the first move, selected cell is one of the available ones from adjacent cells
-        console.log("nextShip is ", nextShip)
-        console.log("Click number is", clickNumber)
+        
         if (clickNumber === 0 && !nextShip) {
+            
             i = compArray[randomIndex(compArray)];
+
         } 
         else if (nextShip) {
             
-            // TODO: one of the available ones from roomy cells
             // filter roomyCells so no duplicates
             let interimArr = [];
             let roomyCells = Array.from(roomyHorCells).concat(roomyVerCells).filter((cell) => {
@@ -505,14 +489,14 @@ const computerSetup = () => {
                 
             })
 
-            //console.log('roomy cells if next ship are', roomyCells)
-
             i = roomyCells[randomIndex(roomyCells)];
             //i = compArray[randomIndex(compArray)]; – old solution
 
         }
         else {
+            
             i = adjacentCells[randomIndex(adjacentCells)];
+
         }
 
         selectedCell = i;
@@ -520,91 +504,86 @@ const computerSetup = () => {
         if ((adjacentCells === undefined || adjacentCells.includes(selectedCell)) 
             && !unavailCells.includes(selectedCell)) {
 
-                // ship in cell
-                shipInCell(aGrid, selectedCell, shipsComputer, gridSquared, shipIndex, cellsEl, unavailCells, bGrid);
+            // ship in cell
+            shipInCell(aGrid, selectedCell, shipsComputer, gridSquared, shipIndex, cellsEl, unavailCells, bGrid);
 
-                // move click number
-                clickNumber++;
+            // move click number
+            clickNumber++;
 
-                // orientation check
-                function orientationAdjacent() {
-                    // determine orientation
-                    if (clickNumber === 2) {
-                        shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
-                    } 
-        
-                    // calculate adjacent cells
-                    if (clickNumber >= 2) {
-                        adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
-                    } else {
-                        adjacentCells = calculateAdjacent(selectedCell, gridSize, comHorArray2D, comVerArray2D, bGrid);
-                    }
-
-                    //filter adjacent cells so they can't be below 100
-                    adjacentCells = adjacentCells.filter((cell) => {
-                        return cell > gridSquared && cell <= (gridSquared + gridSquared);
-                    })
-                    
-                    // highlight suggested cells – COMPUTER  NOT NEEDED
-                    //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
-
-                    // TODO:
-                    // filtering process should only happen when the ship is being built
-                    if (nextShip) {
-                        
-                        console.log("Adjacent cells BEFORE roomy cells ", adjacentCells)
-
-                        let adjHorCells = adjacentCells.filter((cell) => {
-                            return (Math.abs(cell - selectedCell) === 1 && roomyHorCells.includes(cell));
-                        })
-            
-                        let adjVerCells = adjacentCells.filter((cell) => {
-                            return (Math.abs(cell - selectedCell) === gridSize && roomyVerCells.includes(cell));
-                        })
-            
-                        adjacentCells = [].concat(...adjVerCells, ...adjHorCells)
-                        console.log("Again ", adjacentCells)
-
-                    }
-                    
+            // orientation check
+            function orientationAdjacent() {
+                // determine orientation
+                if (clickNumber === 2) {
+                    shipOrientation = orientationCheck(bGrid, ships[shipIndex].emoji)
+                } 
+    
+                // calculate adjacent cells
+                if (clickNumber >= 2) {
+                    adjacentCells = updateAdjacent(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D)
+                } else {
+                    adjacentCells = calculateAdjacent(selectedCell, gridSize, comHorArray2D, comVerArray2D, bGrid);
                 }
 
-                orientationAdjacent();
+                //filter adjacent cells so they can't be below 100
+                adjacentCells = adjacentCells.filter((cell) => {
+                    return cell > gridSquared && cell <= (gridSquared + gridSquared);
+                })
+                
+                // highlight suggested cells – COMPUTER  NOT NEEDED
+                //highlightCells(cellsEl, adjacentCells, unavailCells, colors.suggest);
 
-                // check for length of ship
-                nextShip = trackLength(shipsComputer, shipIndex);
-
-                // ship is complete
+                // filtering process should only happen when the ship is being built
                 if (nextShip) {
-
-                    // color the blocked cells
-                    blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D, computer)
                     
-                    //filter blocked cells so they can't be below 100
-                    blockedAdjCells = blockedAdjCells.filter((cell) => {
-                        return cell > gridSquared && cell <= (gridSquared + gridSquared);
+                    let adjHorCells = adjacentCells.filter((cell) => {
+                        return (Math.abs(cell - selectedCell) === 1 && roomyHorCells.includes(cell));
                     })
+        
+                    let adjVerCells = adjacentCells.filter((cell) => {
+                        return (Math.abs(cell - selectedCell) === gridSize && roomyVerCells.includes(cell));
+                    })
+        
+                    adjacentCells = [].concat(...adjVerCells, ...adjHorCells);
 
-                    unavailCells = unavailCells.concat(blockedAdjCells);
-
-                    // change the completed cells to the cell color – COMPUTER  NOT NEEDED
-                    //blockCells(cellsEl, blockedAdjCells, colors.adjacent)
-                    //blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
-
-                    // set to session storage
-                    sessionStorage.setItem(`shipsComputer-${shipsComputer[shipIndex].name}`, JSON.stringify(shipsComputer[shipIndex].location));
-                    
-                    // reset trackers
-                    shipIsComplete();
-                    unhighlightCells(cellsEl, colors.suggest, colors.board);
                 }
-
+                
             }
+
+            orientationAdjacent();
+
+            // check for length of ship
+            nextShip = trackLength(shipsComputer, shipIndex);
+
+            // ship is complete
+            if (nextShip) {
+
+                // color the blocked cells
+                blockedAdjCells = calcBlockedAdj(gridSize, shipOrientation, shipsComputer[shipIndex].location, comHorArray2D, comVerArray2D, computer)
+                
+                //filter blocked cells so they can't be below 100
+                blockedAdjCells = blockedAdjCells.filter((cell) => {
+                    return cell > gridSquared && cell <= (gridSquared + gridSquared);
+                })
+
+                unavailCells = unavailCells.concat(blockedAdjCells);
+
+                // change the completed cells to the cell color – COMPUTER  NOT NEEDED
+                //blockCells(cellsEl, blockedAdjCells, colors.adjacent)
+                //blockCells(cellsEl, shipsComputer[shipIndex].location, colors.ship)
+
+                // set to session storage
+                sessionStorage.setItem(`shipsComputer-${shipsComputer[shipIndex].name}`, JSON.stringify(shipsComputer[shipIndex].location));
+                
+                // reset trackers
+                shipIsComplete();
+                unhighlightCells(cellsEl, colors.suggest, colors.board);
+            }
+
+        }
         
         if (shipsOnBoard === shipsComputer.length) {
             
             computerReady = true;
-            console.log(aGrid);
             return true;
 
         } else {
@@ -803,7 +782,6 @@ const computerFires = () => {
     concDeadArr = [].concat(...deadArr);
 
     // if ID compHits but NOT in dead, target it! 
-    // FIXME: toTarget defined here and redefined here every time computer fires!
     let toTarget = compHits.filter((a) => {
         return !concDeadArr.includes(a);
     })
@@ -842,17 +820,13 @@ const computerFires = () => {
     } 
     
     // if two or more cells of the ship were discovered (not dead yet)
-    // FIXME: for two cell ship – it is dead – it never goes through this!
-    // if the previous ship's orientation was vertical, it persists
     else if (toTarget.length > 1) {
         
-        // FIXME:
         function moreHits() {
+            
             // determine orientation
             if (toTarget.length === 2) {
                 shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
-                // FIXME: what happens with the 2-cell ship – it never hits this
-                console.log(`MOREHITS: Ship orientation for current ship is ${shipOrientation}`)
             }
             
             // calculate adjacent cells
@@ -888,8 +862,6 @@ const computerFires = () => {
         availableCells = availableCells.filter((cell) => {
             return (!missArr.includes(cell) && !hitArr.includes(cell) && !emptyCells.includes(cell))
         })
-
-        console.log("What to hit", availableCells)
         
         function randomCell() {
             i = availableCells[randomIndex(availableCells)];
@@ -905,7 +877,7 @@ const computerFires = () => {
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
     let calledCell = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, "computer");
     let currentScore = renderScore(score);
-    let timeDelay = 2; // FIXME: change to 2000 for game
+    let timeDelay = 2000; // change to 2000 for game, change to 1 for dev 
 
     // time delay to reveal the result
     setTimeout(() => {
@@ -1059,16 +1031,13 @@ onload = () => {
         })
 
         // update whether the computer setup has been done
-        session_computer = JSON.parse(sessionStorage.getItem("computer"));
-        console.log(session_computer);
+        session_computer = JSON.parse(sessionStorage.getItem("computer"));        
         
         // if the computer setup is not done, do it
-
         if (!session_computer) {
             computerSetup();
-            console.log("a Grid", aGrid)
         }
-        console.log(aGrid);
+        console.log('aGrid: ', aGrid);
 
         // render computer's setup – CHANGE TO FALSE FOR GAME
         renderComputer(false, false);

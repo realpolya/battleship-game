@@ -175,7 +175,6 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
     
     // console.log("------Calc blocked adjacent is WORKING---------")
 
-    //FIXME: this function is not working properly for computer
     let finalArr = [];
 
     // console.log("Ship's orientation is ", orientation)
@@ -331,7 +330,6 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
 
 }
 
-// FIXME: orientation is not correct in computerFires
 // check for horizontal or vertical, computerAttacks = bool value
 const orientationCheck = (arr, shipEmoji, computerAttacks) => {
     let orientation = "vertical";

@@ -6,7 +6,7 @@ const updateBoard = (elArray, grid, sizeSquared) => {
     // FIXME: change textContent for innerHTML
     for (let x = 0; x < sizeSquared; x++) {
         
-        // FIXME: woek with goBack function (reassign false to undefined)
+        // FIXME: work with goBack function (reassign false to undefined)
         if (grid[x] === false) {
             elArray[x].innerHTML = "";
             grid[x] = undefined;
