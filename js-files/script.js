@@ -802,7 +802,8 @@ const computerFires = () => {
     let concDeadArr = [];
     concDeadArr = [].concat(...deadArr);
 
-    // if ID compHits but NOT in dead, target it!
+    // if ID compHits but NOT in dead, target it! 
+    // FIXME: toTarget defined here and redefined here every time computer fires!
     let toTarget = compHits.filter((a) => {
         return !concDeadArr.includes(a);
     })
@@ -841,6 +842,8 @@ const computerFires = () => {
     } 
     
     // if two or more cells of the ship were discovered (not dead yet)
+    // FIXME: for two cell ship – it is dead – it never goes through this!
+    // if the previous ship's orientation was vertical, it persists
     else if (toTarget.length > 1) {
         
         // FIXME:
@@ -848,7 +851,7 @@ const computerFires = () => {
             // determine orientation
             if (toTarget.length === 2) {
                 shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
-                // FIXME: what happens with the 2-cell ship
+                // FIXME: what happens with the 2-cell ship – it never hits this
                 console.log(`MOREHITS: Ship orientation for current ship is ${shipOrientation}`)
             }
             
@@ -898,7 +901,7 @@ const computerFires = () => {
     // assign that ID to the cell
     selectedCell = i;
 
-    // analyze attack
+    // analyze attack – the most important function of this function
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
     let calledCell = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, "computer");
     let currentScore = renderScore(score);
@@ -944,7 +947,16 @@ const computerFires = () => {
 
         if (checkArray) {
             // calc blocked cells FIXME: calcBlockedAdj is faulty
-            // FIXME: orientation being fed is not correct
+            // FIXME: orientation being fed is not correct for 2 cell ship
+
+            // recalculate orientation for the two cell ship
+            if (arr.length === 2) {
+                
+                console.log("hit arr length of 2");
+                shipOrientation = orientationCheck(arr, "noShipEmoji", "computerAttacks");
+                
+            }
+
             let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
             console.log(`For dead ${arr} empty cells are ${cells}`)
 
