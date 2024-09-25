@@ -931,34 +931,28 @@ const computerFires = () => {
 
     }, timeDelay);
 
+    // analyze the most recent attackMessage
     if (attackMessage.includes("sank your")) {
-        
-        console.log ("Dead Array is ", deadArr)
 
-        // TODO: solution below
-        let arr = Array.from(deadArr[deadArr.length - 1]) // get the mmost recent member of array
-        console.log('Most recent dead arr is ', arr)
+        // get the most recent number of array
+        let arr = Array.from(deadArr[deadArr.length - 1]);
 
         // check if array is indeed computer's
         let checkArray = arr.every((cell) => {
             return cell <= gridSquared;
         })
-        console.log("Check array if ALL cells is below or equal to gridSquared ", checkArray);
 
         if (checkArray) {
-            // calc blocked cells FIXME: calcBlockedAdj is faulty
-            // FIXME: orientation being fed is not correct for 2 cell ship
 
             // recalculate orientation for the two cell ship
             if (arr.length === 2) {
                 
-                console.log("hit arr length of 2");
                 shipOrientation = orientationCheck(arr, "noShipEmoji", "computerAttacks");
-                
+
             }
 
+            // block adjacent cells
             let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
-            console.log(`For dead ${arr} empty cells are ${cells}`)
 
             // push into empty cells
             cells.forEach((id) => {
@@ -972,32 +966,10 @@ const computerFires = () => {
                 return a - b;
             })
 
-            console.log("After filter Empty cells are ", emptyCells)
         }
-        
-        /*
-        // do not target cells around dead cells – FIXME: creates issues with the cycle repeating
-        deadArr.forEach((arr) => {
-            
-            // FIXME: add empty cells just for the last ship that sank (orientation has changed!)
-            let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
-
-            console.log(`For ${arr} dead cells are ${cells}`)
-
-            cells.forEach((id) => {
-                if (!emptyCells.includes(id) && id <= gridSquared) {
-                    emptyCells.push(id);
-                }
-            })
-
-            console.log("Empty cells are ", emptyCells)
-
-        })
-
-        console.log("Empty cells are ", emptyCells); */
 
         // color blocked cells
-        blockCells(cellsEl, emptyCells, colors.test)
+        // blockCells(cellsEl, emptyCells, colors.test)
 
     }
 
