@@ -62,8 +62,6 @@ export const checkRoom = (ships, shipIndex, shipsOnBoard, unavailCells, horArray
                     experimentalArray.push(array[i]);
                     tracker++;
 
-                    //console.log("tracker", tracker, "i=",  i)
-
                     // if tracker reaches or exceeds length of the ship AND (next item is string OR array is done) - maybe no string in array
                     if (tracker >= nextLength && (typeof(array[i+1]) === "string" || i === array.length - 1)) {
                         

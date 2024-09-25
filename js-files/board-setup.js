@@ -3,18 +3,18 @@
 // update board function – sizeSquared to hide computer
 const updateBoard = (elArray, grid, sizeSquared) => {
 
-    // FIXME: change textContent for innerHTML
+    // loop through all of the human board cells
     for (let x = 0; x < sizeSquared; x++) {
         
-        // FIXME: work with goBack function (reassign false to undefined)
+        // work with goBack function (reassign false to undefined)
         if (grid[x] === false) {
             elArray[x].innerHTML = "";
             grid[x] = undefined;
         }
 
-        // FIXME: add if statement for innerHTML to not render undefined
+        // render innerHTML of the cell
         if (grid[x] !== undefined) {
-            elArray[x].innerHTML = grid[x];
+            elArray[x].innerHTML = grid[x]; // was textContent to host emojis
         }
     }
 

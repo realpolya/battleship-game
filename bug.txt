@@ -1,2 +1,3 @@
+log of bugs:
 noTarget array never reaches 2 hits to establish the orientation of the 2-cell ship
 this leads to blocking out adjacent cells in a wrong way if the ship before was vertical

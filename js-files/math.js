@@ -350,7 +350,7 @@ const orientationCheck = (arr, shipEmoji, computerAttacks) => {
             return a - b;
         });
 
-        console.log(`ornetationCheck sortedArr is ${sortedArr}`)
+        //console.log(`ornetationCheck sortedArr is ${sortedArr}`)
 
         // if member at index 0 is 1 less than at index 1, horizontal
         if (sortedArr[0] + 1 === sortedArr[1]) {

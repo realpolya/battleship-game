@@ -241,9 +241,6 @@ const handleClickSetup = (e) => {
         roomyHorCells = [].concat(...roomy.horizontal);
         roomyVerCells = [].concat(...roomy.vertical);
 
-        console.log("horizontals are ", roomyHorCells)
-        console.log("vertical are ", roomyVerCells)
-
     }
     
     // if (first click (aka adjacentCells empty) OR if id belongs to the adjacentCells array) AND cell class AND not assigned yet AND there is room for cell in the roomyCells
@@ -293,7 +290,6 @@ const handleClickSetup = (e) => {
                 })
     
                 adjacentCells = [].concat(...adjVerCells, ...adjHorCells)
-                console.log("Again ", adjacentCells)
 
             }
 
@@ -756,7 +752,6 @@ const fireClick = (selectedCell) => {
     // only proceed if the player indeed made a move
     if (clickResult === "Hit!" || clickResult === "Miss!" || clickResult.includes("was sunk!")) {
         
-        console.log("Computer's turn to fire")
         computerFires();
 
     }

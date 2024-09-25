@@ -11,8 +11,8 @@ export const analyzeAttack = (cell, aGrid,
         return "This cell has already been hit";
     }
 
+    // after updateBoard, array can have "" empty strings
     // see if the cell is empty or not
-    // FIXME: after updateBoard, array can have "" empty strings
     if (aGrid[cell - 1]) {
 
         // push to the hit array
@@ -67,7 +67,6 @@ export const analyzeAttack = (cell, aGrid,
 
         // push into missedArr
         missArr.push(cell)
-        console.log("Missed cell is ", cell)
 
         if (computer) {
             return "Computer missed!"
