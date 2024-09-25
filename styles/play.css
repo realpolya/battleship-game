@@ -77,6 +77,10 @@ td {
     height: auto;
 }
 
+.greenie {
+    color: rgb(77, 161, 103);
+}
+
 #computer-target-cell, #player-target-cell {
     padding: 0.5rem;
     margin: 0 0 0 .3rem;
@@ -155,10 +159,16 @@ td {
 
     .cell {
         font-size: 1rem;
+        width: 3rem;
+    }
+
+    .emoji {
+        width: 1.4rem;
+        height: auto;
     }
 
     .board {
-        width: 95%;
+        width: 100%;
     }
     
     #player-setup {
@@ -169,6 +179,10 @@ td {
       justify-content: space-between;
       margin: auto;
       width: 100%;
+    }
+
+    #player-table, #computer-table {
+        width: 100%;
     }
 
     #computer-target-cell, #player-target-cell {
@@ -184,6 +198,10 @@ td {
         height: 20%;
         max-height: 20%;
     }*/
+
+    #space-bar {
+        display: none;
+    }
 
     #game-buttons {
         display: flex;
@@ -248,22 +266,6 @@ td {
         height: 1em;
         padding: 0;
     }
-
-    /* this makes the table jump!
-    td {
-        font-size: 0.7rem;
-        height: 2rem;
-        width: 2rem;       
-        min-height: .5rem;
-        min-width: .5rem;
-        max-height: 1.7rem;
-        max-width: 1.7rem;
-    } */
-
-    /* this makes the table jump!
-    table {
-        min-width: 80%;
-    }*/
 
     /* immediate-instruction - child of instructions */
     #immediate-instruction {

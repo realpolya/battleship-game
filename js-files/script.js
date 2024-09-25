@@ -1117,6 +1117,7 @@ goBackButton?.addEventListener("click", () => {
             unhighlightCells(cellsEl, colors.suggest, colors.board);
         }
 
+        // reset colors
         colorReset();
 
 
@@ -1167,6 +1168,8 @@ compTableEl?.addEventListener("click", gameClick)
 // fire button functionality
 fireButton?.addEventListener('click', () => {
     fireClick(selectedCell);
+    
+    // reset selectedCell
     selectedCell = undefined;
 })
 
