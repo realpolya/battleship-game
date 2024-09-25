@@ -172,8 +172,14 @@ const updateAdjacent = (size, orientation, location, hor2D, ver2D) => {
 // color blocked adjacent cells after ship is complete (obtain ids), computer is 
 // a boolean to work on computer board
 const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => {
- 
+    
+    // console.log("------Calc blocked adjacent is WORKING---------")
+
+    //FIXME: this function is not working properly for computer
     let finalArr = [];
+
+    // console.log("Ship's orientation is ", orientation)
+    // console.log("Ship's location is ", location)
 
     // location is ship's location array
     if (orientation === "horizontal") {
@@ -181,12 +187,17 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
         // new horizontal members -1 +1
         let smallest = location[0] - 1;
         let largest = location[location.length - 1] + 1;
+        // console.log(`smallest ${smallest}, largest ${largest}`)
 
+        // cycle through the 2D array
         hor2D.forEach((subArray) => {
+            
             // check if horizontal subArray matches the location array
             const foundArray = subArray.some((el) => {
                 return location.includes(el);
             })
+
+            // console.log(`result of foundArray for ${subArray} is `, foundArray)
 
             // if yes
             if (foundArray) {
@@ -199,10 +210,14 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                     finalArr.push(largest);
                 }
 
+                // console.log(`Final array has included this: ${finalArr}`);
+
                 // sort array
                 const newRowArray = location.concat(finalArr).sort((a, b) => {
                     return a - b;
                 })
+
+                // console.log("NewRowArray is ", newRowArray);
 
                 let rowLength = newRowArray.length
 
@@ -216,27 +231,35 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                     }
                 }
 
+                // console.log(`After add all above Final array has included this: ${finalArr}`);
+
                 // add all below
                 newMember = newRowArray[0] + size;
+                
                 if (newMember <= (size * size)) {
                     for (let i = 0; i < rowLength; i++) {
                         finalArr.push(newMember);
                         newMember++;
                     }
-                } else if (computer && newMember <= ((size * size) * 2)) {
+                } 
+                
+                else if (computer && newMember <= ((size * size) * 2)) {
                     for (let i = 0; i < rowLength; i++) {
                         finalArr.push(newMember);
                         newMember++;
                     }
                 }
 
+                // console.log(`After add all below Final array has included this: ${finalArr}`);
+
             }
         })
 
     } else if (orientation === "vertical") {
-        // new horizontal members -1 +1
+        // new vertical members -size +size
         let smallest = location[0] - size;
         let largest = location[location.length - 1] + size;
+        // console.log(`smallest ${smallest}, largest ${largest}`)
 
         ver2D.forEach((subArray) => {
             // check if horizontal subArray matches the location array
@@ -244,8 +267,11 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                 return location.includes(el);
             })
 
+            // console.log(`result of foundArray for ${subArray} is `, foundArray)
+
             // if yes
             if (foundArray) {
+                
                 if (subArray.includes(smallest)) {
                     finalArr.push(smallest);
                 }
@@ -253,10 +279,13 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                 if (subArray.includes(largest)) {
                     finalArr.push(largest);
                 }
+                // console.log(`Final array has included this: ${finalArr}`);
 
                 const newColumnArray = location.concat(finalArr).sort((a, b) => {
                     return a - b;
                 })
+                // console.log("NewColumnArray is ", newColumnArray);
+
 
                 let rowLength = newColumnArray.length
 
@@ -269,6 +298,9 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                         newMember += size;
                     }
                 }
+
+                // console.log(`After add all to the LEFT Final array has included this: ${finalArr}`);
+
 
                 // add all to the right
                 newMember = newColumnArray[0] + 1;
@@ -283,6 +315,8 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
                         newMember += size;
                     }
                 }
+                // console.log(`After add all to the RIGHT Final array has included this: ${finalArr}`);
+
             }
         })
     }
@@ -291,10 +325,13 @@ const calcBlockedAdj = (size, orientation, location, hor2D, ver2D, computer) => 
         return a - b;
     })
 
+    // console.log("------Calc blocked adjacent is DONE---------")
+
     return finalArr;
 
 }
 
+// FIXME: orientation is not correct in computerFires
 // check for horizontal or vertical, computerAttacks = bool value
 const orientationCheck = (arr, shipEmoji, computerAttacks) => {
     let orientation = "vertical";
@@ -309,13 +346,16 @@ const orientationCheck = (arr, shipEmoji, computerAttacks) => {
 
     else if (computerAttacks) {
 
+
         // sort in ascending order
-        arr = arr.sort((a, b) => {
+        let sortedArr = arr.sort((a, b) => {
             return a - b;
         });
 
+        console.log(`ornetationCheck sortedArr is ${sortedArr}`)
+
         // if member at index 0 is 1 less than at index 1, horizontal
-        if (arr[0] + 1 === arr[1]) {
+        if (sortedArr[0] + 1 === sortedArr[1]) {
             
             orientation = "horizontal";
 

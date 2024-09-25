@@ -130,7 +130,8 @@ const colors = {
     miss: "#415A77", 
     dead: "#0D1B2A",
     firebutton: "grey",
-    disabled: "grey" 
+    disabled: "grey",
+    test: "aquamarine"
 }
 
 // score variable
@@ -191,9 +192,7 @@ let hitArr = []; // IDs of hit cells
 let deadArr = []; // IDs of dead cells with revealed ships
 
 let whoWon;
-
-let timeDelay = 2000; // 1000 equals to 1 second
-let emptyCells = []; // cells not to target for computer
+let emptyCells = []; // cells not to target for computer – TODO: can I reuse unavail cells for this?
 
 
 
@@ -844,10 +843,13 @@ const computerFires = () => {
     // if two or more cells of the ship were discovered (not dead yet)
     else if (toTarget.length > 1) {
         
+        // FIXME:
         function moreHits() {
             // determine orientation
             if (toTarget.length === 2) {
                 shipOrientation = orientationCheck(toTarget, "noShipEmoji", "computerAttacks");
+                // FIXME: what happens with the 2-cell ship
+                console.log(`MOREHITS: Ship orientation for current ship is ${shipOrientation}`)
             }
             
             // calculate adjacent cells
@@ -878,12 +880,13 @@ const computerFires = () => {
     // produce random i if no hits before or if previous are dead
     else {
 
-
         let availableCells = Array.from(playerArray)
         
         availableCells = availableCells.filter((cell) => {
             return (!missArr.includes(cell) && !hitArr.includes(cell) && !emptyCells.includes(cell))
         })
+
+        console.log("What to hit", availableCells)
         
         function randomCell() {
             i = availableCells[randomIndex(availableCells)];
@@ -899,6 +902,7 @@ const computerFires = () => {
     let attackMessage = analyzeAttack(selectedCell, aGrid, ships, missArr, hitArr, deadArr, score, "computer");
     let calledCell = callCell(selectedCell, alphabet, horArray2D, verArray2D, comHorArray2D, comVerArray2D, "computer");
     let currentScore = renderScore(score);
+    let timeDelay = 2; // FIXME: change to 2000 for game
 
     // time delay to reveal the result
     setTimeout(() => {
@@ -925,11 +929,48 @@ const computerFires = () => {
     }, timeDelay);
 
     if (attackMessage.includes("sank your")) {
+        
+        console.log ("Dead Array is ", deadArr)
 
-        // do not target cells around dead cells
+        // TODO: solution below
+        let arr = Array.from(deadArr[deadArr.length - 1]) // get the mmost recent member of array
+        console.log('Most recent dead arr is ', arr)
+
+        // check if array is indeed computer's
+        let checkArray = arr.every((cell) => {
+            return cell <= gridSquared;
+        })
+        console.log("Check array if ALL cells is below or equal to gridSquared ", checkArray);
+
+        if (checkArray) {
+            // calc blocked cells FIXME: calcBlockedAdj is faulty
+            // FIXME: orientation being fed is not correct
+            let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
+            console.log(`For dead ${arr} empty cells are ${cells}`)
+
+            // push into empty cells
+            cells.forEach((id) => {
+                if (!emptyCells.includes(id) && id <= gridSquared) {
+                    emptyCells.push(id);
+                }
+            })
+
+            // sort
+            emptyCells = emptyCells.sort((a, b) => {
+                return a - b;
+            })
+
+            console.log("After filter Empty cells are ", emptyCells)
+        }
+        
+        /*
+        // do not target cells around dead cells – FIXME: creates issues with the cycle repeating
         deadArr.forEach((arr) => {
             
+            // FIXME: add empty cells just for the last ship that sank (orientation has changed!)
             let cells = calcBlockedAdj(gridSize, shipOrientation, arr, horArray2D, verArray2D);
+
+            console.log(`For ${arr} dead cells are ${cells}`)
 
             cells.forEach((id) => {
                 if (!emptyCells.includes(id) && id <= gridSquared) {
@@ -937,10 +978,14 @@ const computerFires = () => {
                 }
             })
 
+            console.log("Empty cells are ", emptyCells)
+
         })
 
+        console.log("Empty cells are ", emptyCells); */
+
         // color blocked cells
-        //blockCells(cellsEl, emptyCells, colors.adjacent)
+        blockCells(cellsEl, emptyCells, colors.test)
 
     }
 
@@ -1039,6 +1084,7 @@ onload = () => {
             computerSetup();
             console.log("a Grid", aGrid)
         }
+        console.log(aGrid);
 
         // render computer's setup – CHANGE TO FALSE FOR GAME
         renderComputer(false, false);
